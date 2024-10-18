@@ -1,0 +1,17 @@
+{
+  "productionMode": false,
+  "eagerServerLoad": false,
+  "npmFolder": "/Users/nraichura/Desktop/Ultimate Company/SpringFrontEnd",
+  "node.version": "v20.10.0",
+  "node.download.root": "https://nodejs.org/dist/",
+  "frontendFolder": "/Users/nraichura/Desktop/Ultimate Company/SpringFrontEnd/frontend",
+  "connect.javaSourceFolder": "/Users/nraichura/Desktop/Ultimate Company/SpringFrontEnd/src/main/java",
+  "javaResourceFolder": "/Users/nraichura/Desktop/Ultimate Company/SpringFrontEnd/src/main/resources",
+  "connect.applicationProperties": "/Users/nraichura/Desktop/Ultimate Company/SpringFrontEnd/src/main/resources/application.properties",
+  "connect.openApiFile": "/Users/nraichura/Desktop/Ultimate Company/SpringFrontEnd/target/generated-resources/openapi.json",
+  "project.frontend.generated": "/Users/nraichura/Desktop/Ultimate Company/SpringFrontEnd/frontend/generated",
+  "pnpm.enable": false,
+  "bun.enable": false,
+  "require.home.node": false,
+  "build.folder": "target"
+}
