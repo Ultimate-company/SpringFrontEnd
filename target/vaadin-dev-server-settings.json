@@ -1,0 +1,17 @@
+{
+  "frontendFolder": "/Users/nraichura/Desktop/Ultimate Company/SpringFrontEnd/frontend",
+  "themeFolder": "themes",
+  "themeResourceFolder": "/Users/nraichura/Desktop/Ultimate Company/SpringFrontEnd/frontend/generated/jar-resources",
+  "staticOutput": "target/classes/META-INF/VAADIN/webapp/VAADIN/static",
+  "generatedFolder": "generated",
+  "statsOutput": "target/classes/META-INF/VAADIN/webapp/../config/",
+  "frontendBundleOutput": "target/classes/META-INF/VAADIN/webapp/",
+  "devBundleOutput": "/Users/nraichura/Desktop/Ultimate Company/SpringFrontEnd/target/dev-bundle/webapp",
+  "devBundleStatsOutput": "/Users/nraichura/Desktop/Ultimate Company/SpringFrontEnd/target/dev-bundle/config",
+  "jarResourcesFolder": "/Users/nraichura/Desktop/Ultimate Company/SpringFrontEnd/frontend/generated/jar-resources",
+  "themeName": "",
+  "clientServiceWorkerSource": "/Users/nraichura/Desktop/Ultimate Company/SpringFrontEnd/target/sw.ts",
+  "pwaEnabled": false,
+  "offlineEnabled": false,
+  "offlinePath": "'offline.html'"
+}
