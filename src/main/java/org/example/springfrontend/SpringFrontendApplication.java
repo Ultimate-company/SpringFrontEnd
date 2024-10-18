@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 @EnableVaadin("org.example.springfrontend")
 public class SpringFrontendApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(SpringFrontendApplication.class, args);
 	}

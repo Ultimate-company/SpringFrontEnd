@@ -32,8 +32,8 @@ FROM openjdk:21-jdk-slim
 WORKDIR /app
 
 # Copy the built project files from the Maven build stage
-COPY --from=build /usr/src/app/SpringFrontEnd/target/SpringFrontend-0.0.1-SNAPSHOT.jar /app/SpringFrontend-0.0.1-SNAPSHOT.jar
+COPY --from=build /usr/src/app/SpringFrontEnd/target/SpringFrontEnd-0.0.1-SNAPSHOT.jar /app/SpringFrontEnd-0.0.1-SNAPSHOT.jar
 
-# Start the server
+# Define the command to run the application
 EXPOSE 5566
-CMD java -jar -Dspring.profiles.active=SpringFrontend-0.0.1-SNAPSHOT.jar
+CMD ["java", "-Dspring.profiles.active=development", "-jar", "SpringFrontEnd-0.0.1-SNAPSHOT.jar"]
