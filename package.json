@@ -115,6 +115,8 @@
   "devDependencies": {
     "@atlaskit/adf-schema": "^4.3.1",
     "@lit-labs/react": "^1.1.0",
+    "@rollup/plugin-replace": "5.0.4",
+    "@rollup/pluginutils": "5.0.5",
     "@types/jquery": "^3.5.30",
     "@types/node": "^22.3.0",
     "@types/react": "^18.0.25",
@@ -129,6 +131,8 @@
     "prosemirror-model": "^1.22.3",
     "prosemirror-schema-basic": "^1.2.3",
     "prosemirror-schema-list": "^1.4.1",
+    "rollup-plugin-brotli": "3.1.0",
+    "rollup-plugin-visualizer": "5.9.2",
     "strip-css-comments": "5.0.0",
     "transform-ast": "2.4.4",
     "typescript": "5.3.3",
@@ -136,11 +140,7 @@
     "vite-plugin-checker": "0.6.2",
     "workbox-build": "7.0.0",
     "workbox-core": "7.0.0",
-    "workbox-precaching": "7.0.0",
-    "rollup-plugin-visualizer": "5.9.2",
-    "@rollup/plugin-replace": "5.0.4",
-    "rollup-plugin-brotli": "3.1.0",
-    "@rollup/pluginutils": "5.0.5"
+    "workbox-precaching": "7.0.0"
   },
   "overrides": {
     "classnames": "$classnames",
@@ -277,10 +277,14 @@
       "lit": "3.1.0"
     },
     "devDependencies": {
+      "@rollup/plugin-replace": "5.0.4",
+      "@rollup/pluginutils": "5.0.5",
       "@vitejs/plugin-react": "4.2.0",
       "@vitejs/plugin-react-swc": "3.5.0",
       "async": "3.2.4",
       "glob": "10.3.3",
+      "rollup-plugin-brotli": "3.1.0",
+      "rollup-plugin-visualizer": "5.9.2",
       "strip-css-comments": "5.0.0",
       "transform-ast": "2.4.4",
       "typescript": "5.3.3",
@@ -288,11 +292,7 @@
       "vite-plugin-checker": "0.6.2",
       "workbox-build": "7.0.0",
       "workbox-core": "7.0.0",
-      "workbox-precaching": "7.0.0",
-      "rollup-plugin-visualizer": "5.9.2",
-      "@rollup/plugin-replace": "5.0.4",
-      "rollup-plugin-brotli": "3.1.0",
-      "@rollup/pluginutils": "5.0.5"
+      "workbox-precaching": "7.0.0"
     },
     "hash": "fcad695fdc36623428b029033fc3ae16027dfa119940dba1564978b22a5882bc"
   }

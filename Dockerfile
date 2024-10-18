@@ -19,9 +19,8 @@ RUN git clone https://nahushr18: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@github.
 # Create libs directory and copy the Spring Models jar to it
 RUN mkdir -p SpringFrontEnd/libs && cp SpringModels/target/SpringModels-1.0-SNAPSHOT.jar SpringFrontEnd/libs/SpringModels-1.0-SNAPSHOT.jar
 
-# Install Node.js
-RUN apt-get update && apt-get install -y curl
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && apt-get install -y nodejs
+#install node js
+FROM node:20
 
 # Build the Spring frontend project
 WORKDIR /usr/src/app/SpringFrontEnd
