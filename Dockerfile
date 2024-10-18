@@ -19,10 +19,14 @@ RUN git clone https://nahushr18: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@github.
 # Create libs directory and copy the Spring Models jar to it
 RUN mkdir -p SpringFrontEnd/libs && cp SpringModels/target/SpringModels-1.0-SNAPSHOT.jar SpringFrontEnd/libs/SpringModels-1.0-SNAPSHOT.jar
 
+# Install Node.js
+RUN curl -sL https://deb.nodesource.com/setup_20.x | bash -
+RUN apt-get install -y nodejs
+
 # Build the Spring frontend project
 WORKDIR /usr/src/app/SpringFrontEnd
 RUN git checkout development
-RUN mvn clean package -DskipTests
+RUN mvn clean package -DskipTests -Pdevelopment
 RUN ls -l /usr/src/app/SpringFrontEnd/target
 
 # Use a Java runtime image as a parent image
@@ -36,4 +40,4 @@ COPY --from=build /usr/src/app/SpringFrontEnd/target/SpringFrontEnd-0.0.1-SNAPSH
 
 # Define the command to run the application
 EXPOSE 5566
-CMD ["java", "-Dspring.profiles.active=development", "-Dvaadin.productionMode=true", "-jar", "SpringFrontEnd-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-Dlogging.level.com.vaadin=DEBUG", "-Dspring.profiles.active=development", "-Dvaadin.productionMode=true", "-jar", "SpringFrontEnd-0.0.1-SNAPSHOT.jar"]
