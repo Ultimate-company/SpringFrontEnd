@@ -6,7 +6,7 @@ import org.example.Models.CommunicationModels.CarrierModels.Permissions;
 import org.example.Models.CommunicationModels.CentralModels.User;
 import org.example.Models.CommunicationModels.CentralModels.Carrier;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -18,10 +18,23 @@ import java.util.Map;
 @Controller
 public class BaseController {
 
-    @Value("${api.url}")
-    private String apiUrl;
+    @Autowired
+    private Environment environment;
 
     public FactoryExtensions apiTranslator() {
+        String profile = environment.getActiveProfiles().length > 0 ? environment.getActiveProfiles()[0] : "default";
+        String apiUrl = "";
+        switch (profile) {
+            case "development":
+                apiUrl = "http://host.docker.internal:8080/api";
+                break;
+            case "staging":
+                break;
+            case "uat":
+                break;
+            case "main":
+                break;
+        }
         return new FactoryExtensions(StringUtils.hasText(getApiToken()) ? getApiToken() : null,
                 getCurrentUser() != null ? getCurrentUser().getUserId() : null,
                 getCurrentCarrier() != null ? getCurrentCarrier().getCarrierId() : null,
