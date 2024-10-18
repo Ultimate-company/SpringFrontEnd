@@ -5,6 +5,8 @@ import org.example.FactoryExtensions;
 import org.example.Models.CommunicationModels.CarrierModels.Permissions;
 import org.example.Models.CommunicationModels.CentralModels.User;
 import org.example.Models.CommunicationModels.CentralModels.Carrier;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -16,10 +18,14 @@ import java.util.Map;
 @Controller
 public class BaseController {
 
+    @Value("${api.url}")
+    private String apiUrl;
+
     public FactoryExtensions apiTranslator() {
         return new FactoryExtensions(StringUtils.hasText(getApiToken()) ? getApiToken() : null,
                 getCurrentUser() != null ? getCurrentUser().getUserId() : null,
-                getCurrentCarrier() != null ? getCurrentCarrier().getCarrierId() : null);
+                getCurrentCarrier() != null ? getCurrentCarrier().getCarrierId() : null,
+                apiUrl);
     }
 
     public Permissions getPermission() {
