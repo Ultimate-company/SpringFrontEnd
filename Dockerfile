@@ -36,4 +36,4 @@ COPY --from=build /usr/src/app/SpringFrontEnd/target/SpringFrontEnd-0.0.1-SNAPSH
 
 # Define the command to run the application
 EXPOSE 5566
-CMD ["java", "-Dspring.profiles.active=development", "-jar", "SpringFrontEnd-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-Dspring.profiles.active=development", "-Dvaadin.productionMode=true", "-jar", "SpringFrontEnd-0.0.1-SNAPSHOT.jar"]
