@@ -13,20 +13,16 @@ RUN mvn clean install
 # Go back to the root of the project directory
 WORKDIR /usr/src/app
 
-# Clone Spring Frontend
+# Clone Spring frontend project
 RUN git clone https://nahushr18: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@github.com/nahushr18/SpringFrontEnd.git
 
 # Create libs directory and copy the Spring Models jar to it
 RUN mkdir -p SpringFrontEnd/libs && cp SpringModels/target/SpringModels-1.0-SNAPSHOT.jar SpringFrontEnd/libs/SpringModels-1.0-SNAPSHOT.jar
 
-#install node js
-FROM node:20
-
-# Build the Spring frontend project
+# Build the Spring Frontend project
 WORKDIR /usr/src/app/SpringFrontEnd
 RUN git checkout development
-RUN mvn clean package -DskipTests
-RUN ls -l /usr/src/app/SpringFrontEnd/target
+RUN mvn clean package -DskipTests -Pdevelopment
 
 # Use a Java runtime image as a parent image
 FROM openjdk:21-jdk-slim
@@ -38,5 +34,4 @@ WORKDIR /app
 COPY --from=build /usr/src/app/SpringFrontEnd/target/SpringFrontEnd-0.0.1-SNAPSHOT.jar /app/SpringFrontEnd-0.0.1-SNAPSHOT.jar
 
 # Define the command to run the application
-EXPOSE 5566
-CMD ["java", "-Dlogging.level.com.vaadin=DEBUG", "-Dspring.profiles.active=development", "-jar", "SpringFrontEnd-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-Dspring.profiles.active=development", "-jar", "SpringFrontEnd-0.0.1-SNAPSHOT.jar"]
