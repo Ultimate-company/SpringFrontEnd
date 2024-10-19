@@ -22,7 +22,7 @@ RUN mkdir -p SpringFrontEnd/libs && cp SpringModels/target/SpringModels-1.0-SNAP
 # Build the Spring Frontend project
 WORKDIR /usr/src/app/SpringFrontEnd
 RUN git checkout development
-RUN mvn clean package -DskipTests -Pdevelopment
+RUN mvn clean package -X -DskipTests -Pdevelopment
 
 # Use a Java runtime image as a parent image
 FROM openjdk:21-jdk-slim
@@ -34,4 +34,5 @@ WORKDIR /app
 COPY --from=build /usr/src/app/SpringFrontEnd/target/SpringFrontEnd-0.0.1-SNAPSHOT.jar /app/SpringFrontEnd-0.0.1-SNAPSHOT.jar
 
 # Define the command to run the application
+EXPOSE 5566
 CMD ["java", "-Dspring.profiles.active=development", "-jar", "SpringFrontEnd-0.0.1-SNAPSHOT.jar"]
