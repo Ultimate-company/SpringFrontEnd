@@ -25,7 +25,7 @@ FROM node:20
 # Build the Spring frontend project
 WORKDIR /usr/src/app/SpringFrontEnd
 RUN git checkout development
-RUN mvn clean package -DskipTests -Pdevelopment
+RUN mvn clean package -DskipTests
 RUN ls -l /usr/src/app/SpringFrontEnd/target
 
 # Use a Java runtime image as a parent image
@@ -39,4 +39,4 @@ COPY --from=build /usr/src/app/SpringFrontEnd/target/SpringFrontEnd-0.0.1-SNAPSH
 
 # Define the command to run the application
 EXPOSE 5566
-CMD ["java", "-Dlogging.level.com.vaadin=DEBUG", "-Dspring.profiles.active=development", "-Dvaadin.productionMode=true", "-jar", "SpringFrontEnd-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-Dlogging.level.com.vaadin=DEBUG", "-Dspring.profiles.active=development", "-jar", "SpringFrontEnd-0.0.1-SNAPSHOT.jar"]
