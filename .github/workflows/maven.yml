@@ -47,15 +47,10 @@ jobs:
         cd SpringModels
         mvn clean install
 
-    - name: Build main project with Maven
-      run: mvn -B package --file pom.xml
-
     - name: Copy JAR to SpringFrontEnd/libs
       run: |
         mkdir -p SpringFrontEnd/libs
         cp SpringModels/target/SpringModels-1.0-SNAPSHOT.jar SpringFrontEnd/libs/SpringModels-1.0-SNAPSHOT.jar
 
-    - name: Build Spring FrontEnd
-      run: |
-        cd SpringFrontEnd
-        mvn clean install  # or mvn package, depending on your requirements
+    - name: Build main project with Maven
+      run: mvn -B package --file pom.xml
