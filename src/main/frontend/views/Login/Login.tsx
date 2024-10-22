@@ -27,7 +27,7 @@ interface LoginState {
     dialogOpen: boolean;
 }
 const defaultLoginState: LoginState = {
-    email: "nahushrai+1@gmail.com",
+    email: "masterAccount-1@gmail.com",
     password: "Code@123",
     forgotPasswordEmail: "",
     showPassword: false,

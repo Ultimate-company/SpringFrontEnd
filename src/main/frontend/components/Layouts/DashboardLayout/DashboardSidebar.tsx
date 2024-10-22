@@ -158,6 +158,7 @@ const closedMixin = (theme: Theme): CSSObject => ({
         width: `calc(${theme.spacing(8)} + 1px)`,
     },
 });
+
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
     ({ theme, open }) => ({
         width: drawerWidth,
@@ -174,7 +175,6 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
         }),
     }),
 );
-
 
 const DashboardSidebar = (props: DashboardSidebarProps) => {
     const [user, setUser] = React.useState<User>();
