@@ -33,7 +33,7 @@ import MuiPagination from "@mui/material/Pagination";
 import {AutocompleteInputChangeReason} from "@mui/base/useAutocomplete/useAutocomplete";
 
 const paginatedGridModel: PaginatedGridInterface = {
-    start: 0, //
+    start: 0,
     end: 10,
     pageSize: 10,
     includeDeleted: false,
