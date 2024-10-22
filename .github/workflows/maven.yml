@@ -20,6 +20,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: maven
+
+    - name: Install Maven
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y maven
+
     - name: Clone SpringModels repository
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}  # Use the secret for the GitHub token
@@ -40,11 +54,8 @@ jobs:
       run: |
         mkdir -p SpringFrontEnd/libs
         cp SpringModels/target/SpringModels-1.0-SNAPSHOT.jar SpringFrontEnd/libs/SpringModels-1.0-SNAPSHOT.jar
-    - uses: actions/checkout@v4
 
-    - name: Set up JDK 21
-      uses: actions/setup-java@v4
-      with:
-        java-version: '21'
-        distribution: 'temurin'
-        cache: maven
+    - name: Build Spring FrontEnd
+      run: |
+        cd SpringFrontEnd
+        mvn clean install  # or mvn package, depending on your requirements
