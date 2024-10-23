@@ -28,6 +28,9 @@ public class BaseController {
             case "development":
                 apiUrl = "http://host.docker.internal:8080/api";
                 break;
+            case "localhost":
+                apiUrl = "http://localhost:8081/api";
+                break;
             case "staging":
                 break;
             case "uat":

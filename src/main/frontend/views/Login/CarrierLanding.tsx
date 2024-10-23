@@ -3,7 +3,7 @@ import {
     Container,
     Pagination,
 } from "@mui/material";
-import {carrierApi, loginApi} from "Frontend/api/ApiCalls";
+import {carrierApi} from "Frontend/api/ApiCalls";
 import {Carrier} from "Frontend/api/Models/CentralModels/Carrier";
 import Header from "Frontend/components/Fonts/Header";
 import SubHeader from "Frontend/components/Fonts/SubHeader";
@@ -96,7 +96,7 @@ const carrierLanding = () => {
                     itemsPerRow={3}
                     totalRows={3}
                     data={state.data.map((carrier) => ({
-                        src: carrierUrls.getCarrierImage + `?imageName=${carrier.image}`,
+                        src: carrierUrls.getCarrierImage + `?imageName=${carrier.image}` + `&carrierId=${carrier.carrierId}`,
                         name: carrier.name,
                         id: carrier.carrierId,
                     }))}
