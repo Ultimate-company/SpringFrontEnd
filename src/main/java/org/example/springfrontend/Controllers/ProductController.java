@@ -199,18 +199,18 @@ public class ProductController extends BaseController {
         productRequestModel.getProduct().setAdditionalImage3(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Additional_3"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
 
         // Save the images in Firebase
-        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Main"), productRequestModel.getProduct().getMainImage(), getCurrentCarrier().getCarrierId());
-        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Top"), productRequestModel.getProduct().getTopImage(), getCurrentCarrier().getCarrierId());
-        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Bottom"), productRequestModel.getProduct().getBottomImage(), getCurrentCarrier().getCarrierId());
-        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Front"), productRequestModel.getProduct().getFrontImage(), getCurrentCarrier().getCarrierId());
-        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Back"), productRequestModel.getProduct().getBackImage(), getCurrentCarrier().getCarrierId());
-        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Right"), productRequestModel.getProduct().getRightImage(), getCurrentCarrier().getCarrierId());
-        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Left"), productRequestModel.getProduct().getLeftImage(), getCurrentCarrier().getCarrierId());
-        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Detail"), productRequestModel.getProduct().getDetailsImage(), getCurrentCarrier().getCarrierId());
-        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Defect"), productRequestModel.getProduct().getDefectImage(), getCurrentCarrier().getCarrierId());
-        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Additional_1"), productRequestModel.getProduct().getAdditionalImage1(), getCurrentCarrier().getCarrierId());
-        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Additional_2"), productRequestModel.getProduct().getAdditionalImage2(), getCurrentCarrier().getCarrierId());
-        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Additional_3"), productRequestModel.getProduct().getAdditionalImage3(), getCurrentCarrier().getCarrierId());
+//        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Main"), productRequestModel.getProduct().getMainImage(), getCurrentCarrier().getCarrierId());
+//        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Top"), productRequestModel.getProduct().getTopImage(), getCurrentCarrier().getCarrierId());
+//        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Bottom"), productRequestModel.getProduct().getBottomImage(), getCurrentCarrier().getCarrierId());
+//        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Front"), productRequestModel.getProduct().getFrontImage(), getCurrentCarrier().getCarrierId());
+//        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Back"), productRequestModel.getProduct().getBackImage(), getCurrentCarrier().getCarrierId());
+//        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Right"), productRequestModel.getProduct().getRightImage(), getCurrentCarrier().getCarrierId());
+//        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Left"), productRequestModel.getProduct().getLeftImage(), getCurrentCarrier().getCarrierId());
+//        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Detail"), productRequestModel.getProduct().getDetailsImage(), getCurrentCarrier().getCarrierId());
+//        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Defect"), productRequestModel.getProduct().getDefectImage(), getCurrentCarrier().getCarrierId());
+//        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Additional_1"), productRequestModel.getProduct().getAdditionalImage1(), getCurrentCarrier().getCarrierId());
+//        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Additional_2"), productRequestModel.getProduct().getAdditionalImage2(), getCurrentCarrier().getCarrierId());
+//        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Additional_3"), productRequestModel.getProduct().getAdditionalImage3(), getCurrentCarrier().getCarrierId());
 
         Response<Long> editProductResponse = apiTranslator().getProductSubTranslator().editProduct(productRequestModel.getProduct());
         if(!editProductResponse.isSuccess()) {
@@ -241,18 +241,18 @@ public class ProductController extends BaseController {
                     productRequestModel.getProduct().getAdditionalImage3());
 
             // delete images from firebase
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getMainImage(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getTopImage(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getBottomImage(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getFrontImage(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getBackImage(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getRightImage(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getLeftImage(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getDetailsImage(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getDefectImage(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getAdditionalImage1(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getAdditionalImage2(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getAdditionalImage3(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getMainImage(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getTopImage(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getBottomImage(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getFrontImage(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getBackImage(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getRightImage(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getLeftImage(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getDetailsImage(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getDefectImage(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getAdditionalImage1(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getAdditionalImage2(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getAdditionalImage3(), getCurrentCarrier().getCarrierId());
 
             return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Error, editProductResponse.getMessage(), null));
         }
@@ -284,18 +284,18 @@ public class ProductController extends BaseController {
                     getProductDetailsByIdResponse.getItem().getProduct().getAdditionalImage3());
 
             // delete images from firebase
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, getProductDetailsByIdResponse.getItem().getProduct().getMainImage(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, getProductDetailsByIdResponse.getItem().getProduct().getTopImage(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, getProductDetailsByIdResponse.getItem().getProduct().getBottomImage(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, getProductDetailsByIdResponse.getItem().getProduct().getFrontImage(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, getProductDetailsByIdResponse.getItem().getProduct().getBackImage(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, getProductDetailsByIdResponse.getItem().getProduct().getRightImage(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, getProductDetailsByIdResponse.getItem().getProduct().getLeftImage(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, getProductDetailsByIdResponse.getItem().getProduct().getDetailsImage(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, getProductDetailsByIdResponse.getItem().getProduct().getDefectImage(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, getProductDetailsByIdResponse.getItem().getProduct().getAdditionalImage1(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, getProductDetailsByIdResponse.getItem().getProduct().getAdditionalImage2(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, getProductDetailsByIdResponse.getItem().getProduct().getAdditionalImage3(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, getProductDetailsByIdResponse.getItem().getProduct().getMainImage(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, getProductDetailsByIdResponse.getItem().getProduct().getTopImage(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, getProductDetailsByIdResponse.getItem().getProduct().getBottomImage(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, getProductDetailsByIdResponse.getItem().getProduct().getFrontImage(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, getProductDetailsByIdResponse.getItem().getProduct().getBackImage(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, getProductDetailsByIdResponse.getItem().getProduct().getRightImage(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, getProductDetailsByIdResponse.getItem().getProduct().getLeftImage(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, getProductDetailsByIdResponse.getItem().getProduct().getDetailsImage(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, getProductDetailsByIdResponse.getItem().getProduct().getDefectImage(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, getProductDetailsByIdResponse.getItem().getProduct().getAdditionalImage1(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, getProductDetailsByIdResponse.getItem().getProduct().getAdditionalImage2(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, getProductDetailsByIdResponse.getItem().getProduct().getAdditionalImage3(), getCurrentCarrier().getCarrierId());
         }
 
         // reset the product category
@@ -328,18 +328,18 @@ public class ProductController extends BaseController {
         productRequestModel.getProduct().setAdditionalImage3(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Additional_3"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
 
         // Save the images in Firebase
-        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Main"), productRequestModel.getProduct().getMainImage(), getCurrentCarrier().getCarrierId());
-        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Top"), productRequestModel.getProduct().getTopImage(), getCurrentCarrier().getCarrierId());
-        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Bottom"), productRequestModel.getProduct().getBottomImage(), getCurrentCarrier().getCarrierId());
-        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Front"), productRequestModel.getProduct().getFrontImage(), getCurrentCarrier().getCarrierId());
-        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Back"), productRequestModel.getProduct().getBackImage(), getCurrentCarrier().getCarrierId());
-        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Right"), productRequestModel.getProduct().getRightImage(), getCurrentCarrier().getCarrierId());
-        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Left"), productRequestModel.getProduct().getLeftImage(), getCurrentCarrier().getCarrierId());
-        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Detail"), productRequestModel.getProduct().getDetailsImage(), getCurrentCarrier().getCarrierId());
-        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Defect"), productRequestModel.getProduct().getDefectImage(), getCurrentCarrier().getCarrierId());
-        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Additional_1"), productRequestModel.getProduct().getAdditionalImage1(), getCurrentCarrier().getCarrierId());
-        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Additional_2"), productRequestModel.getProduct().getAdditionalImage2(), getCurrentCarrier().getCarrierId());
-        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Additional_3"), productRequestModel.getProduct().getAdditionalImage3(), getCurrentCarrier().getCarrierId());
+//        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Main"), productRequestModel.getProduct().getMainImage(), getCurrentCarrier().getCarrierId());
+//        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Top"), productRequestModel.getProduct().getTopImage(), getCurrentCarrier().getCarrierId());
+//        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Bottom"), productRequestModel.getProduct().getBottomImage(), getCurrentCarrier().getCarrierId());
+//        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Front"), productRequestModel.getProduct().getFrontImage(), getCurrentCarrier().getCarrierId());
+//        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Back"), productRequestModel.getProduct().getBackImage(), getCurrentCarrier().getCarrierId());
+//        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Right"), productRequestModel.getProduct().getRightImage(), getCurrentCarrier().getCarrierId());
+//        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Left"), productRequestModel.getProduct().getLeftImage(), getCurrentCarrier().getCarrierId());
+//        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Detail"), productRequestModel.getProduct().getDetailsImage(), getCurrentCarrier().getCarrierId());
+//        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Defect"), productRequestModel.getProduct().getDefectImage(), getCurrentCarrier().getCarrierId());
+//        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Additional_1"), productRequestModel.getProduct().getAdditionalImage1(), getCurrentCarrier().getCarrierId());
+//        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Additional_2"), productRequestModel.getProduct().getAdditionalImage2(), getCurrentCarrier().getCarrierId());
+//        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Additional_3"), productRequestModel.getProduct().getAdditionalImage3(), getCurrentCarrier().getCarrierId());
 
         Response<Long> addProductResponse = apiTranslator().getProductSubTranslator().addProduct(productRequestModel.getProduct());
         if (!addProductResponse.isSuccess()) {
@@ -370,18 +370,18 @@ public class ProductController extends BaseController {
                     productRequestModel.getProduct().getAdditionalImage3());
 
             // delete images from firebase
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getMainImage(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getTopImage(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getBottomImage(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getFrontImage(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getBackImage(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getRightImage(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getLeftImage(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getDetailsImage(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getDefectImage(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getAdditionalImage1(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getAdditionalImage2(), getCurrentCarrier().getCarrierId());
-            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getAdditionalImage3(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getMainImage(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getTopImage(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getBottomImage(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getFrontImage(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getBackImage(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getRightImage(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getLeftImage(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getDetailsImage(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getDefectImage(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getAdditionalImage1(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getAdditionalImage2(), getCurrentCarrier().getCarrierId());
+//            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getAdditionalImage3(), getCurrentCarrier().getCarrierId());
 
             return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Error, addProductResponse.getMessage(), null));
         }

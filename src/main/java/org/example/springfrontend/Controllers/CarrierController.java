@@ -1,6 +1,5 @@
 package org.example.springfrontend.Controllers;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.example.ApiRoutes;
 import org.example.CommonHelpers.ImageHelper;
 import org.example.CommonHelpers.JsonResponse;
@@ -46,6 +45,13 @@ public class CarrierController extends BaseController {
             return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Error, getCarriersResponse.getMessage(), null));
         }
 
+        getCarriersResponse.getItem().getData().forEach(carrier -> {
+            try {
+                carrier.setImage(ImageHelper.getFileFromBox(carrier.getDatabaseName(), "Logo.png", carrier.getBoxDeveloperToken()));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
         return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Success, "",  getCarriersResponse.getItem()));
     }
 
@@ -97,14 +103,24 @@ public class CarrierController extends BaseController {
     }
 
     @GetMapping(ApiRoutes.CarriersSubRoute.GET_CARRIER_IMAGE)
-    public ResponseEntity<byte[]> getCarrierImage(@RequestParam String imageName) throws IOException {
-        Pair<String, byte[]> getImageResponse = ImageHelper.getImage(carrierImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Carrier", imageName);
-        if(getImageResponse != null) {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.parseMediaType(getImageResponse.getKey()));
-            return new ResponseEntity<>(getImageResponse.getValue(), headers, HttpStatus.OK);
-        }
+    public ResponseEntity<byte[]> getCarrierImage(@RequestParam String imageName, @RequestParam long carrierId) {
+        try {
+            Response<Carrier> getCarrierResponse = apiTranslator().getCarrierSubTranslator().getCarrierDetailsById(carrierId);
+            if(!getCarrierResponse.isSuccess()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            // Fetch image bytes using the helper method
+            byte[] imageBytes = ImageHelper.downloadImageFromBox(imageName, getCarrierResponse.getItem().getBoxDeveloperToken());
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.IMAGE_PNG);
+
+            // Return the image bytes with headers and 200 OK status
+            return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+        } catch (IOException e) {
+            // Handle the exception (log it, return a 404, etc.)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }
