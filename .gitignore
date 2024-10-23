@@ -6,3 +6,5 @@
 
 # Ignore generated
 /src/main/frontend/generated/
+/src/main/frontend/generated
+/src/main/frontend/generated/jar-resources
