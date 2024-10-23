@@ -9,6 +9,8 @@ import org.example.Models.RequestModels.GridRequestModels.GetCarriersRequestMode
 import org.example.Models.ResponseModels.ApiResponseModels.PaginationBaseResponseModel;
 import org.example.Models.ResponseModels.Response;
 import org.example.springfrontend.Classes.Endpoints;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,6 +22,9 @@ import java.io.IOException;
 @RestController
 @RequestMapping(ApiRoutes.ApiControllerNames.CARRIER)
 public class CarrierController extends BaseController {
+    @Autowired
+    private Environment environment;
+
     private static final String carrierImageParentDirectory = "src/main/resources/";
 
     @GetMapping(ApiRoutes.CarriersSubRoute.GET_LOGGED_IN_CARRIER)
@@ -45,13 +50,6 @@ public class CarrierController extends BaseController {
             return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Error, getCarriersResponse.getMessage(), null));
         }
 
-        getCarriersResponse.getItem().getData().forEach(carrier -> {
-            try {
-                carrier.setImage(ImageHelper.getFileFromBox(carrier.getDatabaseName(), "Logo.png", carrier.getBoxDeveloperToken()));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
         return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Success, "",  getCarriersResponse.getItem()));
     }
 
@@ -103,16 +101,15 @@ public class CarrierController extends BaseController {
     }
 
     @GetMapping(ApiRoutes.CarriersSubRoute.GET_CARRIER_IMAGE)
-    public ResponseEntity<byte[]> getCarrierImage(@RequestParam String imageName, @RequestParam long carrierId) {
+    public ResponseEntity<byte[]> getCarrierImage(@RequestParam long carrierId) {
         try {
             Response<Carrier> getCarrierResponse = apiTranslator().getCarrierSubTranslator().getCarrierDetailsById(carrierId);
             if(!getCarrierResponse.isSuccess()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 
-            // Fetch image bytes using the helper method
-            byte[] imageBytes = ImageHelper.downloadImageFromBox(imageName, getCarrierResponse.getItem().getBoxDeveloperToken());
-
+            String filePath = (environment.getActiveProfiles().length > 0 ? environment.getActiveProfiles()[0] : "default") + "/"+getCarrierResponse.getItem().getDatabaseName()+"/Logo.png";
+            byte[] imageBytes = ImageHelper.downloadFileAsBytesFromFirebase(filePath);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.IMAGE_PNG);
 

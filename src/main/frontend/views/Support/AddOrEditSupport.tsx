@@ -16,7 +16,7 @@ import {
 } from "mui-tiptap";
 import ActionFooter from "Frontend/components/FormRenderer/ActionFooter";
 import {navigatingRoutes} from "Frontend/navigation";
-import {carrierApi, productApi, supportApi, userApi} from "Frontend/api/ApiCalls";
+import {carrierApi, supportApi, userApi} from "Frontend/api/ApiCalls";
 import {Carrier} from "Frontend/api/Models/CentralModels/Carrier";
 import TurndownService from "turndown";
 import { defaultSchema } from '@atlaskit/adf-schema';
