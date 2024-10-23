@@ -1,0 +1,8 @@
+# Ignore target directory
+/target/
+
+# Ignore node_modules directory
+/node_modules/
+
+# Ignore generated
+/src/main/frontend/generated/
