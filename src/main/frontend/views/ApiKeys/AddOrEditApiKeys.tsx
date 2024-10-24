@@ -55,12 +55,6 @@ const AddOrEditApiKeys = () => {
     // database details
     const [databaseName, setDatabaseName] = React.useState<string>("");
 
-    // amazon api keys
-    const [awsApiKey, setAwsApiKey] = React.useState<string>("");
-    const [awsBucketName, setAwsBucketName] = React.useState<string>("");
-    const [awsCloudFrontUrl, setAwsCloudFrontUrl] = React.useState<string>("");
-    const [awsSecretKey, setAwsSecretKey] = React.useState<string>("");
-
     // shiprocket keys
     const [shiprocketEmail, setShiprocketEmail] = React.useState<string>("");
     const [shiprocketPassword, setShiprocketPassword] = React.useState<string>("");
@@ -102,12 +96,6 @@ const AddOrEditApiKeys = () => {
 
             // database details
             databaseName: databaseName,
-
-            // amazon keys
-            awsApikey: awsApiKey,
-            awsSecretKey: awsSecretKey,
-            awsBucketName: awsBucketName,
-            awsCloudFrontUrl: awsCloudFrontUrl,
 
             // shiprocket keys
             shipRocketEmail: shiprocketEmail,
@@ -214,12 +202,6 @@ const AddOrEditApiKeys = () => {
                 // set database details
                 setDatabaseName(carrier.databaseName ?? "");
 
-                // set amazon keys
-                setAwsApiKey(carrier.awsApikey ?? "");
-                setAwsSecretKey(carrier.awsSecretKey ?? "");
-                setAwsBucketName(carrier.awsBucketName ?? "");
-                setAwsCloudFrontUrl(carrier.awsCloudFrontUrl ?? "");
-
                 // set shiprocket keys
                 setShiprocketEmail(carrier.shipRocketEmail ?? "");
                 setShiprocketPassword(carrier.shipRocketPassword ?? "");
@@ -298,7 +280,7 @@ const AddOrEditApiKeys = () => {
                             height: 200,
                             width: 200,
                         }}
-                        src={productUrls.getStaticImage+ `?imageName=Blank.png`}
+                        src={carrierUrls.getCarrierImage + `?carrierId=${carrierId}`}
                         alt={""}
                     />
                     {
@@ -311,8 +293,8 @@ const AddOrEditApiKeys = () => {
                                 onChange={fileUploadChange}
                             /> : <></>
                     }
-                    <>
-                        <Grid item xs={12}>
+                    {
+                        !isView ? <Grid item xs={12}>
                             <Grid container justifyContent="center" spacing={3}>
                                 <Grid
                                     style={{marginTop:20}}
@@ -324,8 +306,8 @@ const AddOrEditApiKeys = () => {
                                     />
                                 </Grid>
                             </Grid>
-                        </Grid>
-                    </>
+                        </Grid> : <></>
+                    }
                 </Grid>
             </SectionLayout><br/>
 
@@ -340,51 +322,10 @@ const AddOrEditApiKeys = () => {
                         value={databaseName}
                         handleChange={React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => setDatabaseName(event.target.value), [databaseName])}
                         isView={isView}
+                        disabled={true}
                     />
                 </Grid>
             </SectionLayout><br/>
-
-            <SectionLayout
-                sectionTitle = "Amazon Keys"
-                sectionSubTitle = "This information can be edited"
-            >
-                <Grid item md={6} xs={12}>
-                    <RenderInput
-                        inputType={InputType.TextField}
-                        label="AWS api key"
-                        value={awsApiKey}
-                        handleChange={React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => setAwsApiKey(event.target.value), [awsApiKey])}
-                        isView={isView}
-                    />
-                </Grid>
-                <Grid item md={6} xs={12}>
-                    <RenderInput
-                        inputType={InputType.TextField}
-                        label="AWS secret key"
-                        value={awsSecretKey}
-                        handleChange={React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => setAwsSecretKey(event.target.value), [awsSecretKey])}
-                        isView={isView}
-                    />
-                </Grid>
-                <Grid item md={6} xs={12}>
-                    <RenderInput
-                        inputType={InputType.TextField}
-                        label="AWS bucket name"
-                        value={awsBucketName}
-                        handleChange={React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => setAwsBucketName(event.target.value), [awsBucketName])}
-                        isView={isView}
-                    />
-                </Grid>
-                <Grid item md={6} xs={12}>
-                    <RenderInput
-                        inputType={InputType.TextField}
-                        label="AWS cloud front url"
-                        value={awsCloudFrontUrl}
-                        handleChange={React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => setAwsCloudFrontUrl(event.target.value), [awsCloudFrontUrl])}
-                        isView={isView}
-                    />
-                </Grid>
-            </SectionLayout> <br/>
 
             <SectionLayout
                 sectionTitle = "Shiprocket Keys"

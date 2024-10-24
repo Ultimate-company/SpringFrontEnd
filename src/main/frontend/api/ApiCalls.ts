@@ -156,6 +156,10 @@ export const loginApi = {
         const response = await Axios.get(loginUrls.checkIfUserIsLoggedIn, standardJsonHeader);
         return handleResponse<string>(response.data);
     },
+    resetPassword: async (loginRequestModel: LoginRequestModel) => {
+        const response = await Axios.post(loginUrls.resetPassword, loginRequestModel, standardJsonHeader);
+        return handleResponse<boolean>(response.data);
+    }
 }
 
 export const userApi = (setLoading: (loading: boolean) => void) => {

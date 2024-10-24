@@ -159,7 +159,7 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
                         ) : null}
                         {<>&nbsp;&nbsp;&nbsp;</>} {/* spacing */}
                         {permissionSplit.includes(permissionChecks.userPermissions.deleteUser) ? (
-                            <a onClick={() => handleDeleteClick(params)} style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}>Delete</a>
+                            <a onClick={() => handleDeleteClick(params)} style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}>Deactivate</a>
                         ) : null}
                     </>
                 )}

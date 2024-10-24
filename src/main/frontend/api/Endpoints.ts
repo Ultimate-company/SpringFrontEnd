@@ -195,7 +195,8 @@ const loginEndpoints = {
     signIn: 'signIn',
     signUp: 'signUp',
     logOut: 'logOut',
-    checkIfUserIsLoggedIn: 'checkIfUserIsLoggedIn'
+    checkIfUserIsLoggedIn: 'checkIfUserIsLoggedIn',
+    resetPassword: 'resetPassword'
 }
 
 const dataEndpoints = {
