@@ -9,11 +9,11 @@ import {
     ListItemAvatar,
     ListItemText,
     Stack,
-    Typography, // Import Typography for the notification text
-    Card, // Import Card for the card layout
-    CardContent, // Import CardContent for the card content
+    Card,
+    CardContent,
 } from "@mui/material";
 import React from "react";
+import { useTheme } from "@mui/material/styles";
 import { getRandomColor } from "Frontend/components/commonHelperFunctions";
 import ReactHtmlParser from 'react-html-parser';
 import { messageApi } from "Frontend/api/ApiCalls";
@@ -33,10 +33,21 @@ interface MessageItemProps {
 }
 
 const MessageItem = (props: MessageItemProps) => {
+    const theme = useTheme(); // Access the current theme
+
     return (
-        <ListItem alignItems="flex-start" sx={{ '&:hover': { backgroundColor: '#f5f5f5', }, }} onClick={() => {
-            window.location.href = navigatingRoutes.dashboard.viewMessage + "?messageId=" + props.messageId + "&isView";
-        }}>
+        <ListItem
+            alignItems="flex-start"
+            sx={{
+                '&:hover': {
+                    backgroundColor: theme.palette.mode === 'dark' ? '#424242' : '#f5f5f5'
+                },
+                backgroundColor: theme.palette.mode === 'dark' ? '#303030' : '#ffffff'
+            }}
+            onClick={() => {
+                window.location.href = navigatingRoutes.dashboard.viewMessage + "?messageId=" + props.messageId + "&isView";
+            }}
+        >
             <ListItemAvatar>
                 {
                     props.avatarSrc && props.avatarSrc.length > 2 ?
@@ -70,8 +81,8 @@ const MessageItem = (props: MessageItemProps) => {
 }
 
 const MessageList = () => {
-    // state variables
-    const [loading, setLoading] = React.useState<boolean>(true);
+    const theme = useTheme();
+    const [loading, setLoading] = React.useState(true);
     const [messageResponseModel, setMessageResponseModel] = React.useState<MessageResponseModel[]>([]);
 
     React.useEffect(() => {
@@ -99,7 +110,17 @@ const MessageList = () => {
                     <CircularProgress size={100} />
                 </Box>
             ) : (
-                <Card sx={{ maxHeight: 460, minHeight: 400, minWidth: 400, maxWidth: 460, overflowY: 'scroll', marginTop: 2, backgroundColor: '#fffbf9' }}>
+                <Card
+                    sx={{
+                        maxHeight: 460,
+                        minHeight: 400,
+                        minWidth: 400,
+                        maxWidth: 460,
+                        overflowY: 'scroll',
+                        marginTop: 2,
+                        backgroundColor: theme.palette.mode === 'dark' ? '#424242' : '#fffbf9'
+                    }}
+                >
                     <CardContent>
                         <List sx={{ zIndex: 12000 }}>
                             {messageResponseModel.length > 0 ? (
@@ -125,8 +146,8 @@ const MessageList = () => {
                                         display: 'flex',
                                         justifyContent: 'center',
                                         alignItems: 'center',
-                                        height: '100%', // Ensure it takes full height of the card
-                                        flexDirection: 'column' // Center vertically
+                                        height: '100%',
+                                        flexDirection: 'column'
                                     }}
                                 >
                                     <PrimaryFont text="No new notifications" />

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import {Box, IconButton, Popper, Toolbar, Typography} from '@mui/material';
+import {Box, IconButton, Popper, Toolbar, Typography, Switch} from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faList, faCalendar, faBell, faSignOut, faBars} from '@fortawesome/free-solid-svg-icons'
 import {loginApi, messageApi} from "../../../api/ApiCalls";
@@ -10,6 +10,7 @@ import Logo from "Frontend/components/Layouts/DashboardLayout/Logo";
 import MessageList from "Frontend/views/Message/Components/MessageList";
 import {MessageResponseModel} from "Frontend/api/Models/CarrierModels/Message";
 import {StyledBadge} from "Frontend/components/OtherComponents/StyledBadge";
+import BodyText from "Frontend/components/Fonts/BodyText";
 
 interface DashboardNavbarProps {
     open: boolean;
@@ -45,8 +46,16 @@ const DashboardNavbar = (props: DashboardNavbarProps) => {
         setAnchorEl(anchorEl ? null : event.currentTarget);
     };
 
+    const [themeMode, setThemeMode] = React.useState(localStorage.getItem('theme') || 'light');
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popper' : undefined;
+
+    const handleThemeToggle = () => {
+        let newTheme = themeMode === 'dark' ? 'light' : 'dark'
+        setThemeMode(newTheme);
+        localStorage.setItem('theme', newTheme);
+        window.location.reload();
+    };
 
     React.useEffect(() => {
         messageApi(() => {}).getMessagesByUserId().then((messageResponseModels: MessageResponseModel[]) => {
@@ -77,6 +86,12 @@ const DashboardNavbar = (props: DashboardNavbarProps) => {
                     Ultimate Company
                 </Typography>
                 <Box sx={{ flexGrow: 1 }} />
+                <BodyText text="Dark Mode"/>
+                <Switch
+                    checked={themeMode === 'dark'}
+                    onChange={handleThemeToggle}
+                    color="default"
+                />
                 <IconButton component={RouterLink} to="/dashboard/todolist" color="inherit">
                     <FontAwesomeIcon icon={faList} size="xs"/>
                 </IconButton>&nbsp;&nbsp;&nbsp;
