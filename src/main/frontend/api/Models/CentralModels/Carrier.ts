@@ -3,15 +3,11 @@ export type Carrier = {
     name?: string;
     description?: string;
     databaseName?: string;
-    awsApikey?: string;
     sendgridApikey?: string;
     sendgridEmailAddress?: string;
     isDeleted?: boolean;
     image?: string;
     website?: string;
-    awsCloudFrontUrl?: string;
-    awsBucketName?: string;
-    awsSecretKey?: string;
     sendgridSenderName?: string;
     razorpayApikey?: string;
     razorpayApiSecret?: string;

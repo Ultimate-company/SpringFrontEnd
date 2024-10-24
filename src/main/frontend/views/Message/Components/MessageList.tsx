@@ -1,22 +1,28 @@
 import {
     Avatar,
-    Box, Chip,
+    Box,
+    Chip,
     CircularProgress,
     Divider,
     List,
     ListItem,
     ListItemAvatar,
-    ListItemText, Stack,
+    ListItemText,
+    Stack,
+    Typography, // Import Typography for the notification text
+    Card, // Import Card for the card layout
+    CardContent, // Import CardContent for the card content
 } from "@mui/material";
 import React from "react";
-import {getRandomColor} from "Frontend/components/commonHelperFunctions";
+import { getRandomColor } from "Frontend/components/commonHelperFunctions";
 import ReactHtmlParser from 'react-html-parser';
-import {messageApi} from "Frontend/api/ApiCalls";
-import {MessageResponseModel} from "Frontend/api/Models/CarrierModels/Message";
+import { messageApi } from "Frontend/api/ApiCalls";
+import { MessageResponseModel } from "Frontend/api/Models/CarrierModels/Message";
 import BodyText from "Frontend/components/Fonts/BodyText";
-import {navigatingRoutes} from "Frontend/navigation";
+import { navigatingRoutes } from "Frontend/navigation";
+import PrimaryFont from "Frontend/components/Fonts/PrimaryFont";
 
-interface MessageItem {
+interface MessageItemProps {
     avatarSrc: string;
     title: string;
     from: string;
@@ -26,7 +32,7 @@ interface MessageItem {
     updated: boolean;
 }
 
-const MessageItem = (props: MessageItem) => {
+const MessageItem = (props: MessageItemProps) => {
     return (
         <ListItem alignItems="flex-start" sx={{ '&:hover': { backgroundColor: '#f5f5f5', }, }} onClick={() => {
             window.location.href = navigatingRoutes.dashboard.viewMessage + "?messageId=" + props.messageId + "&isView";
@@ -34,8 +40,8 @@ const MessageItem = (props: MessageItem) => {
             <ListItemAvatar>
                 {
                     props.avatarSrc && props.avatarSrc.length > 2 ?
-                        <Avatar src={props.avatarSrc}/> :
-                        <Avatar style={{backgroundColor: getRandomColor()}}>{props.avatarSrc[0]}{props.avatarSrc[1]}</Avatar>
+                        <Avatar src={props.avatarSrc} /> :
+                        <Avatar style={{ backgroundColor: getRandomColor() }}>{props.avatarSrc[0]}{props.avatarSrc[1]}</Avatar>
                 }
             </ListItemAvatar>
             <ListItemText
@@ -43,8 +49,8 @@ const MessageItem = (props: MessageItem) => {
                     <React.Fragment>
                         <Stack direction="row" spacing={1}>
                             <BodyText text={props.from} />
-                            { props.read ? <Chip label="New" color="success" style={{marginLeft: '8px'}} /> : <></> }
-                            { props.updated ? <Chip label="Updated" color="warning" variant="outlined" style={{marginLeft: '8px'}} /> : <></>}
+                            {props.read ? <Chip label="New" color="success" style={{ marginLeft: '8px' }} /> : <></>}
+                            {props.updated ? <Chip label="Updated" color="warning" variant="outlined" style={{ marginLeft: '8px' }} /> : <></>}
                         </Stack>
                     </React.Fragment>
                 }
@@ -72,7 +78,7 @@ const MessageList = () => {
         messageApi(() => {}).getMessagesByUserId().then((messageResponseModels: MessageResponseModel[]) => {
             setMessageResponseModel(messageResponseModels);
             setLoading(false);
-        })
+        });
     }, []);
 
     return (
@@ -92,24 +98,43 @@ const MessageList = () => {
                 >
                     <CircularProgress size={100} />
                 </Box>
-            ): (
-                <List sx={{zindex:12000, maxHeight:460, minHeight:400, minWidth: 400, maxWidth: 460, overflowY:'scroll', marginTop:2, backgroundColor: 'background.paper' }}>
-                    {messageResponseModel.map((messageItem, index) => (
-                        <React.Fragment key={index}>
-                            <MessageItem
-                                avatarSrc={messageItem.user.avatar && messageItem.user.avatar != "" ? messageItem.user.avatar :
-                                    messageItem.user.firstName[0] + messageItem.user.lastName[1]}
-                                title={messageItem.message.title}
-                                from={messageItem.user.firstName + " " + messageItem.user.lastName}
-                                messageHtml={messageItem.message.descriptionHtml}
-                                read={!messageItem.read}
-                                messageId={messageItem.message.messageId as number}
-                                updated={messageItem.message.updated as boolean}
-                            />
-                            <Divider />
-                        </React.Fragment>
-                    ))}
-                </List>
+            ) : (
+                <Card sx={{ maxHeight: 460, minHeight: 400, minWidth: 400, maxWidth: 460, overflowY: 'scroll', marginTop: 2, backgroundColor: '#fffbf9' }}>
+                    <CardContent>
+                        <List sx={{ zIndex: 12000 }}>
+                            {messageResponseModel.length > 0 ? (
+                                messageResponseModel.map((messageItem, index) => (
+                                    <React.Fragment key={index}>
+                                        <MessageItem
+                                            avatarSrc={messageItem.user.avatar && messageItem.user.avatar !== "" ? messageItem.user.avatar :
+                                                messageItem.user.firstName[0] + messageItem.user.lastName[1]}
+                                            title={messageItem.message.title}
+                                            from={messageItem.user.firstName + " " + messageItem.user.lastName}
+                                            messageHtml={messageItem.message.descriptionHtml}
+                                            read={!messageItem.read}
+                                            messageId={messageItem.message.messageId as number}
+                                            updated={messageItem.message.updated as boolean}
+                                        />
+                                        <Divider />
+                                    </React.Fragment>
+                                ))
+                            ) : (
+                                <Box
+                                    sx={{
+                                        paddingTop: 22,
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        height: '100%', // Ensure it takes full height of the card
+                                        flexDirection: 'column' // Center vertically
+                                    }}
+                                >
+                                    <PrimaryFont text="No new notifications" />
+                                </Box>
+                            )}
+                        </List>
+                    </CardContent>
+                </Card>
             )}
         </>
     );

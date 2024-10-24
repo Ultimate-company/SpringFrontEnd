@@ -91,7 +91,7 @@ const UsersList = () => {
                 checkboxes = {[
                     {
                         checked: state.includeDeleted,
-                        label: "Include Deleted",
+                        label: "Include Deactivated",
                         onCheckboxChange: () => {
                             userApi(setLoading).setIncludeDeleted().then(() => {
                                 window.location.reload();

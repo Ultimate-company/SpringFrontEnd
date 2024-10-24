@@ -16,6 +16,16 @@ import org.example.Models.CommunicationModels.CentralModels.User;
 @RequestMapping(ApiRoutes.ApiControllerNames.LOGIN)
 public class LoginController extends BaseController {
 
+    @PostMapping(ApiRoutes.LoginSubRoute.RESET_PASSWORD)
+    public ResponseEntity<JsonResponse<Boolean>> resetPassword(@RequestBody LoginRequestModel loginRequestModel) throws Exception {
+        Response<Boolean> resetPasswordResponse = apiTranslator().getLoginSubTranslator().resetPassword(loginRequestModel);
+        if (!resetPasswordResponse.isSuccess() || !resetPasswordResponse.getItem()) {
+            return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Error, resetPasswordResponse.getMessage(), false));
+        }
+
+        return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Success, resetPasswordResponse.getMessage(), true));
+    }
+
     @PostMapping(ApiRoutes.LoginSubRoute.SIGN_IN)
     public ResponseEntity<JsonResponse<String>> signIn(@RequestBody LoginRequestModel loginRequestModel) {
         Response<User> signInResponse = apiTranslator().getLoginSubTranslator().signIn(loginRequestModel);

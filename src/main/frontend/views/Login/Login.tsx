@@ -75,6 +75,22 @@ const Login = () => {
         loginApi.signIn(loginRequestModel as LoginRequestModel);
     }
 
+    const handlePasswordReset = () => {
+        let loginRequestModel: Partial<LoginRequestModel> = {
+            loginName: state.forgotPasswordEmail
+        };
+        loginApi.resetPassword(loginRequestModel as LoginRequestModel)
+            .then((response: boolean) => {
+                if(response) {
+                    // close dialog
+                    setState({
+                        ...state,
+                        dialogOpen: false
+                    });
+                }
+            });
+    }
+
 
     // react render function
     return (
@@ -130,21 +146,24 @@ const Login = () => {
                 maxWidth="md"
                 fullWidth
             >
-                <SubHeader text = "Reset Password" variant="h4"/>
-                <DialogContent style={{ padding: '20px' }}>
-                    <BodyText text=" Please enter your email, once you click on submit you should get an email with a temporary
+                <div style={{paddingTop:20, paddingLeft:20, paddingRight:20}}>
+                    <SubHeader text = "Reset Password" variant="h4"/>
+                    <DialogContent style={{ padding: '20px' }}>
+                        <BodyText text=" Please enter your email, once you click on submit you should get an email with a temporary
                                       password. Please use the temporary password to login to your account.
-                                      Once you login to the account you can then reset your password." />
-                    <TextFieldInput
-                        fullWidth={true}
-                        required={true}
-                        label="Email address"
-                        name="forgotPasswordEmail"
-                        value={state.forgotPasswordEmail}
-                        onChange={handleChange}
-                    />
-                </DialogContent>
-                <DialogActions style={{ padding: '20px' }}>
+                                      Once you login to the account you can then reset your password." /> <br/>
+                        <TextFieldInput
+                            fullWidth={true}
+                            required={true}
+                            label="Email address"
+                            name="forgotPasswordEmail"
+                            value={state.forgotPasswordEmail}
+                            onChange={handleChange}
+                        />
+                    </DialogContent>
+                </div>
+
+                <DialogActions style={{paddingBottom:20, paddingLeft:20, paddingRight:20}}>
                     <RedButton
                         fullWidth={true}
                         label="Cancel"
@@ -158,7 +177,7 @@ const Login = () => {
                     <BlueButton
                         fullWidth={true}
                         label="Reset"
-                        handleSubmit={() => {}}
+                        handleSubmit={() => handlePasswordReset()}
                     />
                 </DialogActions>
             </Dialog>
