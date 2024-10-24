@@ -10,7 +10,6 @@ const MyDataGrid = styled(DataGrid)(({theme}) => ({
     padding: 20,
     height: "700px",
     width: "100%",
-    backgroundColor: 'white',
     fontFamily: [
         "-apple-system",
         "BlinkMacSystemFont",
