@@ -1,25 +1,18 @@
 package org.example.springfrontend.Controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpSession;
 import org.example.ApiRoutes;
-import org.example.CommonHelpers.ImageHelper;
 import org.example.CommonHelpers.JiraHelper;
 import org.example.CommonHelpers.JsonResponse;
 import org.example.Models.RequestModels.ApiRequestModels.SupportRequestModel;
-import org.example.Models.ResponseModels.ApiResponseModels.GetAttachmentMetadataResponseModel;
 import org.example.Models.ResponseModels.JiraResponseModels.*;
 import org.example.Models.ResponseModels.Response;
 import org.example.springfrontend.Classes.Endpoints;
-import org.json.JSONException;
-import org.springframework.http.HttpHeaders;
+
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController

@@ -3,7 +3,6 @@ package org.example.springfrontend.Controllers;
 import org.apache.commons.lang3.tuple.Pair;
 import jakarta.servlet.http.HttpSession;
 import org.example.ApiRoutes;
-import org.example.CommonHelpers.ImageHelper;
 import org.example.CommonHelpers.JsonResponse;
 import org.example.CommonHelpers.ProductHelper;
 import org.example.Models.CommunicationModels.CarrierModels.ProductReview;
@@ -114,18 +113,18 @@ public class ProductController extends BaseController {
         for(ProductsResponseModel productsResponseModel : getProductDetailsByIdsResponse.getItem()) {
             Map<String, String> imageBase64Mapping = new HashMap<>();
 
-            imageBase64Mapping.put("Main", ImageHelper.getBase64FromImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products", productsResponseModel.getProduct().getMainImage()));
-            imageBase64Mapping.put("Top", ImageHelper.getBase64FromImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products", productsResponseModel.getProduct().getTopImage()));
-            imageBase64Mapping.put("Bottom", ImageHelper.getBase64FromImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products", productsResponseModel.getProduct().getBottomImage()));
-            imageBase64Mapping.put("Front", ImageHelper.getBase64FromImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products", productsResponseModel.getProduct().getFrontImage()));
-            imageBase64Mapping.put("Back", ImageHelper.getBase64FromImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products", productsResponseModel.getProduct().getBackImage()));
-            imageBase64Mapping.put("Right", ImageHelper.getBase64FromImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products", productsResponseModel.getProduct().getRightImage()));
-            imageBase64Mapping.put("Left", ImageHelper.getBase64FromImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products", productsResponseModel.getProduct().getLeftImage()));
-            imageBase64Mapping.put("Detail", ImageHelper.getBase64FromImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products", productsResponseModel.getProduct().getDetailsImage()));
-            imageBase64Mapping.put("Defect", ImageHelper.getBase64FromImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products", productsResponseModel.getProduct().getDefectImage()));
-            imageBase64Mapping.put("Additional_1", ImageHelper.getBase64FromImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products", productsResponseModel.getProduct().getAdditionalImage1()));
-            imageBase64Mapping.put("Additional_2", ImageHelper.getBase64FromImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products", productsResponseModel.getProduct().getAdditionalImage2()));
-            imageBase64Mapping.put("Additional_3", ImageHelper.getBase64FromImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products", productsResponseModel.getProduct().getAdditionalImage3()));
+//            imageBase64Mapping.put("Main", ImageHelper.getBase64FromImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products", productsResponseModel.getProduct().getMainImage()));
+//            imageBase64Mapping.put("Top", ImageHelper.getBase64FromImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products", productsResponseModel.getProduct().getTopImage()));
+//            imageBase64Mapping.put("Bottom", ImageHelper.getBase64FromImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products", productsResponseModel.getProduct().getBottomImage()));
+//            imageBase64Mapping.put("Front", ImageHelper.getBase64FromImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products", productsResponseModel.getProduct().getFrontImage()));
+//            imageBase64Mapping.put("Back", ImageHelper.getBase64FromImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products", productsResponseModel.getProduct().getBackImage()));
+//            imageBase64Mapping.put("Right", ImageHelper.getBase64FromImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products", productsResponseModel.getProduct().getRightImage()));
+//            imageBase64Mapping.put("Left", ImageHelper.getBase64FromImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products", productsResponseModel.getProduct().getLeftImage()));
+//            imageBase64Mapping.put("Detail", ImageHelper.getBase64FromImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products", productsResponseModel.getProduct().getDetailsImage()));
+//            imageBase64Mapping.put("Defect", ImageHelper.getBase64FromImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products", productsResponseModel.getProduct().getDefectImage()));
+//            imageBase64Mapping.put("Additional_1", ImageHelper.getBase64FromImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products", productsResponseModel.getProduct().getAdditionalImage1()));
+//            imageBase64Mapping.put("Additional_2", ImageHelper.getBase64FromImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products", productsResponseModel.getProduct().getAdditionalImage2()));
+//            imageBase64Mapping.put("Additional_3", ImageHelper.getBase64FromImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products", productsResponseModel.getProduct().getAdditionalImage3()));
 
             productsResponseModel.setImageBase64Mapping(imageBase64Mapping);
         }
@@ -185,18 +184,18 @@ public class ProductController extends BaseController {
         productRequestModel.getProduct().setCategoryId(getCategoryByNameResponse.getItem().getCategoryId());
 
         // Save the images in the server
-        productRequestModel.getProduct().setMainImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Main"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
-        productRequestModel.getProduct().setTopImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Top"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
-        productRequestModel.getProduct().setBottomImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Bottom"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
-        productRequestModel.getProduct().setFrontImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Front"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
-        productRequestModel.getProduct().setBackImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Back"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
-        productRequestModel.getProduct().setRightImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Right"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
-        productRequestModel.getProduct().setLeftImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Left"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
-        productRequestModel.getProduct().setDetailsImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Detail"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
-        productRequestModel.getProduct().setDefectImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Defect"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
-        productRequestModel.getProduct().setAdditionalImage1(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Additional_1"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
-        productRequestModel.getProduct().setAdditionalImage2(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Additional_2"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
-        productRequestModel.getProduct().setAdditionalImage3(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Additional_3"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
+//        productRequestModel.getProduct().setMainImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Main"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
+//        productRequestModel.getProduct().setTopImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Top"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
+//        productRequestModel.getProduct().setBottomImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Bottom"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
+//        productRequestModel.getProduct().setFrontImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Front"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
+//        productRequestModel.getProduct().setBackImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Back"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
+//        productRequestModel.getProduct().setRightImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Right"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
+//        productRequestModel.getProduct().setLeftImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Left"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
+//        productRequestModel.getProduct().setDetailsImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Detail"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
+//        productRequestModel.getProduct().setDefectImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Defect"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
+//        productRequestModel.getProduct().setAdditionalImage1(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Additional_1"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
+//        productRequestModel.getProduct().setAdditionalImage2(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Additional_2"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
+//        productRequestModel.getProduct().setAdditionalImage3(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Additional_3"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
 
         // Save the images in Firebase
 //        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Main"), productRequestModel.getProduct().getMainImage(), getCurrentCarrier().getCarrierId());
@@ -215,30 +214,30 @@ public class ProductController extends BaseController {
         Response<Long> editProductResponse = apiTranslator().getProductSubTranslator().editProduct(productRequestModel.getProduct());
         if(!editProductResponse.isSuccess()) {
             // delete all the images
-            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
-                    productRequestModel.getProduct().getMainImage());
-            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
-                    productRequestModel.getProduct().getTopImage());
-            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
-                    productRequestModel.getProduct().getBottomImage());
-            ImageHelper.deleteImage(productImageParentDirectory+ getCurrentCarrier().getDatabaseName() + "/Products",
-                    productRequestModel.getProduct().getFrontImage());
-            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
-                    productRequestModel.getProduct().getBackImage());
-            ImageHelper.deleteImage(productImageParentDirectory+ getCurrentCarrier().getDatabaseName() + "/Products",
-                    productRequestModel.getProduct().getRightImage());
-            ImageHelper.deleteImage(productImageParentDirectory+ getCurrentCarrier().getDatabaseName() + "/Products",
-                    productRequestModel.getProduct().getLeftImage());
-            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
-                    productRequestModel.getProduct().getDetailsImage());
-            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
-                    productRequestModel.getProduct().getDefectImage());
-            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
-                    productRequestModel.getProduct().getAdditionalImage1());
-            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
-                    productRequestModel.getProduct().getAdditionalImage2());
-            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
-                    productRequestModel.getProduct().getAdditionalImage3());
+//            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
+//                    productRequestModel.getProduct().getMainImage());
+//            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
+//                    productRequestModel.getProduct().getTopImage());
+//            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
+//                    productRequestModel.getProduct().getBottomImage());
+//            ImageHelper.deleteImage(productImageParentDirectory+ getCurrentCarrier().getDatabaseName() + "/Products",
+//                    productRequestModel.getProduct().getFrontImage());
+//            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
+//                    productRequestModel.getProduct().getBackImage());
+//            ImageHelper.deleteImage(productImageParentDirectory+ getCurrentCarrier().getDatabaseName() + "/Products",
+//                    productRequestModel.getProduct().getRightImage());
+//            ImageHelper.deleteImage(productImageParentDirectory+ getCurrentCarrier().getDatabaseName() + "/Products",
+//                    productRequestModel.getProduct().getLeftImage());
+//            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
+//                    productRequestModel.getProduct().getDetailsImage());
+//            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
+//                    productRequestModel.getProduct().getDefectImage());
+//            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
+//                    productRequestModel.getProduct().getAdditionalImage1());
+//            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
+//                    productRequestModel.getProduct().getAdditionalImage2());
+//            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
+//                    productRequestModel.getProduct().getAdditionalImage3());
 
             // delete images from firebase
 //            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getMainImage(), getCurrentCarrier().getCarrierId());
@@ -258,30 +257,30 @@ public class ProductController extends BaseController {
         }
         else {
             // delete all the old images
-            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
-                    getProductDetailsByIdResponse.getItem().getProduct().getMainImage());
-            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
-                    getProductDetailsByIdResponse.getItem().getProduct().getTopImage());
-            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
-                    getProductDetailsByIdResponse.getItem().getProduct().getBottomImage());
-            ImageHelper.deleteImage(productImageParentDirectory+ getCurrentCarrier().getDatabaseName() + "/Products",
-                    getProductDetailsByIdResponse.getItem().getProduct().getFrontImage());
-            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
-                    getProductDetailsByIdResponse.getItem().getProduct().getBackImage());
-            ImageHelper.deleteImage(productImageParentDirectory+ getCurrentCarrier().getDatabaseName() + "/Products",
-                    getProductDetailsByIdResponse.getItem().getProduct().getRightImage());
-            ImageHelper.deleteImage(productImageParentDirectory+ getCurrentCarrier().getDatabaseName() + "/Products",
-                    getProductDetailsByIdResponse.getItem().getProduct().getLeftImage());
-            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
-                    getProductDetailsByIdResponse.getItem().getProduct().getDetailsImage());
-            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
-                    getProductDetailsByIdResponse.getItem().getProduct().getDefectImage());
-            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
-                    getProductDetailsByIdResponse.getItem().getProduct().getAdditionalImage1());
-            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
-                    getProductDetailsByIdResponse.getItem().getProduct().getAdditionalImage2());
-            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
-                    getProductDetailsByIdResponse.getItem().getProduct().getAdditionalImage3());
+//            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
+//                    getProductDetailsByIdResponse.getItem().getProduct().getMainImage());
+//            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
+//                    getProductDetailsByIdResponse.getItem().getProduct().getTopImage());
+//            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
+//                    getProductDetailsByIdResponse.getItem().getProduct().getBottomImage());
+//            ImageHelper.deleteImage(productImageParentDirectory+ getCurrentCarrier().getDatabaseName() + "/Products",
+//                    getProductDetailsByIdResponse.getItem().getProduct().getFrontImage());
+//            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
+//                    getProductDetailsByIdResponse.getItem().getProduct().getBackImage());
+//            ImageHelper.deleteImage(productImageParentDirectory+ getCurrentCarrier().getDatabaseName() + "/Products",
+//                    getProductDetailsByIdResponse.getItem().getProduct().getRightImage());
+//            ImageHelper.deleteImage(productImageParentDirectory+ getCurrentCarrier().getDatabaseName() + "/Products",
+//                    getProductDetailsByIdResponse.getItem().getProduct().getLeftImage());
+//            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
+//                    getProductDetailsByIdResponse.getItem().getProduct().getDetailsImage());
+//            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
+//                    getProductDetailsByIdResponse.getItem().getProduct().getDefectImage());
+//            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
+//                    getProductDetailsByIdResponse.getItem().getProduct().getAdditionalImage1());
+//            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
+//                    getProductDetailsByIdResponse.getItem().getProduct().getAdditionalImage2());
+//            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
+//                    getProductDetailsByIdResponse.getItem().getProduct().getAdditionalImage3());
 
             // delete images from firebase
 //            ImageHelper.deleteFileFromFirebase(keysParentDirectory, getProductDetailsByIdResponse.getItem().getProduct().getMainImage(), getCurrentCarrier().getCarrierId());
@@ -314,18 +313,18 @@ public class ProductController extends BaseController {
         productRequestModel.getProduct().setCategoryId(getCategoryByNameResponse.getItem().getCategoryId());
 
         // Save the images in the server
-        productRequestModel.getProduct().setMainImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Main"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
-        productRequestModel.getProduct().setTopImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Top"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
-        productRequestModel.getProduct().setBottomImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Bottom"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
-        productRequestModel.getProduct().setFrontImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Front"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
-        productRequestModel.getProduct().setBackImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Back"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
-        productRequestModel.getProduct().setRightImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Right"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
-        productRequestModel.getProduct().setLeftImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Left"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
-        productRequestModel.getProduct().setDetailsImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Detail"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
-        productRequestModel.getProduct().setDefectImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Defect"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
-        productRequestModel.getProduct().setAdditionalImage1(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Additional_1"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
-        productRequestModel.getProduct().setAdditionalImage2(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Additional_2"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
-        productRequestModel.getProduct().setAdditionalImage3(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Additional_3"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
+//        productRequestModel.getProduct().setMainImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Main"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
+//        productRequestModel.getProduct().setTopImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Top"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
+//        productRequestModel.getProduct().setBottomImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Bottom"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
+//        productRequestModel.getProduct().setFrontImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Front"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
+//        productRequestModel.getProduct().setBackImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Back"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
+//        productRequestModel.getProduct().setRightImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Right"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
+//        productRequestModel.getProduct().setLeftImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Left"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
+//        productRequestModel.getProduct().setDetailsImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Detail"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
+//        productRequestModel.getProduct().setDefectImage(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Defect"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
+//        productRequestModel.getProduct().setAdditionalImage1(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Additional_1"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
+//        productRequestModel.getProduct().setAdditionalImage2(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Additional_2"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
+//        productRequestModel.getProduct().setAdditionalImage3(ImageHelper.saveBase64ToFile(productRequestModel.getImages().get("Additional_3"), productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products"));
 
         // Save the images in Firebase
 //        ImageHelper.saveBase64ToFirebase(keysParentDirectory, productRequestModel.getImages().get("Main"), productRequestModel.getProduct().getMainImage(), getCurrentCarrier().getCarrierId());
@@ -344,30 +343,30 @@ public class ProductController extends BaseController {
         Response<Long> addProductResponse = apiTranslator().getProductSubTranslator().addProduct(productRequestModel.getProduct());
         if (!addProductResponse.isSuccess()) {
             // delete all the images
-            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
-                    productRequestModel.getProduct().getMainImage());
-            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
-                    productRequestModel.getProduct().getTopImage());
-            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
-                    productRequestModel.getProduct().getBottomImage());
-            ImageHelper.deleteImage(productImageParentDirectory+ getCurrentCarrier().getDatabaseName() + "/Products",
-                    productRequestModel.getProduct().getFrontImage());
-            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
-                    productRequestModel.getProduct().getBackImage());
-            ImageHelper.deleteImage(productImageParentDirectory+ getCurrentCarrier().getDatabaseName() + "/Products",
-                    productRequestModel.getProduct().getRightImage());
-            ImageHelper.deleteImage(productImageParentDirectory+ getCurrentCarrier().getDatabaseName() + "/Products",
-                    productRequestModel.getProduct().getLeftImage());
-            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
-                    productRequestModel.getProduct().getDetailsImage());
-            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
-                    productRequestModel.getProduct().getDefectImage());
-            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
-                    productRequestModel.getProduct().getAdditionalImage1());
-            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
-                    productRequestModel.getProduct().getAdditionalImage2());
-            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
-                    productRequestModel.getProduct().getAdditionalImage3());
+//            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
+//                    productRequestModel.getProduct().getMainImage());
+//            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
+//                    productRequestModel.getProduct().getTopImage());
+//            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
+//                    productRequestModel.getProduct().getBottomImage());
+//            ImageHelper.deleteImage(productImageParentDirectory+ getCurrentCarrier().getDatabaseName() + "/Products",
+//                    productRequestModel.getProduct().getFrontImage());
+//            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
+//                    productRequestModel.getProduct().getBackImage());
+//            ImageHelper.deleteImage(productImageParentDirectory+ getCurrentCarrier().getDatabaseName() + "/Products",
+//                    productRequestModel.getProduct().getRightImage());
+//            ImageHelper.deleteImage(productImageParentDirectory+ getCurrentCarrier().getDatabaseName() + "/Products",
+//                    productRequestModel.getProduct().getLeftImage());
+//            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
+//                    productRequestModel.getProduct().getDetailsImage());
+//            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
+//                    productRequestModel.getProduct().getDefectImage());
+//            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
+//                    productRequestModel.getProduct().getAdditionalImage1());
+//            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
+//                    productRequestModel.getProduct().getAdditionalImage2());
+//            ImageHelper.deleteImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products",
+//                    productRequestModel.getProduct().getAdditionalImage3());
 
             // delete images from firebase
 //            ImageHelper.deleteFileFromFirebase(keysParentDirectory, productRequestModel.getProduct().getMainImage(), getCurrentCarrier().getCarrierId());
@@ -393,24 +392,24 @@ public class ProductController extends BaseController {
 
     @GetMapping(ApiRoutes.ProductsSubRoute.GET_PRODUCT_IMAGE)
     public ResponseEntity<byte[]> getProductImage(@RequestParam String imageName) throws IOException {
-        Pair<String, byte[]> getImageResponse = ImageHelper.getImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products", imageName);
-        if(getImageResponse != null) {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.parseMediaType(getImageResponse.getKey()));
-            return new ResponseEntity<>(getImageResponse.getValue(), headers, HttpStatus.OK);
-        }
+//        Pair<String, byte[]> getImageResponse = ImageHelper.getImage(productImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Products", imageName);
+//        if(getImageResponse != null) {
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(MediaType.parseMediaType(getImageResponse.getKey()));
+//            return new ResponseEntity<>(getImageResponse.getValue(), headers, HttpStatus.OK);
+//        }
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
 
     @GetMapping(ApiRoutes.ProductsSubRoute.GET_STATIC_IMAGE)
     public ResponseEntity<byte[]> getStaticImage(@RequestParam String imageName) throws IOException {
-        Pair<String, byte[]> getImageResponse = ImageHelper.getImage(staticParentDirectory, imageName);
-        if(getImageResponse != null) {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.parseMediaType(getImageResponse.getKey()));
-            return new ResponseEntity<>(getImageResponse.getValue(), headers, HttpStatus.OK);
-        }
+//        Pair<String, byte[]> getImageResponse = ImageHelper.getImage(staticParentDirectory, imageName);
+//        if(getImageResponse != null) {
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(MediaType.parseMediaType(getImageResponse.getKey()));
+//            return new ResponseEntity<>(getImageResponse.getValue(), headers, HttpStatus.OK);
+//        }
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }

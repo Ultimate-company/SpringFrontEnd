@@ -4,10 +4,12 @@ import { userApi } from "Frontend/api/ApiCalls";
 import {Permissions} from "Frontend/api/Models/CentralModels/User";
 import {permissionChecks} from "Frontend/api/Models/CarrierModels/Permissions";
 import {navigatingRoutes} from "Frontend/navigation";
-import {getRandomColor} from "Frontend/components/commonHelperFunctions";
+import {chipStyles, getRandomColor} from "Frontend/components/commonHelperFunctions";
 import { format } from 'date-fns';
 import React from "react";
 import {ConfirmOptions} from "material-ui-confirm";
+import {userUrls} from "Frontend/api/Endpoints";
+import Chip from "@mui/material/Chip";
 
 const userGridColumns: GridColDef[] = [
     {
@@ -30,20 +32,28 @@ const userGridColumns: GridColDef[] = [
         field: "avatar",
         headerName: "Icon",
         width: 60,
-        renderCell: (params: GridRenderCellParams) => (
-            <div style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: '100%'
-            }}>
-                {
-                    params.value && params.value.length > 0 ?
-                        <Avatar src={params.value}/> :
-                        <Avatar style={{backgroundColor: getRandomColor(params.row.userId)}}>{params.row.firstName[0]}{params.row.lastName[0]}</Avatar>
-                }
-            </div>
-        )
+        renderCell: (params: GridRenderCellParams) => {
+            const [imageError, setImageError] = React.useState(false); // Declare imageError state
+            return (
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '100%'
+                }}>
+                    {!imageError ? (
+                        <Avatar
+                            src={`${userUrls.getProfileImage}?userId=${params.row.userId}`}
+                            onError={() => setImageError(true)} // Set error state if image fails to load
+                        />
+                    ) : (
+                        <Avatar style={{ backgroundColor: getRandomColor(params.row.userId) }}>
+                            {params.row.firstName[0]}{params.row.lastName[0]}
+                        </Avatar>
+                    )}
+                </div>
+            );
+        }
     },
     {
         field: "firstName",
@@ -66,6 +76,7 @@ const userGridColumns: GridColDef[] = [
         width: 120
     },
     {
+        filterable: false,
         field: "dob",
         headerName: "DOB",
         width: 150,
@@ -81,6 +92,34 @@ const userGridColumns: GridColDef[] = [
             let phone = row.phone;
             return `(${phone.substr(0, 3)}) - ${phone.substr(3, 3)} - ${phone.substr(6)}`;
         },
+    },
+    {
+        field: "emailConfirmed",
+        headerName: "Account Confirmed",
+        width: 150,
+        renderCell: (params: GridRenderCellParams) => {
+            const confirmed = params.row.emailConfirmed;
+
+            // Define label and styles based on email confirmation status
+            const label = confirmed ? "Confirmed" : "Pending";
+            const backgroundColor = confirmed ? '#28a745' : '#dc3545'; // Green for confirmed, red for pending
+            const textColor = '#fff'; // White text
+
+            return (
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'center', // Center horizontally
+                    alignItems: 'center',     // Center vertically
+                    height: '100%',           // Ensure full height for vertical centering
+                }}>
+                    <Chip
+                        label={label}
+                        style={chipStyles(backgroundColor, textColor)} // Use the determined colors
+                        variant="outlined"
+                    />
+                </div>
+            );
+        }
     }
 ];
 
@@ -139,7 +178,7 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
         filterable: false,
         field: "Actions",
         headerName: "Actions",
-        width: 150,
+        width: 200,
         renderCell: (params: GridRenderCellParams) => (
             <div>
                 {params.row.deleted ? (

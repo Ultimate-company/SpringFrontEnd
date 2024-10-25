@@ -16,7 +16,6 @@ export type User = {
     locked?: boolean;
     emailConfirmed?: boolean;
     token?: string;
-    avatar?: string;
     dob?: Date;
     guest?: boolean;
     lockedAttempts?: number;
@@ -79,6 +78,7 @@ export type UserResponseModel = {
     address: Address;
     permissions: Permissions;
     groupIds: number[];
+    profilePictureBase64?: string;
 }
 
 export type UserRequestModel = {
@@ -86,4 +86,5 @@ export type UserRequestModel = {
     address: Address;
     permissions: Permissions;
     userGroupIds: number[];
+    profilePictureBase64?: string;
 }

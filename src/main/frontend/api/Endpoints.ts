@@ -188,7 +188,8 @@ const userEndpoints = {
     toggleUser: 'toggleUser',
     getUserById: 'getUserById',
     createUser: 'createUser',
-    updateUser: 'updateUser'
+    updateUser: 'updateUser',
+    getProfileImage: 'getProfileImage'
 }
 
 const loginEndpoints = {
@@ -196,7 +197,8 @@ const loginEndpoints = {
     signUp: 'signUp',
     logOut: 'logOut',
     checkIfUserIsLoggedIn: 'checkIfUserIsLoggedIn',
-    resetPassword: 'resetPassword'
+    resetPassword: 'resetPassword',
+    confirmEmail: 'confirmEmail'
 }
 
 const dataEndpoints = {

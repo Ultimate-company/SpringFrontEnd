@@ -19,7 +19,7 @@ import {filterChangeFunction} from "Frontend/components/Datagrid/CustomFiltering
 import {useConfirm} from "material-ui-confirm";
 import {initUserLogGridColumns} from "Frontend/api/Models/DataGridModels/UserLogGridColumns";
 import {
-    getURLParamValue,
+    getURLParamValue, imageToByteArrayMap,
     isEditMode,
     isViewMode
 } from "Frontend/components/commonHelperFunctions";
@@ -31,11 +31,13 @@ import UserPermission from "./Components/UserPermission";
 import GroupSelectionGrid from "Frontend/components/DataGridsForSelection/UserGroupSelectionGrid";
 import {useOutletContext} from "react-router-dom";
 import SectionLayout from "Frontend/components/Layouts/DashboardLayout/SectionLayout";
-import {Grid} from "@mui/material";
+import {Grid, Box} from "@mui/material";
 import RenderInput, {InputType} from "Frontend/components/FormRenderer/RenderInput";
 import {PaginationBaseResponseModel} from "Frontend/api/Models/BaseModel";
 import {GridPaginationModel} from "@mui/x-data-grid/models/gridPaginationProps";
 import {GridRowClassNameParams} from "@mui/x-data-grid/models/params";
+import BlueButton from "Frontend/components/FormInputs/BlueButton";
+import PrimaryFont from "Frontend/components/Fonts/PrimaryFont";
 
 const paginatedGridModel: PaginatedGridInterface = {
     start: 0,
@@ -209,6 +211,8 @@ const AddOrEditUser = () => {
     const [state, setState] = React.useState<string>("");
     const [zipCode, setZipCode] = React.useState<string>("");
 
+    const [imageBase64, setImageBase64] = React.useState<string>("");
+
     // state variables for permissions
     const [userPermissions, setUserPermissions] = React.useState<UserPermissions>(initialUserPermissionsState);
 
@@ -263,7 +267,8 @@ const AddOrEditUser = () => {
                 phoneOnAddress: phone
             },
             permissions: serializedPermissions,
-            userGroupIds: selectedUserGroupIds.map(userGroupId => parseInt(userGroupId.toString()))
+            userGroupIds: selectedUserGroupIds.map(userGroupId => parseInt(userGroupId.toString())),
+            profilePictureBase64: imageBase64
         };
         if(isEdit) {
             userApi(setLoading).updateUser(requestData).then(() => {});
@@ -288,7 +293,7 @@ const AddOrEditUser = () => {
                     serializedDBPermissions[key] == undefined ||
                     serializedDBPermissions[key] == null) continue;
 
-                let values = serializedDBPermissions[key].split(",");
+                let values: string[] = serializedDBPermissions[key].split(",");
                 for(let permission of values) {
                     if(permission == "" || permission == null) continue;
 
@@ -322,6 +327,9 @@ const AddOrEditUser = () => {
             // set data variables
             setRoles(roles);
             setStates(states);
+
+            // set profile picture
+            setImageBase64(userResponseModel.profilePictureBase64 ?? "");
         });
     }
 
@@ -570,6 +578,35 @@ const AddOrEditUser = () => {
         return userPermissions;
     };
 
+
+    const handleImageUpload = (event: any) => {
+        // open image
+        document.getElementById("profilePicImageInput")?.click();
+    };
+    const fileUploadChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const fileInput = event.target;
+        const ImageId = fileInput.id.replace("Input", "");
+        const file = fileInput.files?.[0];
+
+        if (file) {
+            const imageElement = document.getElementById(ImageId) as HTMLImageElement;
+            if (imageElement) {
+                imageElement.src = URL.createObjectURL(file);
+            }
+
+            // set base 64 images
+            let images = new Map<string, File | undefined>();
+            images.set("userProfile", file as File);
+            imageToByteArrayMap(images)
+                .then((response: Map<string, string>) => {
+                    setImageBase64(response.get("userProfile") as string);
+                });
+        }
+    };
+    const removeFile = () => {
+        setImageBase64("");
+    };
+
     React.useEffect(() => {
         dataApi(setLoading).getRoles().then((_roles: DataItem[]) => {
             dataApi(setLoading).getStates().then((_states: DataItem[]) => {
@@ -650,6 +687,38 @@ const AddOrEditUser = () => {
                         data={roles}
                         isView={isView}
                     />
+                </Grid>
+                <Grid item md={12} xs={12}>
+                    <Box display="flex" flexDirection="column" alignItems="center" gap={2}>
+                        <PrimaryFont text="Upload Profile Picture" />
+                        <img
+                            onClick={handleImageUpload}
+                            style={{
+                                border: "2px dotted black",
+                                height: 200,
+                                width: 200,
+                                borderRadius: "40%",
+                                objectFit: "cover",
+                                backgroundColor: '#c1bebe'
+                            }}
+                            src={`data:image/jpeg;base64, ${imageBase64}`}
+                            alt={""}
+                        />
+                        {
+                            !isView ?
+                                <input
+                                    accept="image/*"
+                                    type="file"
+                                    id="profilePicImageInput"
+                                    style={{width: 0, height: 0, overflow: "hidden"}}
+                                    onChange={fileUploadChange}
+                                /> : <></>
+                        }
+                        <BlueButton
+                            handleSubmit={removeFile}
+                            label="Remove Image"
+                        />
+                    </Box>
                 </Grid>
             </SectionLayout><br/>
 
