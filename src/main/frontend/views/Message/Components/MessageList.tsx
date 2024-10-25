@@ -21,9 +21,12 @@ import { MessageResponseModel } from "Frontend/api/Models/CarrierModels/Message"
 import BodyText from "Frontend/components/Fonts/BodyText";
 import { navigatingRoutes } from "Frontend/navigation";
 import PrimaryFont from "Frontend/components/Fonts/PrimaryFont";
+import {userUrls} from "Frontend/api/Endpoints";
 
 interface MessageItemProps {
-    avatarSrc: string;
+    userId: number;
+    firstName: string;
+    lastName: string;
     title: string;
     from: string;
     messageHtml: string;
@@ -34,6 +37,12 @@ interface MessageItemProps {
 
 const MessageItem = (props: MessageItemProps) => {
     const theme = useTheme(); // Access the current theme
+    const [avatarSrc, setAvatarSrc] = React.useState<string | null>(`${userUrls.getProfileImage}?userId=${props.userId}`);
+
+    const handleImageError = () => {
+        // If the image fails to load, set the avatarSrc to null to show the initials instead
+        setAvatarSrc(null);
+    };
 
     return (
         <ListItem
@@ -49,11 +58,16 @@ const MessageItem = (props: MessageItemProps) => {
             }}
         >
             <ListItemAvatar>
-                {
-                    props.avatarSrc && props.avatarSrc.length > 2 ?
-                        <Avatar src={props.avatarSrc} /> :
-                        <Avatar style={{ backgroundColor: getRandomColor() }}>{props.avatarSrc[0]}{props.avatarSrc[1]}</Avatar>
-                }
+                {avatarSrc ? (
+                    <Avatar
+                        src={avatarSrc}
+                        onError={handleImageError} // Fallback to initials if image fails
+                    />
+                ) : (
+                    <Avatar style={{ backgroundColor: getRandomColor() }}>
+                        {props.firstName[0]}{props.lastName[0]} {/* Display initials */}
+                    </Avatar>
+                )}
             </ListItemAvatar>
             <ListItemText
                 primary={
@@ -127,8 +141,9 @@ const MessageList = () => {
                                 messageResponseModel.map((messageItem, index) => (
                                     <React.Fragment key={index}>
                                         <MessageItem
-                                            avatarSrc={messageItem.user.avatar && messageItem.user.avatar !== "" ? messageItem.user.avatar :
-                                                messageItem.user.firstName[0] + messageItem.user.lastName[1]}
+                                            userId={messageItem.user.userId as number}
+                                            firstName={messageItem.user.firstName}
+                                            lastName={messageItem.user.lastName}
                                             title={messageItem.message.title}
                                             from={messageItem.user.firstName + " " + messageItem.user.lastName}
                                             messageHtml={messageItem.message.descriptionHtml}

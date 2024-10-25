@@ -8,12 +8,7 @@ import {salesOrderApi, userApi} from "Frontend/api/ApiCalls";
 import {permissionChecks} from "Frontend/api/Models/CarrierModels/Permissions";
 import {navigatingRoutes} from "Frontend/navigation";
 import {SalesOrderStatus} from "Frontend/api/Models/CarrierModels/SalesOrder";
-
-const chipStyles = (backgroundColor: string, color: string) => ({
-    backgroundColor,
-    color,
-    borderColor: backgroundColor,
-});
+import {chipStyles} from "Frontend/components/commonHelperFunctions";
 
 const salesOrderGridColumns: GridColDef[] = [
     {

@@ -78,4 +78,14 @@ public class LoginController extends BaseController {
         resetSession();
         return ResponseEntity.ok(new JsonResponse<>(Endpoints.Login.LOGIN_INDEX, null));
     }
+
+    @PostMapping(ApiRoutes.LoginSubRoute.CONFIRM_EMAIL)
+    public ResponseEntity<JsonResponse<Boolean>> confirmEmail(@RequestBody LoginRequestModel loginRequestModel) {
+        Response<Boolean> confirmEmailResponse = apiTranslator().getLoginSubTranslator().confirmEmail(loginRequestModel);
+        if (!confirmEmailResponse.isSuccess()) {
+            return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Success, confirmEmailResponse.getMessage(), false));
+        }
+
+        return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Success, confirmEmailResponse.getMessage(), true));
+    }
 }

@@ -59,5 +59,7 @@ export const StyledDataGrid = React.memo(MyDataGrid, (prevProps, nextProps) => {
     // Only re-render if gridData or columns change
     return prevProps.rows === nextProps.rows
         && prevProps.columns === nextProps.columns
+        && prevProps.columnVisibilityModel === nextProps.columnVisibilityModel
         && prevProps.rowSelectionModel === nextProps.rowSelectionModel;
+
 });

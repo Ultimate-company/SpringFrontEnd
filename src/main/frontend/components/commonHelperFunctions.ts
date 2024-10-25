@@ -191,7 +191,6 @@ function imageToByteArray(imageFile: File): Promise<Uint8Array> {
             }
             const byteArray = new Uint8Array(byteNumbers);
             resolve(byteArray);
-
         };
         reader.onerror = reject;
         reader.readAsDataURL(imageFile);
@@ -383,3 +382,9 @@ export const removeAnchorAndImageTagsFromHTML = (htmlContent: string): string =>
 
     return htmlContent;
 }
+
+export const chipStyles = (backgroundColor: string, color: string) => ({
+    backgroundColor,
+    color,
+    borderColor: backgroundColor,
+});

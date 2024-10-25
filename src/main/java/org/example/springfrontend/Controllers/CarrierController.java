@@ -1,11 +1,12 @@
 package org.example.springfrontend.Controllers;
 
 import org.example.ApiRoutes;
-import org.example.CommonHelpers.ImageHelper;
+import org.example.CommonHelpers.FirebaseHelper;
 import org.example.CommonHelpers.JsonResponse;
 import org.example.Models.CommunicationModels.CarrierModels.Permissions;
 import org.example.Models.CommunicationModels.CentralModels.Carrier;
 import org.example.Models.RequestModels.GridRequestModels.GetCarriersRequestModel;
+import org.example.Models.ResponseModels.ApiResponseModels.GetCarrierResponseModel;
 import org.example.Models.ResponseModels.ApiResponseModels.PaginationBaseResponseModel;
 import org.example.Models.ResponseModels.Response;
 import org.example.springfrontend.Classes.Endpoints;
@@ -30,8 +31,6 @@ public class CarrierController extends BaseController {
     @GetMapping(ApiRoutes.CarriersSubRoute.GET_LOGGED_IN_CARRIER)
     public ResponseEntity<JsonResponse<Carrier>> getLoggedInCarrier() throws IOException {
         Carrier carrier = getCurrentCarrier();
-        carrier.setImageBase64(ImageHelper.getBase64FromImage(carrierImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Carrier", carrier.getImage()));
-
         return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Success, "", carrier));
     }
 
@@ -55,13 +54,13 @@ public class CarrierController extends BaseController {
 
     @PostMapping(ApiRoutes.CarriersSubRoute.SET_CARRIER)
     public ResponseEntity<JsonResponse<Boolean>> setCarrier(@RequestParam long carrierId) {
-        Response<Carrier> getCarrierResponse = apiTranslator().getCarrierSubTranslator().getCarrierDetailsById(carrierId);
+        Response<GetCarrierResponseModel> getCarrierResponse = apiTranslator().getCarrierSubTranslator().getCarrierDetailsById(carrierId);
         if(!getCarrierResponse.isSuccess()) {
             return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Error, getCarrierResponse.getMessage(), null));
         }
 
         // set the carrier in the session
-        setCurrentCarrier(getCarrierResponse.getItem());
+        setCurrentCarrier(getCarrierResponse.getItem().getCarrier());
 
         // get the permissions the user has for this particular carrier and set it for the current session
         Response<Permissions> permissionsResponse = apiTranslator().getUserSubTranslator().getUserPermissionsById(getCurrentUser().getUserId());
@@ -76,40 +75,36 @@ public class CarrierController extends BaseController {
 
     @PostMapping(ApiRoutes.CarriersSubRoute.UPDATE_API_KEYS)
     public ResponseEntity<JsonResponse<Boolean>> updateApiKeys(@RequestBody Carrier carrier) throws IOException {
-        String currentImage = getCurrentCarrier().getImage();
-
-        // save the image in the server
-        carrier.setImage(ImageHelper.saveBase64ToFile(carrier.getImage(), carrierImageParentDirectory + getCurrentCarrier().getDatabaseName() + "/Carrier"));
-
         Response<Boolean> updateApiKeysResponse = apiTranslator().getCarrierSubTranslator().updateApiKeys(carrier);
         if(!updateApiKeysResponse.isSuccess()) {
             return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Error, updateApiKeysResponse.getMessage(), false));
         }
         else {
-            // delete the old image if any
-            ImageHelper.deleteImage(getCurrentCarrier().getDatabaseName() + "/Carrier", currentImage);
-
             // update the current carrier
-            Response<Carrier> getCarrierResponse = apiTranslator().getCarrierSubTranslator().getCarrierDetailsById(carrier.getCarrierId());
+            Response<GetCarrierResponseModel> getCarrierResponse = apiTranslator().getCarrierSubTranslator().getCarrierDetailsById(carrier.getCarrierId());
             if(!getCarrierResponse.isSuccess()) {
                 return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Error, getCarrierResponse.getMessage(), null));
             }
-            setCurrentCarrier(getCarrierResponse.getItem());
+            setCurrentCarrier(getCarrierResponse.getItem().getCarrier());
         }
 
         return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Success, updateApiKeysResponse.getMessage(), true));
     }
 
     @GetMapping(ApiRoutes.CarriersSubRoute.GET_CARRIER_IMAGE)
-    public ResponseEntity<byte[]> getCarrierImage(@RequestParam long carrierId) {
+    public ResponseEntity<byte[]> getCarrierImage(@RequestParam long carrierId, @RequestParam(defaultValue = "false") boolean miniLogo) {
         try {
-            Response<Carrier> getCarrierResponse = apiTranslator().getCarrierSubTranslator().getCarrierDetailsById(carrierId);
+            Response<GetCarrierResponseModel> getCarrierResponse = apiTranslator().getCarrierSubTranslator().getCarrierDetailsById(carrierId);
             if(!getCarrierResponse.isSuccess()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 
-            String filePath = (environment.getActiveProfiles().length > 0 ? environment.getActiveProfiles()[0] : "default") + "/"+getCarrierResponse.getItem().getDatabaseName()+"/Logo.png";
-            byte[] imageBytes = ImageHelper.downloadFileAsBytesFromFirebase(filePath);
+            String filePath = (environment.getActiveProfiles().length > 0 ? environment.getActiveProfiles()[0] : "default") + "/"
+                    + getCarrierResponse.getItem().getCarrier().getDatabaseName()
+                    + (miniLogo ? "/MiniLogo.png" : "/Logo.png");
+
+            FirebaseHelper firebaseHelper = new FirebaseHelper(getCarrierResponse.getItem().getGoogleCred());
+            byte[] imageBytes = firebaseHelper.downloadFileAsBytesFromFirebase(filePath);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.IMAGE_PNG);
 

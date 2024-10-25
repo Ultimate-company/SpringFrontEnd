@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import {Box, IconButton, Popper, Toolbar, Typography, Switch} from '@mui/material';
+import {Box, IconButton, Popper, Toolbar, Typography, Switch, Avatar} from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faList, faCalendar, faBell, faSignOut, faBars} from '@fortawesome/free-solid-svg-icons'
-import {loginApi, messageApi} from "../../../api/ApiCalls";
+import {carrierApi, loginApi, messageApi} from "../../../api/ApiCalls";
 import { styled} from '@mui/material/styles';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import Logo from "Frontend/components/Layouts/DashboardLayout/Logo";
@@ -11,6 +11,9 @@ import MessageList from "Frontend/views/Message/Components/MessageList";
 import {MessageResponseModel} from "Frontend/api/Models/CarrierModels/Message";
 import {StyledBadge} from "Frontend/components/OtherComponents/StyledBadge";
 import BodyText from "Frontend/components/Fonts/BodyText";
+import {carrierUrls, userUrls} from "Frontend/api/Endpoints";
+import {Carrier} from "Frontend/api/Models/CentralModels/Carrier";
+import Header from "Frontend/components/Fonts/Header";
 
 interface DashboardNavbarProps {
     open: boolean;
@@ -42,6 +45,8 @@ const AppBar = styled(MuiAppBar, {
 const DashboardNavbar = (props: DashboardNavbarProps) => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [newMessageCount, setNewMessageCount] = React.useState(0);
+    const [carrier, setCarrier] = React.useState<Carrier>();
+
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(anchorEl ? null : event.currentTarget);
     };
@@ -61,7 +66,12 @@ const DashboardNavbar = (props: DashboardNavbarProps) => {
         messageApi(() => {}).getMessagesByUserId().then((messageResponseModels: MessageResponseModel[]) => {
             let unreadMessageCount = messageResponseModels.filter(message => !message.read).length;
             setNewMessageCount(unreadMessageCount);
-        })
+        });
+
+        carrierApi.getLoggedInCarrier()
+            .then((response: Carrier) => {
+                setCarrier(response);
+            });
     }, []);
 
     return (
@@ -80,11 +90,15 @@ const DashboardNavbar = (props: DashboardNavbarProps) => {
                     <FontAwesomeIcon icon={faBars} size="xs"/>
                 </IconButton>
                 <RouterLink to="/">
-                    <Logo />
+                    {
+                        carrier ?  <Avatar
+                            src={carrierUrls.getCarrierImage + `?carrierId=${carrier?.carrierId as number}` + `&miniLogo=true` }
+                        /> : <></>
+                    }
                 </RouterLink> &nbsp;&nbsp;&nbsp;&nbsp;
-                <Typography variant="h6" noWrap component="div">
-                    Ultimate Company
-                </Typography>
+                {
+                    carrier ? <Header label={carrier?.name as string} color="white"/> : <></>
+                }
                 <Box sx={{ flexGrow: 1 }} />
                 <BodyText text="Dark Mode"/>
                 <Switch

@@ -42,7 +42,7 @@ const UsersList = () => {
     const [userGridColumnVisibilityModel, setUserGridColumnVisibilityModel] =
         React.useState<GridColumnVisibilityModel>({
             id: false,
-            deleted: false
+            deleted: false,
         });
 
     // function which will take start and end and will get the messages in batches from the database

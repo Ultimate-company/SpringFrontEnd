@@ -2,26 +2,34 @@ package org.example.springfrontend.Controllers;
 
 import jakarta.servlet.http.HttpSession;
 import org.example.ApiRoutes;
+import org.example.CommonHelpers.FirebaseHelper;
 import org.example.CommonHelpers.JsonResponse;
 import org.example.Models.CommunicationModels.CarrierModels.Address;
 import org.example.Models.CommunicationModels.CarrierModels.Permissions;
 import org.example.Models.CommunicationModels.CentralModels.User;
 import org.example.Models.RequestModels.ApiRequestModels.UsersRequestModel;
 import org.example.Models.RequestModels.GridRequestModels.GetUsersRequestModel;
+import org.example.Models.ResponseModels.ApiResponseModels.GetCarrierResponseModel;
 import org.example.Models.ResponseModels.ApiResponseModels.PaginationBaseResponseModel;
 import org.example.Models.ResponseModels.ApiResponseModels.UserResponseModel;
 import org.example.Models.ResponseModels.Response;
 import org.example.springfrontend.Classes.Endpoints;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
 @RequestMapping(ApiRoutes.ApiControllerNames.USER)
 public class UserController extends BaseController {
+    @Autowired
+    private Environment environment;
 
     // Session Variables
     private boolean isIncludeDeletedSession() {
@@ -82,41 +90,38 @@ public class UserController extends BaseController {
     }
 
     @GetMapping(ApiRoutes.UsersSubRoute.GET_USER_BY_ID)
-    public ResponseEntity<JsonResponse<UserResponseModel>> getUserById(@RequestParam long userId) {
-        UserResponseModel userResponseModel = new UserResponseModel();
-
+    public ResponseEntity<JsonResponse<UserResponseModel>> getUserById(@RequestParam long userId) throws IOException {
         // fetch user details
-        Response<User> getUserByIdResponse = apiTranslator().getUserSubTranslator().getUserById(userId);
+        Response<UserResponseModel> getUserByIdResponse = apiTranslator().getUserSubTranslator().getUserById(userId);
         if (!getUserByIdResponse.isSuccess()) {
             return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Error, getUserByIdResponse.getMessage(), null));
         }
-        userResponseModel.setUser(getUserByIdResponse.getItem());
 
         // fetch user address
-        Response<Address> getAddressByIdResponse = apiTranslator().getAddressSubTranslator().getAddressByUserId(getUserByIdResponse.getItem().getUserId());
+        Response<Address> getAddressByIdResponse = apiTranslator().getAddressSubTranslator().getAddressByUserId(getUserByIdResponse.getItem().getUser().getUserId());
         if(getAddressByIdResponse.isSuccess() && getAddressByIdResponse.getItem() != null) {
-            userResponseModel.setAddress(getAddressByIdResponse.getItem());
+            getUserByIdResponse.getItem().setAddress(getAddressByIdResponse.getItem());
         }
 
         // fetch user permissions
-        Response<Permissions> getPermissionByIdResponse = apiTranslator().getUserSubTranslator().getUserPermissionsById(getUserByIdResponse.getItem().getUserId());
+        Response<Permissions> getPermissionByIdResponse = apiTranslator().getUserSubTranslator().getUserPermissionsById(getUserByIdResponse.getItem().getUser().getUserId());
         if(!getPermissionByIdResponse.isSuccess()) {
             return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Error, getPermissionByIdResponse.getMessage(), null));
         }
-        userResponseModel.setPermissions(getPermissionByIdResponse.getItem());
+        getUserByIdResponse.getItem().setPermissions(getPermissionByIdResponse.getItem());
 
         // fetch user group ids the user is a part of
         Response<List<Long>> getUserGroupIdsByUserIdResponse = apiTranslator().getUserGroupSubTranslator().getUserGroupIdsByUserId(userId);
         if(!getUserGroupIdsByUserIdResponse.isSuccess()) {
             return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Error, getUserGroupIdsByUserIdResponse.getMessage(), null));
         }
-        userResponseModel.setGroupIds(getUserGroupIdsByUserIdResponse.getItem());
+        getUserByIdResponse.getItem().setGroupIds(getUserGroupIdsByUserIdResponse.getItem());
 
-        return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Success, null, userResponseModel));
+        return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Success, null, getUserByIdResponse.getItem()));
     }
 
     @PutMapping(ApiRoutes.UsersSubRoute.CREATE_USER)
-    public ResponseEntity<JsonResponse<Long>> createUser(@RequestBody UsersRequestModel usersRequestModel) {
+    public ResponseEntity<JsonResponse<Long>> createUser(@RequestBody UsersRequestModel usersRequestModel) throws Exception {
         Response<Long> createUserResponse = apiTranslator().getUserSubTranslator().createUser(usersRequestModel);
         if(!createUserResponse.isSuccess()) {
             return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Error, createUserResponse.getMessage(), null));
@@ -126,12 +131,48 @@ public class UserController extends BaseController {
     }
 
     @PostMapping(ApiRoutes.UsersSubRoute.UPDATE_USER)
-    public ResponseEntity<JsonResponse<Long>> updateUser(@RequestBody UsersRequestModel usersRequestModel) {
+    public ResponseEntity<JsonResponse<Long>> updateUser(@RequestBody UsersRequestModel usersRequestModel) throws Exception {
         Response<Long> updateUserResponse = apiTranslator().getUserSubTranslator().updateUser(usersRequestModel);
         if(!updateUserResponse.isSuccess()) {
             return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Error, updateUserResponse.getMessage(), null));
         }
 
         return ResponseEntity.ok(new JsonResponse<>(Endpoints.User.USERS_INDEX, updateUserResponse.getMessage()));
+    }
+
+    @GetMapping(ApiRoutes.UsersSubRoute.GET_PROFILE_IMAGE)
+    public ResponseEntity<byte[]> getUserProfileImage(@RequestParam long userId) {
+        try {
+            Response<UserResponseModel> getUserDetailsResponse = apiTranslator().getUserSubTranslator().getUserById(userId);
+            if(!getUserDetailsResponse.isSuccess()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+
+            Response<GetCarrierResponseModel> getCarrierResponse = apiTranslator().getCarrierSubTranslator().getCarrierDetailsById(getCurrentCarrier().getCarrierId());
+            if(!getCarrierResponse.isSuccess()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+
+            String filePath = (environment.getActiveProfiles().length > 0 ? environment.getActiveProfiles()[0] : "default")
+                    + "/"
+                    + getCurrentCarrier().getDatabaseName()
+                    + "/UserProfiles"
+                    + "/" + getUserDetailsResponse.getItem().getUser().getUserId() + "-" + getUserDetailsResponse.getItem().getUser().getLastName() + ".png";
+
+            FirebaseHelper firebaseHelper = new FirebaseHelper(getCarrierResponse.getItem().getGoogleCred());
+            byte[] imageBytes = firebaseHelper.downloadFileAsBytesFromFirebase(filePath);
+            if(imageBytes == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.IMAGE_PNG);
+
+            // Return the image bytes with headers and 200 OK status
+            return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+        } catch (IOException e) {
+            // Handle the exception (log it, return a 404, etc.)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }

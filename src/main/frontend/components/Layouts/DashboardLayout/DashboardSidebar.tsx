@@ -16,6 +16,7 @@ import MuiDrawer from '@mui/material/Drawer';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import PrimaryFont from "Frontend/components/Fonts/PrimaryFont";
 import BodyText from "Frontend/components/Fonts/BodyText";
+import {carrierUrls, userUrls} from "Frontend/api/Endpoints";
 
 interface DashboardSidebarProps {
     open: boolean;
@@ -178,7 +179,16 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const DashboardSidebar = (props: DashboardSidebarProps) => {
     const [user, setUser] = React.useState<User>();
+    const [imageError, setImageError] = React.useState(false);
     const location = useLocation();
+
+    const getInitials = () => {
+        if (user && user.firstName && user.lastName) {
+            return user.firstName.charAt(0).toUpperCase() + user.lastName.charAt(0).toUpperCase();
+        }
+
+        return '';
+    };
 
     React.useEffect(() => {
         userApi((loading: boolean) => {}).getLoggedInUser().then(function (user: User) {
@@ -206,27 +216,30 @@ const DashboardSidebar = (props: DashboardSidebarProps) => {
                         flexDirection: 'column', p: 2
                     }}
                 >
-                    {user && user.avatar != null && user.avatar.length > 2 ? (
+                    {user && !imageError ? (
                         <Avatar
                             component={RouterLink}
-                            src={user.avatar}
-                            sx={{ cursor: 'pointer',
+                            src={userUrls.getProfileImage + `?userId=${user.userId}`}
+                            sx={{
+                                cursor: 'pointer',
                                 width: props.open ? 64 : 48, // Adjust width based on 'open' condition
                                 height: props.open ? 64 : 48, // Adjust height based on 'open' condition
                             }}
                             to=""
+                            onError={() => setImageError(true)} // Set error state if image fails to load
                         />
                     ) : (
                         <Avatar
                             component={RouterLink}
                             style={{ backgroundColor: deepOrange[500] }}
-                            sx={{ cursor: 'pointer',
+                            sx={{
+                                cursor: 'pointer',
                                 width: props.open ? 64 : 48, // Adjust width based on 'open' condition
                                 height: props.open ? 64 : 48, // Adjust height based on 'open' condition
                             }}
                             to=""
                         >
-                            {user && user.avatar}
+                            {getInitials()}
                         </Avatar>
                     )}
                     {props.open && (
