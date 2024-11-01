@@ -1,4 +1,4 @@
-import {GridColDef, GridColumnVisibilityModel, GridFilterModel, GridToolbar} from "@mui/x-data-grid";
+import {GridColDef, GridColumnVisibilityModel, GridDensity, GridFilterModel, GridToolbar} from "@mui/x-data-grid";
 import React from "react";
 import Toolbar from "Frontend/components/Toolbar";
 import { StyledDataGrid } from "Frontend/components/Datagrid/CustomDataGrid";
@@ -9,12 +9,17 @@ import {CustomPaginationForGrid, PaginatedGridInterface} from "Frontend/componen
 import {filterChangeFunction} from "Frontend/components/Datagrid/CustomFilteringForDataGrid";
 import {useConfirm} from "material-ui-confirm";
 import CustomToolbar from "Frontend/components/Datagrid/CustomToolbar";
-import {purchaseOrderApi} from "Frontend/api/ApiCalls";
+import {gridApi, purchaseOrderApi} from "Frontend/api/ApiCalls";
 import {PurchaseOrderResponseModel} from "Frontend/api/Models/CarrierModels/PurchaseOrder";
 import {initPurchaseOrderGridColumns} from "Frontend/api/Models/DataGridModels/PurchaseOrderGridColumns";
 import {useOutletContext} from "react-router-dom";
 import {GridRowClassNameParams} from "@mui/x-data-grid/models/params";
 import {GridPaginationModel} from "@mui/x-data-grid/models/gridPaginationProps";
+import {
+    GridId,
+    GridPreferenceRequestModel,
+    UserGridPreference
+} from "Frontend/api/Models/CarrierModels/UserGridPreference";
 
 const paginatedGridModel: PaginatedGridInterface = {
     start: 0,
@@ -30,6 +35,9 @@ const paginatedGridModel: PaginatedGridInterface = {
         filterText: ""
     }
 }
+const gridPreference: UserGridPreference = {
+    density: "standard"
+}
 
 const PurchaseOrdersList = () => {
     // hooks and state variables
@@ -41,6 +49,7 @@ const PurchaseOrdersList = () => {
         React.useState<GridColumnVisibilityModel>({
             deleted: false
         });
+    const [userGridPreference, setUserGridPreference] = React.useState<UserGridPreference>(gridPreference);
 
     // function which will take start and end and will get the messages in batches from the database
     const setPurchaseOrderAndPagination = (paginationRequestModel: PaginatedGridInterface) => {
@@ -70,7 +79,8 @@ const PurchaseOrdersList = () => {
                             columnName: paginationRequestModel.filterExpr.columnName,
                             condition: paginationRequestModel.filterExpr.condition,
                             filterText: paginationRequestModel.filterExpr.filterText,
-                        }
+                        },
+                        pageSize: paginationRequestModel.pageSize
                     });
                 });
             });
@@ -78,7 +88,21 @@ const PurchaseOrdersList = () => {
     };
 
     React.useEffect(() => {
-        setPurchaseOrderAndPagination(paginatedGridModel);
+        gridApi(setLoading)
+            .getGridVisibilityPreference(GridId.PURCHASE_ORDER)
+            .then((response: UserGridPreference) => {
+                if(response) {
+                    let prevState:PaginatedGridInterface = state;
+                    setUserGridPreference(response);
+                    if(response.rowsPerPage) {
+                        prevState.pageSize = response.rowsPerPage;
+                    }
+                    if(response.visibilityModel) {
+                        setPurchaseOrderColumnVisibilityModel(JSON.parse(response.visibilityModel as string) as GridColumnVisibilityModel);
+                    }
+                    setPurchaseOrderAndPagination(prevState);
+                }
+            });
     }, []);
 
     return <>
@@ -88,7 +112,7 @@ const PurchaseOrdersList = () => {
                 checkboxes = {[
                     {
                         checked: state.includeDeleted,
-                        label: "Include Deleted",
+                        label: "Include Deactivated",
                         onCheckboxChange: () => {
                             purchaseOrderApi(setLoading).setIncludeDeleted().then(() => {
                                 window.location.reload();
@@ -107,8 +131,23 @@ const PurchaseOrdersList = () => {
                 paginationMode="server"
                 columnVisibilityModel={purchaseOrderColumnVisibilityModel}
                 onColumnVisibilityModelChange={React.useCallback((newModel: GridColumnVisibilityModel) => {
+                    gridApi(setLoading).updateGridVisibilityPreference({
+                        visibilityJsonBody: JSON.stringify(newModel),
+                        gridId: GridId.PURCHASE_ORDER
+                    } as GridPreferenceRequestModel);
                     setPurchaseOrderColumnVisibilityModel(newModel);
                 }, [purchaseOrderColumnVisibilityModel])}
+                onDensityChange = {(newModel: string) => {
+                    setUserGridPreference({
+                        ...userGridPreference,
+                        density: newModel
+                    });
+                    gridApi(setLoading).updateGridDensityVisibilityPreference({
+                        density: newModel,
+                        gridId: GridId.PURCHASE_ORDER
+                    } as GridPreferenceRequestModel);
+                }}
+                density={userGridPreference.density as GridDensity}
                 slots={{
                     noRowsOverlay: CustomNoRowsOverlay,
                     toolbar: GridToolbar,
@@ -136,11 +175,18 @@ const PurchaseOrdersList = () => {
                             data: state.data
                         }
                     }), [state])}
+                paginationModel={{page: Math.floor(state.start/state.pageSize), pageSize: state.pageSize}}
                 onPaginationModelChange={React.useCallback((newModel: GridPaginationModel) => {
+                    if(newModel.pageSize != state.pageSize) {
+                        gridApi(setLoading).updateRowsPerPagePreference({
+                            rowsPerPage: newModel.pageSize,
+                            gridId: GridId.PURCHASE_ORDER
+                        } as GridPreferenceRequestModel);
+                    }
                     setPurchaseOrderAndPagination({
                         includeDeleted: state.includeDeleted,
                         filterExpr: state.filterExpr,
-                        pageSize: state.pageSize,
+                        pageSize: newModel.pageSize,
                         start: newModel.pageSize * newModel.page,
                         end: (newModel.pageSize * newModel.page) + newModel.pageSize,
                         actualDataCount: state.actualDataCount,

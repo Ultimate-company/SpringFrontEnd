@@ -1,12 +1,12 @@
 import Toolbar from "Frontend/components/Toolbar";
 import CustomToolbar from "Frontend/components/Datagrid/CustomToolbar";
-import {supportApi} from "Frontend/api/ApiCalls";
+import {gridApi, supportApi} from "Frontend/api/ApiCalls";
 import React from "react";
 import OutletLayout from "Frontend/components/Layouts/DashboardLayout/OutletLayout";
 import {CustomPaginationForGrid, PaginatedGridInterface} from "Frontend/components/Datagrid/CustomPaginationForGrid";
 import {useConfirm} from "material-ui-confirm";
 import {useOutletContext} from "react-router-dom";
-import {GridColDef, GridColumnVisibilityModel, GridFilterModel, GridToolbar} from "@mui/x-data-grid";
+import {GridColDef, GridColumnVisibilityModel, GridDensity, GridFilterModel, GridToolbar} from "@mui/x-data-grid";
 import CustomNoRowsOverlay from "Frontend/components/Datagrid/CustomNoRowsOverlay";
 import {filterChangeFunction} from "Frontend/components/Datagrid/CustomFilteringForDataGrid";
 import {GridPaginationModel} from "@mui/x-data-grid/models/gridPaginationProps";
@@ -14,6 +14,11 @@ import {GridRowClassNameParams} from "@mui/x-data-grid/models/params";
 import {StyledDataGrid} from "Frontend/components/Datagrid/CustomDataGrid";
 import {initSupportGridColumns} from "Frontend/api/Models/DataGridModels/SupportGridColumns";
 import {GetTicketsResponseModel, Issue} from "Frontend/api/Models/CarrierModels/Support";
+import {
+    GridId,
+    GridPreferenceRequestModel,
+    UserGridPreference
+} from "Frontend/api/Models/CarrierModels/UserGridPreference";
 
 const paginatedGridModel: PaginatedGridInterface = {
     start: 0,
@@ -29,6 +34,9 @@ const paginatedGridModel: PaginatedGridInterface = {
         filterText: ""
     }
 }
+const gridPreference: UserGridPreference = {
+    density: "standard"
+}
 
 const SupportList = () => {
     // hooks and state variables
@@ -41,6 +49,7 @@ const SupportList = () => {
             id: false,
             deleted: false
         });
+    const [userGridPreference, setUserGridPreference] = React.useState<UserGridPreference>(gridPreference);
 
     // function which will take start and end and will get the messages in batches from the database
     const setSupportAndPagination = (paginationRequestModel: PaginatedGridInterface) => {
@@ -49,7 +58,6 @@ const SupportList = () => {
             supportApi(setLoading).getIncludeDeleted().then((getIncludeDeletedResponse: boolean) => {
                 initSupportGridColumns(confirm, setLoading).then((columns) => {
                     setSupportGridColumns(columns);
-                    console.log("support tickets: ", response.issues);
                     setState({
                         ...state,
                         data: response.issues as Issue[],
@@ -64,7 +72,8 @@ const SupportList = () => {
                             columnName: paginationRequestModel.filterExpr.columnName,
                             condition: paginationRequestModel.filterExpr.condition,
                             filterText: paginationRequestModel.filterExpr.filterText,
-                        }
+                        },
+                        pageSize: paginationRequestModel.pageSize
                     });
                 });
             });
@@ -72,7 +81,21 @@ const SupportList = () => {
     };
 
     React.useEffect(() => {
-        setSupportAndPagination(paginatedGridModel);
+        gridApi(setLoading)
+            .getGridVisibilityPreference(GridId.SUPPORT)
+            .then((response: UserGridPreference) => {
+                if(response) {
+                    let prevState:PaginatedGridInterface = state;
+                    setUserGridPreference(response);
+                    if(response.rowsPerPage) {
+                        prevState.pageSize = response.rowsPerPage;
+                    }
+                    if(response.visibilityModel) {
+                        setSupportColumnVisibilityModel(JSON.parse(response.visibilityModel as string) as GridColumnVisibilityModel);
+                    }
+                    setSupportAndPagination(prevState);
+                }
+            });
     }, []);
 
 
@@ -84,7 +107,7 @@ const SupportList = () => {
                     checkboxes = {[
                         {
                             checked: state.includeDeleted,
-                            label: "Include Deleted",
+                            label: "Include Deactivated",
                             onCheckboxChange: () => {
                                 supportApi(setLoading).setIncludeDeleted().then(() => {
                                     window.location.reload();
@@ -103,8 +126,23 @@ const SupportList = () => {
                     paginationMode="server"
                     columnVisibilityModel={supportColumnVisibilityModel}
                     onColumnVisibilityModelChange={React.useCallback((newModel: GridColumnVisibilityModel) => {
+                        gridApi(setLoading).updateGridVisibilityPreference({
+                            visibilityJsonBody: JSON.stringify(newModel),
+                            gridId: GridId.SUPPORT
+                        } as GridPreferenceRequestModel);
                         setSupportColumnVisibilityModel(newModel);
                     }, [supportColumnVisibilityModel])}
+                    onDensityChange = {(newModel: string) => {
+                        setUserGridPreference({
+                            ...userGridPreference,
+                            density: newModel
+                        });
+                        gridApi(setLoading).updateGridDensityVisibilityPreference({
+                            density: newModel,
+                            gridId: GridId.SUPPORT
+                        } as GridPreferenceRequestModel);
+                    }}
+                    density={userGridPreference.density as GridDensity}
                     slots={{
                         noRowsOverlay: CustomNoRowsOverlay,
                         toolbar: GridToolbar,
@@ -132,11 +170,18 @@ const SupportList = () => {
                                 data: state.data
                             }
                         }), [state])}
+                    paginationModel={{page: Math.floor(state.start/state.pageSize), pageSize: state.pageSize}}
                     onPaginationModelChange={React.useCallback((newModel: GridPaginationModel) => {
+                        if(newModel.pageSize != state.pageSize) {
+                            gridApi(setLoading).updateRowsPerPagePreference({
+                                rowsPerPage: newModel.pageSize,
+                                gridId: GridId.SUPPORT
+                            } as GridPreferenceRequestModel);
+                        }
                         setSupportAndPagination({
                             includeDeleted: state.includeDeleted,
                             filterExpr: state.filterExpr,
-                            pageSize: state.pageSize,
+                            pageSize: newModel.pageSize,
                             start: newModel.pageSize * newModel.page,
                             end: (newModel.pageSize * newModel.page) + newModel.pageSize,
                             actualDataCount: state.actualDataCount,
@@ -155,7 +200,6 @@ const SupportList = () => {
                 />
             </OutletLayout>
         </>
-
     );
 }
 

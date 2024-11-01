@@ -1,6 +1,6 @@
-import {GridColDef, GridColumnVisibilityModel, GridFilterModel, GridToolbar} from "@mui/x-data-grid";
+import {GridColDef, GridColumnVisibilityModel, GridDensity, GridFilterModel, GridToolbar} from "@mui/x-data-grid";
 import React from "react";
-import {packageApi} from "../../api/ApiCalls";
+import {gridApi, packageApi} from "../../api/ApiCalls";
 import Toolbar from "Frontend/components/Toolbar";
 import { StyledDataGrid } from "Frontend/components/Datagrid/CustomDataGrid";
 import {PaginationBaseResponseModel} from "Frontend/api/Models/BaseModel";
@@ -15,6 +15,11 @@ import {useOutletContext} from "react-router-dom";
 import {GridRowClassNameParams} from "@mui/x-data-grid/models/params";
 import {GridPaginationModel} from "@mui/x-data-grid/models/gridPaginationProps";
 import {Package} from "Frontend/api/Models/CarrierModels/Package";
+import {
+    GridId,
+    GridPreferenceRequestModel,
+    UserGridPreference
+} from "Frontend/api/Models/CarrierModels/UserGridPreference";
 
 const paginatedGridModel: PaginatedGridInterface = {
     start: 0,
@@ -30,6 +35,9 @@ const paginatedGridModel: PaginatedGridInterface = {
         filterText: ""
     }
 }
+const gridPreference: UserGridPreference = {
+    density: "standard"
+}
 
 const PackageList = () => {
     // hooks and state variables
@@ -42,6 +50,7 @@ const PackageList = () => {
             id: false,
             deleted: false
         });
+    const [userGridPreference, setUserGridPreference] = React.useState<UserGridPreference>(gridPreference);
 
     // function which will take start and end and will get the messages in batches from the database
     const setPackageAndPagination = (paginationRequestModel: PaginatedGridInterface) => {
@@ -71,7 +80,8 @@ const PackageList = () => {
                             columnName: paginationRequestModel.filterExpr.columnName,
                             condition: paginationRequestModel.filterExpr.condition,
                             filterText: paginationRequestModel.filterExpr.filterText,
-                        }
+                        },
+                        pageSize: paginationRequestModel.pageSize
                     });
                 });
             });
@@ -79,7 +89,21 @@ const PackageList = () => {
     };
 
     React.useEffect(() => {
-        setPackageAndPagination(paginatedGridModel);
+        gridApi(setLoading)
+            .getGridVisibilityPreference(GridId.PACKAGES)
+            .then((response: UserGridPreference) => {
+                if(response) {
+                    let prevState:PaginatedGridInterface = state;
+                    setUserGridPreference(response);
+                    if(response.rowsPerPage) {
+                        prevState.pageSize = response.rowsPerPage;
+                    }
+                    if(response.visibilityModel) {
+                        setPackageColumnVisibilityModel(JSON.parse(response.visibilityModel as string) as GridColumnVisibilityModel);
+                    }
+                    setPackageAndPagination(prevState);
+                }
+            });
     }, []);
 
     return <>
@@ -89,7 +113,7 @@ const PackageList = () => {
                 checkboxes = {[
                     {
                         checked: state.includeDeleted,
-                        label: "Include Deleted",
+                        label: "Include Deactivated",
                         onCheckboxChange: () => {
                             packageApi(setLoading).setIncludeDeleted().then((_ : boolean) => {
                                 window.location.reload();
@@ -108,8 +132,23 @@ const PackageList = () => {
                 paginationMode="server"
                 columnVisibilityModel={packageColumnVisibilityModel}
                 onColumnVisibilityModelChange={React.useCallback((newModel: GridColumnVisibilityModel) => {
+                    gridApi(setLoading).updateGridVisibilityPreference({
+                        visibilityJsonBody: JSON.stringify(newModel),
+                        gridId: GridId.PACKAGES
+                    } as GridPreferenceRequestModel);
                     setPackageColumnVisibilityModel(newModel);
                 }, [packageColumnVisibilityModel])}
+                onDensityChange = {(newModel: string) => {
+                    setUserGridPreference({
+                        ...userGridPreference,
+                        density: newModel
+                    });
+                    gridApi(setLoading).updateGridDensityVisibilityPreference({
+                        density: newModel,
+                        gridId: GridId.PACKAGES
+                    } as GridPreferenceRequestModel);
+                }}
+                density={userGridPreference.density as GridDensity}
                 slots={{
                     noRowsOverlay: CustomNoRowsOverlay,
                     toolbar: GridToolbar,
@@ -137,11 +176,18 @@ const PackageList = () => {
                             data: state.data
                         }
                     }), [state])}
+                paginationModel={{page: Math.floor(state.start/state.pageSize), pageSize: state.pageSize}}
                 onPaginationModelChange={React.useCallback((newModel: GridPaginationModel) => {
+                    if(newModel.pageSize != state.pageSize) {
+                        gridApi(setLoading).updateRowsPerPagePreference({
+                            rowsPerPage: newModel.pageSize,
+                            gridId: GridId.PACKAGES
+                        } as GridPreferenceRequestModel);
+                    }
                     setPackageAndPagination({
                         includeDeleted: state.includeDeleted,
                         filterExpr: state.filterExpr,
-                        pageSize: state.pageSize,
+                        pageSize: newModel.pageSize,
                         start: newModel.pageSize * newModel.page,
                         end: (newModel.pageSize * newModel.page) + newModel.pageSize,
                         actualDataCount: state.actualDataCount,
