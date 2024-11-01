@@ -60,6 +60,6 @@ export const StyledDataGrid = React.memo(MyDataGrid, (prevProps, nextProps) => {
     return prevProps.rows === nextProps.rows
         && prevProps.columns === nextProps.columns
         && prevProps.columnVisibilityModel === nextProps.columnVisibilityModel
-        && prevProps.rowSelectionModel === nextProps.rowSelectionModel;
-
+        && prevProps.rowSelectionModel === nextProps.rowSelectionModel
+        && prevProps.density === nextProps.density;
 });

@@ -14,7 +14,7 @@ import {
     dataUrls,
     userLogUrls,
     packageUrls,
-    supportUrls, webTemplateUrls
+    supportUrls, webTemplateUrls, gridUrls
 } from "./Endpoints";
 import Axios from "axios";
 import {LoginRequestModel} from "./Models/CentralModels/Login";
@@ -62,6 +62,11 @@ import {
     GetTicketsResponseModel, SupportRequestModel,
 } from "Frontend/api/Models/CarrierModels/Support";
 import {WebTemplateRequestModel, WebTemplateResponseModel} from "Frontend/api/Models/CarrierModels/WebTemplate";
+import {
+    GridId,
+    GridPreferenceRequestModel,
+    UserGridPreference
+} from "Frontend/api/Models/CarrierModels/UserGridPreference";
 
 const standardJsonHeader = {
     headers: {
@@ -644,6 +649,23 @@ export const webTemplateApi = (setLoading: (loading: boolean) => void) => {
     };
 };
 
+export const gridApi = (setLoading: (loading: boolean) => void) => {
+    return {
+        updateGridVisibilityPreference: async (gridPreferenceRequestModel: GridPreferenceRequestModel) => {
+            return await wrappedApiFunctions<boolean>(setLoading, gridUrls.updateGridVisibilityPreference, requestMethod.POST, gridPreferenceRequestModel);
+        },
+        updateGridDensityVisibilityPreference: async (gridPreferenceRequestModel: GridPreferenceRequestModel) => {
+            return await wrappedApiFunctions<boolean>(setLoading, gridUrls.updateGridDensityVisibilityPreference, requestMethod.POST, gridPreferenceRequestModel);
+        },
+        updateRowsPerPagePreference: async (gridPreferenceRequestModel: GridPreferenceRequestModel) => {
+            return await wrappedApiFunctions<boolean>(setLoading, gridUrls.updateRowsPerPagePreference, requestMethod.POST, gridPreferenceRequestModel);
+        },
+        getGridVisibilityPreference: async (gridId: GridId) => {
+            return await wrappedApiFunctions<UserGridPreference>(setLoading, gridUrls.getGridVisibilityPreference + `?gridId=${gridId}`, requestMethod.GET, null);
+        }
+    }
+};
+
 function handleResponse<T>(response: any,): Promise<T> {
     if (response.responseType == "Success") {
         // display success toast
@@ -672,6 +694,9 @@ function handleResponse<T>(response: any,): Promise<T> {
             sessionStorage.setItem('redirectMessage', response.message);
         }
         window.location.href = response.redirectLink;
+        return Promise.resolve(response.item as T);
+    }
+    else if(response.responseType == "NoMessage") {
         return Promise.resolve(response.item as T);
     }
 

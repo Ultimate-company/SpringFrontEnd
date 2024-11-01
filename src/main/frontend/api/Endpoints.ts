@@ -19,8 +19,8 @@ const userLogBaseUrl = '/UserLog';
 const userBaseUrl = '/User';
 const packageBaseUrl = '/Package';
 const webTemplateBaseUrl = '/WebTemplate';
-
 const dataBaseUrl = '/Data';
+const gridBaseUrl = '/Grid';
 
 Axios.defaults.baseURL = window.location.origin;
 
@@ -227,6 +227,13 @@ const webTemplateEndpoints = {
     getWebTemplateById: 'getWebTemplateById'
 }
 
+const gridEndpoints = {
+    updateGridVisibilityPreference: 'updateGridVisibilityPreference',
+    updateGridDensityVisibilityPreference: 'updateGridDensityVisibilityPreference',
+    updateRowsPerPagePreference: 'updateRowsPerPagePreference',
+    getGridVisibilityPreference: 'getGridVisibilityPreference'
+}
+
 export const carrierUrls = urlMapper(carrierBaseUrl, carrierEndpoints);
 export const eventUrls = urlMapper(eventBaseUrl, eventEndpoints);
 export const userGroupUrl = urlMapper(userGroupBaseUrl, userGroupEndpoints);
@@ -247,3 +254,4 @@ export const dataUrls = urlMapper(dataBaseUrl, dataEndpoints);
 export const userLogUrls = urlMapper(userLogBaseUrl, userLogEndpoints);
 export const packageUrls = urlMapper(packageBaseUrl, packageEndpoints);
 export const webTemplateUrls = urlMapper(webTemplateBaseUrl, webTemplateEndpoints);
+export const gridUrls = urlMapper(gridBaseUrl, gridEndpoints);

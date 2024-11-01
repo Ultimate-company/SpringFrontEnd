@@ -1,6 +1,6 @@
-import {GridColDef, GridColumnVisibilityModel, GridFilterModel, GridToolbar} from "@mui/x-data-grid";
+import {GridColDef, GridColumnVisibilityModel, GridDensity, GridFilterModel, GridToolbar} from "@mui/x-data-grid";
 import React from "react";
-import {messageApi} from "../../api/ApiCalls";
+import {gridApi, messageApi} from "../../api/ApiCalls";
 import Toolbar from "Frontend/components/Toolbar";
 import { StyledDataGrid } from "Frontend/components/Datagrid/CustomDataGrid";
 import {PaginationBaseResponseModel} from "Frontend/api/Models/BaseModel";
@@ -15,6 +15,11 @@ import {initMessageGridColumns} from "Frontend/api/Models/DataGridModels/Message
 import {useOutletContext} from "react-router-dom";
 import {GridPaginationModel} from "@mui/x-data-grid/models/gridPaginationProps";
 import {GridRowClassNameParams} from "@mui/x-data-grid/models/params";
+import {
+    GridId,
+    GridPreferenceRequestModel,
+    UserGridPreference
+} from "Frontend/api/Models/CarrierModels/UserGridPreference";
 
 const paginatedGridModel: PaginatedGridInterface = {
     start: 0,
@@ -30,6 +35,9 @@ const paginatedGridModel: PaginatedGridInterface = {
         filterText: ""
     }
 }
+const gridPreference: UserGridPreference = {
+    density: "standard"
+}
 
 const MessagesList = () => {
     // hooks and state variables
@@ -37,11 +45,12 @@ const MessagesList = () => {
     const [setLoading] = useOutletContext<any>();
     const [messageGridColumns, setMessageGridColumns] = React.useState<GridColDef[]>([]);
     const [state, setState] = React.useState<PaginatedGridInterface>(paginatedGridModel);
-    const [pickupLocationColumnVisibilityModel, setPickupLocationColumnVisibilityModel] =
+    const [messageColumnVisibilityModel, setMessageColumnVisibilityModel] =
         React.useState<GridColumnVisibilityModel>({
             id: false,
             deleted: false
         });
+    const [userGridPreference, setUserGridPreference] = React.useState<UserGridPreference>(gridPreference);
 
     // function which will take start and end and will get the messages in batches from the database
     const setMessageAndPagination = (paginationRequestModel: PaginatedGridInterface) => {
@@ -71,7 +80,8 @@ const MessagesList = () => {
                             columnName: paginationRequestModel.filterExpr.columnName,
                             condition: paginationRequestModel.filterExpr.condition,
                             filterText: paginationRequestModel.filterExpr.filterText,
-                        }
+                        },
+                        pageSize: paginationRequestModel.pageSize
                     });
                 });
             });
@@ -79,7 +89,21 @@ const MessagesList = () => {
     };
 
     React.useEffect(() => {
-        setMessageAndPagination(paginatedGridModel);
+        gridApi(setLoading)
+            .getGridVisibilityPreference(GridId.MESSAGE)
+            .then((response: UserGridPreference) => {
+                if(response) {
+                    let prevState:PaginatedGridInterface = state;
+                    setUserGridPreference(response);
+                    if(response.rowsPerPage) {
+                        prevState.pageSize = response.rowsPerPage;
+                    }
+                    if(response.visibilityModel) {
+                        setMessageColumnVisibilityModel(JSON.parse(response.visibilityModel as string) as GridColumnVisibilityModel);
+                    }
+                    setMessageAndPagination(paginatedGridModel);
+                }
+            });
     }, []);
 
     return <>
@@ -89,7 +113,7 @@ const MessagesList = () => {
                 checkboxes = {[
                     {
                         checked: state.includeDeleted,
-                        label: "Include Deleted",
+                        label: "Include Deactivated",
                         onCheckboxChange: () => {
                             messageApi(setLoading).setIncludeDeleted().then(() => {
                                 window.location.reload();
@@ -106,10 +130,25 @@ const MessagesList = () => {
                 filterMode="server"
                 rowCount={state.actualDataCount}
                 paginationMode="server"
-                columnVisibilityModel={pickupLocationColumnVisibilityModel}
+                columnVisibilityModel={messageColumnVisibilityModel}
                 onColumnVisibilityModelChange={React.useCallback((newModel: GridColumnVisibilityModel) => {
-                    setPickupLocationColumnVisibilityModel(newModel);
-                }, [pickupLocationColumnVisibilityModel])}
+                    gridApi(setLoading).updateGridVisibilityPreference({
+                        visibilityJsonBody: JSON.stringify(newModel),
+                        gridId: GridId.MESSAGE
+                    } as GridPreferenceRequestModel);
+                    setMessageColumnVisibilityModel(newModel);
+                }, [messageColumnVisibilityModel])}
+                onDensityChange = {(newModel: string) => {
+                    setUserGridPreference({
+                        ...userGridPreference,
+                        density: newModel
+                    });
+                    gridApi(setLoading).updateGridDensityVisibilityPreference({
+                        density: newModel,
+                        gridId: GridId.MESSAGE
+                    } as GridPreferenceRequestModel);
+                }}
+                density={userGridPreference.density as GridDensity}
                 slots={{
                     noRowsOverlay: CustomNoRowsOverlay,
                     toolbar: GridToolbar,
@@ -137,11 +176,18 @@ const MessagesList = () => {
                             data: state.data
                         }
                     }), [state])}
+                paginationModel={{page: Math.floor(state.start/state.pageSize), pageSize: state.pageSize}}
                 onPaginationModelChange={React.useCallback((newModel: GridPaginationModel) => {
+                    if(newModel.pageSize != state.pageSize) {
+                        gridApi(setLoading).updateRowsPerPagePreference({
+                            rowsPerPage: newModel.pageSize,
+                            gridId: GridId.MESSAGE
+                        } as GridPreferenceRequestModel);
+                    }
                     setMessageAndPagination({
                         includeDeleted: state.includeDeleted,
                         filterExpr: state.filterExpr,
-                        pageSize: state.pageSize,
+                        pageSize: newModel.pageSize,
                         start: newModel.pageSize * newModel.page,
                         end: (newModel.pageSize * newModel.page) + newModel.pageSize,
                         actualDataCount: state.actualDataCount,
