@@ -112,7 +112,7 @@ const PickupLocationsList = () => {
                 checkboxes = {[
                     {
                         checked: state.includeDeleted,
-                        label: "Include Deleted",
+                        label: "Include Deactivated",
                         onCheckboxChange: () => {
                             pickupLocationApi(setLoading).setIncludeDeleted().then(() => {
                                 window.location.reload();

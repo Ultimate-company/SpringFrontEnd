@@ -107,7 +107,7 @@ const SupportList = () => {
                     checkboxes = {[
                         {
                             checked: state.includeDeleted,
-                            label: "Include Deleted",
+                            label: "Include Deactivated",
                             onCheckboxChange: () => {
                                 supportApi(setLoading).setIncludeDeleted().then(() => {
                                     window.location.reload();

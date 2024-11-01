@@ -101,7 +101,7 @@ const PackageList = () => {
                     if(response.visibilityModel) {
                         setPackageColumnVisibilityModel(JSON.parse(response.visibilityModel as string) as GridColumnVisibilityModel);
                     }
-                    setPackageAndPagination(paginatedGridModel);
+                    setPackageAndPagination(prevState);
                 }
             });
     }, []);
@@ -145,7 +145,7 @@ const PackageList = () => {
                     });
                     gridApi(setLoading).updateGridDensityVisibilityPreference({
                         density: newModel,
-                        gridId: GridId.USER
+                        gridId: GridId.PACKAGES
                     } as GridPreferenceRequestModel);
                 }}
                 density={userGridPreference.density as GridDensity}
@@ -176,6 +176,7 @@ const PackageList = () => {
                             data: state.data
                         }
                     }), [state])}
+                paginationModel={{page: Math.floor(state.start/state.pageSize), pageSize: state.pageSize}}
                 onPaginationModelChange={React.useCallback((newModel: GridPaginationModel) => {
                     if(newModel.pageSize != state.pageSize) {
                         gridApi(setLoading).updateRowsPerPagePreference({

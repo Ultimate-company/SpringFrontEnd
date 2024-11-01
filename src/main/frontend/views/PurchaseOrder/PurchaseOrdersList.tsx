@@ -100,7 +100,7 @@ const PurchaseOrdersList = () => {
                     if(response.visibilityModel) {
                         setPurchaseOrderColumnVisibilityModel(JSON.parse(response.visibilityModel as string) as GridColumnVisibilityModel);
                     }
-                    setPurchaseOrderAndPagination(paginatedGridModel);
+                    setPurchaseOrderAndPagination(prevState);
                 }
             });
     }, []);
@@ -112,7 +112,7 @@ const PurchaseOrdersList = () => {
                 checkboxes = {[
                     {
                         checked: state.includeDeleted,
-                        label: "Include Deleted",
+                        label: "Include Deactivated",
                         onCheckboxChange: () => {
                             purchaseOrderApi(setLoading).setIncludeDeleted().then(() => {
                                 window.location.reload();

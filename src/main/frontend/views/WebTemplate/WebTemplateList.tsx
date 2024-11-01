@@ -101,7 +101,7 @@ const WebTemplateList = () => {
                     if(response.visibilityModel) {
                         setWebTemplateGridColumnVisibilityModel(JSON.parse(response.visibilityModel as string) as GridColumnVisibilityModel);
                     }
-                    setWebTemplateAndPagination(paginatedGridModel);
+                    setWebTemplateAndPagination(prevState);
                 }
             });
     }, []);
@@ -113,7 +113,7 @@ const WebTemplateList = () => {
                 checkboxes = {[
                     {
                         checked: state.includeDeleted,
-                        label: "Include Deleted",
+                        label: "Include Deactivated",
                         onCheckboxChange: () => {
                             webTemplateApi(setLoading).setIncludeDeleted().then(() => {
                                 window.location.reload();

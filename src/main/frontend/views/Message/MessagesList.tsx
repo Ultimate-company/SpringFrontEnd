@@ -101,7 +101,7 @@ const MessagesList = () => {
                     if(response.visibilityModel) {
                         setMessageColumnVisibilityModel(JSON.parse(response.visibilityModel as string) as GridColumnVisibilityModel);
                     }
-                    setMessageAndPagination(paginatedGridModel);
+                    setMessageAndPagination(prevState);
                 }
             });
     }, []);

@@ -89,7 +89,7 @@ const UserGroupsList = () => {
                 checkboxes = {[
                     {
                         checked: state.includeDeleted,
-                        label: "Include Deleted",
+                        label: "Include Deactivated",
                         onCheckboxChange: () => {
                             userGroupApi(setLoading).setIncludeDeleted().then(() => {
                                 window.location.reload();

@@ -101,7 +101,7 @@ const LeadsList = () => {
                     if(response.visibilityModel) {
                         setLeadGridColumnVisibilityModel(JSON.parse(response.visibilityModel as string) as GridColumnVisibilityModel);
                     }
-                    setLeadsAndPagination(paginatedGridModel);
+                    setLeadsAndPagination(prevState);
                 }
             });
     }, []);
