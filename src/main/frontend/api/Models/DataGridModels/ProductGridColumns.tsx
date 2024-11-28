@@ -40,10 +40,11 @@ const productGridColumns : GridColDef[] = [
     {
         field: "mainImage",
         headerName: "Image",
-        width: 180,
+        flex: 1,
+        minWidth: 180,
         filterable: false,
         valueGetter: (_, row) => {
-            return productUrls.getProductImage+ `?imageName=${row.product.mainImage}`;
+            return productUrls.getProductImage+ `?imageName=Main&productId=${row.product.productId}`;
         },
         renderCell: (params: GridRenderCellParams) => (
             <div style={{
@@ -59,33 +60,47 @@ const productGridColumns : GridColDef[] = [
     {
         field: "title",
         headerName: "Title",
-        width: 300,
+        flex: 2,
+        minWidth: 250,
         valueGetter: (_, row) => {
             return row.product.title;
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />
     },
     {
         field: "type",
         headerName: "Type",
-        width: 300,
+        flex: 2,
+        minWidth: 250,
         valueGetter: (_, row) => {
             return row.productCategory.name;
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />
     },
     {
         field: "upc",
         headerName: "Upc",
-        width: 150,
+        flex: 1,
+        minWidth: 150,
         valueGetter: (_, row) => {
             return row.product.upc;
-        }
+        },
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />
     },
     {
         field: "dimensions",
         headerName: "Dimensions",
-        width: 150,
+        flex: 1,
+        minWidth: 150,
         valueGetter: (_, row) => {
             return row.product.length + " x " + row.product.breadth + " x " + row.product.height;
         }
@@ -93,7 +108,8 @@ const productGridColumns : GridColDef[] = [
     {
         field: "price",
         headerName: "Price",
-        width: 150,
+        flex: 1,
+        minWidth: 150,
         valueGetter: (_, row) => {
             return parse(row.product.price.toString()) + " ₹";
         }
@@ -101,7 +117,8 @@ const productGridColumns : GridColDef[] = [
     {
         field: "discount",
         headerName: "Discount",
-        width: 150,
+        flex: 1,
+        minWidth: 150,
         valueGetter: (_, row) => {
             if(row.product.discountPercent) {
                 return parse(row.product.discount.toString()) + " %";
@@ -114,7 +131,8 @@ const productGridColumns : GridColDef[] = [
     {
         field: "availableStock",
         headerName: "Available Stock",
-        width: 150,
+        flex: 1,
+        minWidth: 150,
         valueGetter: (_, row) => {
             return row.product.availableStock;
         }
@@ -162,7 +180,8 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
         columns.push({
             field: "returnsAllowed",
             headerName: "Returns",
-            width: 150,
+            flex: 2,
+            minWidth: 150,
             filterable: false,
             valueGetter: (_, row) => {
                 return row.product.returnsAllowed;
@@ -189,7 +208,8 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
         filterable: false,
         field: "Actions",
         headerName: "Actions",
-        width: 150,
+        flex: 2,
+        minWidth: 150,
         renderCell: (params: GridRenderCellParams) => (
             <div>
                 {params.row.product.deleted ? (
@@ -234,7 +254,8 @@ const actionColumnsWithQuantitySelection = async (productIdQuantityMapping: Map<
             filterable: false,
             field: "quantity",
             headerName: "Quantity",
-            width: 150,
+            flex: 2,
+            minWidth: 150,
             editable: productIdQuantityCustomPriceMapping && typeof setProductIdQuantityCustomPriceMapping === 'function' ? false: true,
             type: 'number',
             valueGetter: (_, row) => {
@@ -272,7 +293,8 @@ const actionColumnsWithQuantitySelection = async (productIdQuantityMapping: Map<
             filterable: false,
             field: "pricePerQuantity",
             headerName: "Price Per Quantity",
-            width: 150,
+            flex: 2,
+            minWidth: 150,
             editable: true,
             type: 'number',
             valueGetter: (_, row) => {
@@ -309,10 +331,6 @@ export const initProductGridColumns = async (confirm: (options?: ConfirmOptions 
     return await actionColumns(confirm, setLoading);
 }
 
-export const initProductGridColumnsForSelectionWithoutQuantitySelection = async () => {
-    return [...productGridColumns];
-}
-
 export const initProductGridColumnsForSelection = async (productIdQuantityMapping: Map<number, number> | undefined,
                                                          setProductIdQuantityMapping: ((mapping: Map<number, number>) => void) | undefined,
                                                          productIdQuantityCustomPriceMapping: SalesOrdersProductQuantityMap[] | undefined,
@@ -332,7 +350,8 @@ export const initProductGridColumnsForOrderSummary = async (salesOrdersProductQu
         {
             field: "quantity",
             headerName: "Quantity",
-            width: 150,
+            flex: 2,
+            minWidth: 150,
             valueGetter: (_, row) => {
                 const map = salesOrdersProductQuantityMap.find(map => map.productId === row.product.productId);
                 return map ? map.quantity : "";
@@ -341,7 +360,8 @@ export const initProductGridColumnsForOrderSummary = async (salesOrdersProductQu
         {
             field: "pricePerProduct",
             headerName: "Price Per Product",
-            width: 150,
+            flex: 2,
+            minWidth: 150,
             valueGetter: (_, row) => {
                 const map = salesOrdersProductQuantityMap.find(map => map.productId === row.product.productId);
                 return map ? parse(map.pricePerQuantityPerProduct.toString()) + " ₹": "";
@@ -351,4 +371,3 @@ export const initProductGridColumnsForOrderSummary = async (salesOrdersProductQu
 
     return [...newColumns];
 }
-

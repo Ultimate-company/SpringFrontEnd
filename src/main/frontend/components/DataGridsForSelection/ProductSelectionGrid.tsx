@@ -267,7 +267,7 @@ const ProductSelectionGrid = (props: ProductSelectionGridProps) => {
                     return "deleted";
                 }
                 else {
-                    return "";
+                    return params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd';
                 }
             }, [state, props.selectedProductIds, props.productIdQuantityCustomPriceMapping, props.productIdQuantityMapping])}
         />

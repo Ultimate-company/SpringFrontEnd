@@ -10,6 +10,7 @@ import React from "react";
 import {ConfirmOptions} from "material-ui-confirm";
 import {userUrls} from "Frontend/api/Endpoints";
 import Chip from "@mui/material/Chip";
+import RenderLongCellItem from "Frontend/components/Datagrid/RenderLongCellItem";
 
 const userGridColumns: GridColDef[] = [
     {
@@ -31,7 +32,8 @@ const userGridColumns: GridColDef[] = [
         filterable: false,
         field: "avatar",
         headerName: "Icon",
-        width: 60,
+        flex: 1,
+        minWidth: 60,
         renderCell: (params: GridRenderCellParams) => {
             const [imageError, setImageError] = React.useState(false); // Declare imageError state
             return (
@@ -58,36 +60,74 @@ const userGridColumns: GridColDef[] = [
     {
         field: "firstName",
         headerName: "First Name",
-        width: 200
+        flex: 2,
+        minWidth: 250,
+        valueGetter: (value, row) => {
+            return row.firstName;
+        },
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />
     },
     {
         field: "lastName",
         headerName: "Last Name",
-        width: 200
+        flex: 2,
+        minWidth: 250,
+        valueGetter: (value, row) => {
+            return row.lastName;
+        },
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />
     },
     {
         field: "loginName",
         headerName: "Email",
-        width: 300
+        flex: 2,
+        minWidth: 250,
+        valueGetter: (value, row) => {
+            return row.loginName;
+        },
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />
     },
     {
         field: "role",
         headerName: "Role",
-        width: 120
+        flex: 2,
+        minWidth: 250,
+        valueGetter: (value, row) => {
+            return row.role;
+        },
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />
     },
     {
         filterable: false,
         field: "dob",
         headerName: "DOB",
-        width: 150,
+        flex: 2,
+        minWidth: 250,
         valueGetter: (value, row) => {
             return `${format(new Date(row.dob), 'do MMM yyyy')}`;
-        }
+        },
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />
     },
     {
         field: "phone",
         headerName: "Phone",
-        width: 150,
+        flex: 2,
+        minWidth: 150,
         valueGetter: (value, row) => {
             let phone = row.phone;
             return `(${phone.substr(0, 3)}) - ${phone.substr(3, 3)} - ${phone.substr(6)}`;
@@ -96,7 +136,8 @@ const userGridColumns: GridColDef[] = [
     {
         field: "emailConfirmed",
         headerName: "Account Confirmed",
-        width: 150,
+        flex: 2,
+        minWidth: 150,
         renderCell: (params: GridRenderCellParams) => {
             const confirmed = params.row.emailConfirmed;
 
@@ -134,7 +175,7 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
             confirmationButtonProps: { autoFocus: true }
         })
             .then(() => {
-                userApi(setLoading).toggleUser(params.row.userId).then((response: number) => {
+                userApi(setLoading).toggleUser(params.row.userId).then(() => {
                     window.location.reload();
                 });
             })
@@ -149,7 +190,7 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
             confirmationButtonProps: { autoFocus: true }
         })
             .then(() => {
-                userApi(setLoading).toggleUser(params.row.userId).then((response: number) => {
+                userApi(setLoading).toggleUser(params.row.userId).then(() => {
                     window.location.reload();
                 });
             })
@@ -165,7 +206,8 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
             filterable: false,
             field: "OrderHistory",
             headerName: "Orders",
-            width: 150,
+            flex: 1,
+            minWidth: 150,
             renderCell: () => (
                 <div>
                     <a href={navigatingRoutes.dashboard.orders}>View Order History</a>
@@ -178,7 +220,8 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
         filterable: false,
         field: "Actions",
         headerName: "Actions",
-        width: 200,
+        flex: 1,
+        minWidth: 200,
         renderCell: (params: GridRenderCellParams) => (
             <div>
                 {params.row.deleted ? (

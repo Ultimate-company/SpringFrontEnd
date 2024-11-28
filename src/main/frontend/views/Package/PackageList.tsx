@@ -92,22 +92,24 @@ const PackageList = () => {
         gridApi(setLoading)
             .getGridVisibilityPreference(GridId.PACKAGES)
             .then((response: UserGridPreference) => {
-                if(response) {
-                    let prevState:PaginatedGridInterface = state;
-                    setUserGridPreference(response);
-                    if(response.rowsPerPage) {
-                        prevState.pageSize = response.rowsPerPage;
-                    }
-                    if(response.visibilityModel) {
-                        setPackageColumnVisibilityModel(JSON.parse(response.visibilityModel as string) as GridColumnVisibilityModel);
-                    }
-                    setPackageAndPagination(prevState);
+                if(!response) {
+                    response = gridPreference;
                 }
+
+                let prevState:PaginatedGridInterface = state;
+                setUserGridPreference(response);
+                if(response.rowsPerPage) {
+                    prevState.pageSize = response.rowsPerPage;
+                }
+                if(response.visibilityModel) {
+                    setPackageColumnVisibilityModel(JSON.parse(response.visibilityModel as string) as GridColumnVisibilityModel);
+                }
+                setPackageAndPagination(paginatedGridModel);
             });
     }, []);
 
     return <>
-        <Toolbar page = "Package"/>
+        <Toolbar page = "Package" setLoading={setLoading}/>
         <OutletLayout card={true}>
             <CustomToolbar
                 checkboxes = {[
@@ -200,7 +202,7 @@ const PackageList = () => {
                         return "deleted";
                     }
                     else {
-                        return "";
+                        return params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd';
                     }
                 }, [state])}
             />

@@ -21,13 +21,19 @@ const packageBaseUrl = '/Package';
 const webTemplateBaseUrl = '/WebTemplate';
 const dataBaseUrl = '/Data';
 const gridBaseUrl = '/Grid';
+const bulkBaseUrl = '/Bulk';
 
 Axios.defaults.baseURL = window.location.origin;
 
-const urlMapper = (baseUrl: string, endpoints: any) => Object.keys(endpoints).reduce((result, key) => {
-    result[key] = `${baseUrl}\/${endpoints[key]}`;
-    return result;
-}, endpoints);
+type EndpointMap = {
+    [key: string]: string;
+};
+
+const urlMapper = (baseUrl: string, endpoints: EndpointMap): EndpointMap =>
+    Object.keys(endpoints).reduce((result, key) => {
+        result[key] = `${baseUrl}/${endpoints[key]}`;
+        return result;
+    }, {} as EndpointMap);
 
 const carrierEndpoints = {
     getCarrierInBatches: 'getCarrierInBatches',
@@ -106,9 +112,7 @@ const productEndpoints = {
     toggleReturnProduct: 'toggleReturnProduct',
     toggleDeleteProduct: 'toggleDeleteProduct',
     getProductDetailsByIds: 'getProductDetailsByIds',
-    setProductCategory: 'setProductCategory',
     getProductCategories: 'getProductCategories',
-    getColors: 'getColors',
     getStaticImage: 'getStaticImage',
     getProductImage: 'getProductImage',
     addProduct: 'addProduct',
@@ -202,6 +206,7 @@ const loginEndpoints = {
 }
 
 const dataEndpoints = {
+    getColors: 'getColors',
     getStates: 'getStates',
     getRoles: 'getRoles',
     getLeadStatuses: 'getLeadStatuses',
@@ -209,7 +214,8 @@ const dataEndpoints = {
     getFilterOptions: 'getFilterOptions',
     getSortOptions: 'getSortOptions',
     getStateCityMappingOptions: 'getStateCityMappingOptions',
-    getFontStyles: 'getFontStyles'
+    getFontStyles: 'getFontStyles',
+    findCategoriesWithoutChildren: "findCategoriesWithoutChildren"
 }
 
 const userLogEndpoints = {
@@ -234,6 +240,12 @@ const gridEndpoints = {
     getGridVisibilityPreference: 'getGridVisibilityPreference'
 }
 
+const bulkEndpoints = {
+    generateBulkImportExcel: 'generateBulkImportExcel',
+    bulkInsert: 'bulkInsert'
+}
+
+export const bulkUrls = urlMapper(bulkBaseUrl, bulkEndpoints);
 export const carrierUrls = urlMapper(carrierBaseUrl, carrierEndpoints);
 export const eventUrls = urlMapper(eventBaseUrl, eventEndpoints);
 export const userGroupUrl = urlMapper(userGroupBaseUrl, userGroupEndpoints);

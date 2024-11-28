@@ -884,7 +884,7 @@ const AddOrEditUser = () => {
                             )}
                             getRowClassName={React.useCallback(
                                 (params: GridRowClassNameParams) => {
-                                    return params.row.deleted ? "deleted" : "";
+                                    return params.row.deleted ? "deleted" : params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd';;
                                 },
                                 [gridState]
                             )}

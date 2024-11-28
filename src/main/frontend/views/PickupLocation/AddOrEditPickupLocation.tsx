@@ -1,7 +1,7 @@
 import {getURLParamValue, isEditMode, isViewMode } from "Frontend/components/commonHelperFunctions";
 import React from "react";
 import {useOutletContext} from "react-router-dom";
-import {dataApi, leadApi, pickupLocationApi} from "Frontend/api/ApiCalls";
+import {dataApi, pickupLocationApi} from "Frontend/api/ApiCalls";
 import {
     PickupLocationRequestModel,
     PickupLocationResponseModel
@@ -204,7 +204,6 @@ const AddOrEditPickupLocation = () => {
                         inputType={InputType.TextField}
                         label="Email at Address"
                         value={emailAtAddress}
-                        required={false}
                         handleChange={React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => setEmailAtAddress(event.target.value), [emailAtAddress])}
                         isView={isView}
                     />

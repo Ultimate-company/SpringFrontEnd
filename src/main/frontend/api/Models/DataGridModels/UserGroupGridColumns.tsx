@@ -5,6 +5,7 @@ import {permissionChecks} from "Frontend/api/Models/CarrierModels/Permissions";
 import {navigatingRoutes} from "Frontend/navigation";
 import React from "react";
 import {ConfirmOptions} from "material-ui-confirm";
+import RenderLongCellItem from "Frontend/components/Datagrid/RenderLongCellItem";
 
 const userGroupGridColumns: GridColDef[] = [
     {
@@ -28,23 +29,34 @@ const userGroupGridColumns: GridColDef[] = [
     {
         field: "name",
         headerName: "Name",
-        width: 200,
+        flex: 2,
+        minWidth: 250,
         valueGetter: (value, row) => {
             return row.userGroup.name;
-        }
+        },
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />
     },
     {
         field: "description",
         headerName: "Description",
-        width: 300,
+        flex: 4,
+        minWidth: 250,
         valueGetter: (value, row) => {
             return row.userGroup.description;
-        }
+        },
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />
     },
     {
         field: "usersList",
         headerName: "Total Users in Group",
-        width: 300,
+        flex: 1,
+        minWidth: 150,
         filterable: false,
         valueGetter: (value, row) => {
             return row.userCount;
@@ -63,7 +75,7 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
             confirmationButtonProps: { autoFocus: true }
         })
             .then(() => {
-                userGroupApi(setLoading).toggleUserGroup(params.row.userGroup.userGroupId).then((response: number) => {
+                userGroupApi(setLoading).toggleUserGroup(params.row.userGroup.userGroupId).then(() => {
                     window.location.reload();
                 });
             })
@@ -78,7 +90,7 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
             confirmationButtonProps: { autoFocus: true }
         })
             .then(() => {
-                userGroupApi(setLoading).toggleUserGroup(params.row.userGroup.userGroupId).then((response: number) => {
+                userGroupApi(setLoading).toggleUserGroup(params.row.userGroup.userGroupId).then(() => {
                     window.location.reload();
                 });
             })
@@ -93,7 +105,8 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
         filterable: false,
         field: "Actions",
         headerName: "Actions",
-        width: 150,
+        flex: 1,
+        minWidth: 150,
         renderCell: (params: GridRenderCellParams) => (
             <div>
                 {params.row.userGroup.deleted ? (

@@ -15,7 +15,7 @@ const promoGridColumns: GridColDef[] = [
         filterable: false,
         valueGetter: (value, row) => {
             return row.promoId;
-        }
+        },
     },
     {
         field: "deleted",
@@ -24,32 +24,41 @@ const promoGridColumns: GridColDef[] = [
         filterable: false,
         valueGetter: (value, row) => {
             return row.lead.deleted;
-        }
+        },
     },
     {
         field: "promoCode",
         headerName: "Promo Code",
-        width: 200
+        flex: 2,
+        minWidth: 150,
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />,
     },
     {
         field: "description",
         headerName: "Description",
-        width: 300,
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        flex: 8,
+        minWidth: 250,
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />,
     },
     {
         field: "discountValue",
         headerName: "Discount Value",
-        width: 200,
+        flex: 1,
+        minWidth: 150,
         valueGetter: (value, row) => {
             if(row.percent) {
                 return row.discountValue + " %";
-            }
-            else {
+            } else {
                 return row.discountValue + " ₹";
             }
-        }
-    }
+        },
+    },
 ]
 
 const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => Promise<void>, setLoading: (loading: boolean) => void) => {
@@ -63,7 +72,7 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
             confirmationButtonProps: { autoFocus: true }
         })
             .then(() => {
-                promoApi(setLoading).togglePromo(params.row.promoId).then((response: number) => {
+                promoApi(setLoading).togglePromo(params.row.promoId).then(() => {
                     window.location.reload();
                 });
             })
@@ -78,7 +87,7 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
             confirmationButtonProps: { autoFocus: true }
         })
             .then(() => {
-                promoApi(setLoading).togglePromo(params.row.promoId).then((response: number) => {
+                promoApi(setLoading).togglePromo(params.row.promoId).then(() => {
                     window.location.reload();
                 });
             })
@@ -93,7 +102,8 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
         filterable: false,
         field: "Actions",
         headerName: "Actions",
-        width: 150,
+        flex: 1,
+        minWidth: 150,
         renderCell: (params: GridRenderCellParams) => (
             <div>
                 {params.row.deleted ? (

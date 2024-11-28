@@ -92,22 +92,24 @@ const ProductsList = () => {
         gridApi(setLoading)
             .getGridVisibilityPreference(GridId.PRODUCT)
             .then((response: UserGridPreference) => {
-                if(response) {
-                    let prevState:PaginatedGridInterface = state;
-                    setUserGridPreference(response);
-                    if(response.rowsPerPage) {
-                        prevState.pageSize = response.rowsPerPage;
-                    }
-                    if(response.visibilityModel) {
-                        setProductColumnVisibilityModel(JSON.parse(response.visibilityModel as string) as GridColumnVisibilityModel);
-                    }
-                    setProductAndPagination(prevState);
+                if(!response) {
+                    response = gridPreference;
                 }
+
+                let prevState:PaginatedGridInterface = state;
+                setUserGridPreference(response);
+                if(response.rowsPerPage) {
+                    prevState.pageSize = response.rowsPerPage;
+                }
+                if(response.visibilityModel) {
+                    setProductColumnVisibilityModel(JSON.parse(response.visibilityModel as string) as GridColumnVisibilityModel);
+                }
+                setProductAndPagination(paginatedGridModel);
             });
     }, []);
 
     return <>
-        <Toolbar page = "Product"/>
+        <Toolbar page = "Product" setLoading={setLoading}/>
         <OutletLayout card={true}>
             <CustomToolbar
                 checkboxes = {[
@@ -201,7 +203,7 @@ const ProductsList = () => {
                         return "deleted";
                     }
                     else {
-                        return "";
+                        return params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd';
                     }
                 }, [state])}
             />

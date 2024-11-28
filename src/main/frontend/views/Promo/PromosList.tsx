@@ -92,22 +92,24 @@ const PromosList = () => {
         gridApi(setLoading)
             .getGridVisibilityPreference(GridId.PROMO)
             .then((response: UserGridPreference) => {
-                if(response) {
-                    let prevState:PaginatedGridInterface = state;
-                    setUserGridPreference(response);
-                    if(response.rowsPerPage) {
-                        prevState.pageSize = response.rowsPerPage;
-                    }
-                    if(response.visibilityModel) {
-                        setPromoColumnVisibilityModel(JSON.parse(response.visibilityModel as string) as GridColumnVisibilityModel);
-                    }
-                    setPromoAndPagination(prevState);
+                if(!response) {
+                    response = gridPreference;
                 }
+
+                let prevState:PaginatedGridInterface = state;
+                setUserGridPreference(response);
+                if(response.rowsPerPage) {
+                    prevState.pageSize = response.rowsPerPage;
+                }
+                if(response.visibilityModel) {
+                    setPromoColumnVisibilityModel(JSON.parse(response.visibilityModel as string) as GridColumnVisibilityModel);
+                }
+                setPromoAndPagination(paginatedGridModel);
             });
     }, []);
 
     return <>
-        <Toolbar page = "Promo"/>
+        <Toolbar page = "Promo" setLoading={setLoading}/>
         <OutletLayout card={true}>
             <CustomToolbar
                 checkboxes = {[
@@ -200,7 +202,7 @@ const PromosList = () => {
                         return "deleted";
                     }
                     else {
-                        return "";
+                        return params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd';
                     }
                 }, [state])}
             />

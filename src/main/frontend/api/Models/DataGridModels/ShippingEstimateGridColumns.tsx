@@ -33,7 +33,6 @@ const shippingEstimateGridColumns: GridColDef[] = [
                 row.pickupLocationResponseModel.address.zipCode;
         },
         renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
-            length={100}
             value={params.value}
         />
     }

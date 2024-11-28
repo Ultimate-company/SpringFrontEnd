@@ -15,7 +15,7 @@ const leadGridColumns: GridColDef[] = [
         filterable: false,
         valueGetter: (value, row) => {
             return row.lead.leadId;
-        }
+        },
     },
     {
         field: "deleted",
@@ -29,61 +29,86 @@ const leadGridColumns: GridColDef[] = [
     {
         field: "leadStatus",
         headerName: "Lead Status",
-        width: 200,
+        flex: 2,
+        minWidth: 250,
         valueGetter: (value, row) => {
             return row.lead.leadStatus;
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />
     },
     {
         field: "firstName",
         headerName: "First Name",
-        width: 300,
+        flex: 2,
+        minWidth: 250,
         valueGetter: (value, row) => {
             return row.lead.firstName;
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />
     },
     {
         field: "lastName",
         headerName: "Last Name",
-        width: 300,
+        flex: 2,
+        minWidth: 250,
         valueGetter: (value, row) => {
             return row.lead.lastName;
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />
     },
     {
         field: "email",
         headerName: "Email",
-        width: 300,
+        flex: 2,
+        minWidth: 250,
         valueGetter: (value, row) => {
             return row.lead.email;
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />
     },
     {
         field: "address",
         headerName: "Address",
-        width: 300,
+        flex: 4,
+        minWidth: 550,
         valueGetter: (value, row) => {
             return row.address.line1 + " " + row.address.line2 + ", " + row.address.city + ", " + row.address.state + ", " + row.address.zipCode;
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />
     },
     {
         field: "website",
         headerName: "Website",
-        width: 300,
+        flex: 2,
+        minWidth: 250,
         valueGetter: (value, row) => {
             return row.lead.website;
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />
     },
     {
         field: "phone",
         headerName: "Phone",
-        width: 150,
+        flex: 2,
+        minWidth: 150,
         valueGetter: (value, row) => {
             return `(${row.lead.phone.substr(0, 3)}) - ${row.lead.phone.substr(3, 3)} - ${row.lead.phone.substr(6)}`;
         }
@@ -91,16 +116,21 @@ const leadGridColumns: GridColDef[] = [
     {
         field: "company",
         headerName: "Company",
-        width: 300,
+        flex: 2,
+        minWidth: 250,
         valueGetter: (value, row) => {
             return row.lead.company;
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />
     },
     {
         field: "companySize",
         headerName: "Company Size",
-        width: 200,
+        flex: 1,
+        minWidth: 150,
         valueGetter: (value, row) => {
             return row.lead.companySize;
         }
@@ -108,39 +138,55 @@ const leadGridColumns: GridColDef[] = [
     {
         field: "annualRevenue",
         headerName: "Annual Revenue",
-        width: 200,
+        flex: 1,
+        minWidth: 150,
         valueGetter: (value, row) => {
-            return "₹ " + row.lead.annualRevenue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            if(row.lead.annualRevenue) {
+                return "₹ " + row.lead.annualRevenue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+            return "";
         }
     },
     {
         field: "title",
         headerName: "Title",
-        width: 300,
+        flex: 2,
+        minWidth: 250,
         valueGetter: (value, row) => {
             return row.lead.title;
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />
     },
     {
         field: "leadAssignedTo",
         headerName: "Lead Assigned To",
-        width: 300,
+        flex: 4,
+        minWidth: 350,
         filterable: false,
         valueGetter: (value, row) => {
             return row.assignedAgent.firstName + " " + row.assignedAgent.lastName + " (" + row.assignedAgent.loginName + ")";
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />
     },
     {
         field: "leadCreatedBy",
         headerName: "Lead Created By",
-        width: 300,
+        flex: 4,
+        minWidth: 350,
         filterable: false,
         valueGetter: (value, row) => {
             return row.createdBy.firstName + " " + row.createdBy.lastName+ " (" + row.createdBy.loginName + ")";
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />
     }
 ];
 
@@ -155,7 +201,7 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
             confirmationButtonProps: { autoFocus: true }
         })
             .then(() => {
-                leadApi(setLoading).toggleLead(params.row.lead.leadId).then((response: number) => {
+                leadApi(setLoading).toggleLead(params.row.lead.leadId).then(() => {
                     window.location.reload();
                 });
             })
@@ -170,7 +216,7 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
             confirmationButtonProps: { autoFocus: true }
         })
             .then(() => {
-                leadApi(setLoading).toggleLead(params.row.lead.leadId).then((response: number) => {
+                leadApi(setLoading).toggleLead(params.row.lead.leadId).then(() => {
                     window.location.reload();
                 });
             })
@@ -185,7 +231,8 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
         filterable: false,
         field: "Actions",
         headerName: "Actions",
-        width: 150,
+        flex: 2,
+        minWidth: 150,
         renderCell: (params: GridRenderCellParams) => (
             <div>
                 {params.row.lead.deleted ? (

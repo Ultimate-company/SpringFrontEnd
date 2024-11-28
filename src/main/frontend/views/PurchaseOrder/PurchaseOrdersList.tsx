@@ -199,7 +199,7 @@ const PurchaseOrdersList = () => {
                         return "deleted";
                     }
                     else {
-                        return "";
+                        return params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd';
                     }
                 }, [state])}
             />

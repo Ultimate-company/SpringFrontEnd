@@ -5,7 +5,6 @@ export type Message = {
     title: string;
     publishDate: Date;
     description?: string;
-    descriptionMarkDown?: string;
     descriptionHtml: string;
     sendAsEmail: boolean;
     deleted?: boolean;

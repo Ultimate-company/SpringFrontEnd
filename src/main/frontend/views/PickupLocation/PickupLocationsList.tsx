@@ -91,22 +91,24 @@ const PickupLocationsList = () => {
         gridApi(setLoading)
             .getGridVisibilityPreference(GridId.PICKUP_LOCATION)
             .then((response: UserGridPreference) => {
-                if(response) {
-                    let prevState:PaginatedGridInterface = state;
-                    setUserGridPreference(response);
-                    if(response.rowsPerPage) {
-                        prevState.pageSize = response.rowsPerPage;
-                    }
-                    if(response.visibilityModel) {
-                        setPickupLocationColumnVisibilityModel(JSON.parse(response.visibilityModel as string) as GridColumnVisibilityModel);
-                    }
-                    setPickupLocationAndPagination(prevState);
+                if(!response) {
+                    response = gridPreference;
                 }
+
+                let prevState:PaginatedGridInterface = state;
+                setUserGridPreference(response);
+                if(response.rowsPerPage) {
+                    prevState.pageSize = response.rowsPerPage;
+                }
+                if(response.visibilityModel) {
+                    setPickupLocationColumnVisibilityModel(JSON.parse(response.visibilityModel as string) as GridColumnVisibilityModel);
+                }
+                setPickupLocationAndPagination(paginatedGridModel);
             });
     }, []);
 
     return <>
-        <Toolbar page = "PickupLocation"/>
+        <Toolbar page = "PickupLocation" setLoading={setLoading}/>
         <OutletLayout card={true}>
             <CustomToolbar
                 checkboxes = {[
@@ -199,7 +201,7 @@ const PickupLocationsList = () => {
                         return "deleted";
                     }
                     else {
-                        return "";
+                        return params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd';
                     }
                 }, [state])}
             />

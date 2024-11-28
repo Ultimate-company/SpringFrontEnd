@@ -92,22 +92,25 @@ const MessagesList = () => {
         gridApi(setLoading)
             .getGridVisibilityPreference(GridId.MESSAGE)
             .then((response: UserGridPreference) => {
-                if(response) {
-                    let prevState:PaginatedGridInterface = state;
-                    setUserGridPreference(response);
-                    if(response.rowsPerPage) {
-                        prevState.pageSize = response.rowsPerPage;
-                    }
-                    if(response.visibilityModel) {
-                        setMessageColumnVisibilityModel(JSON.parse(response.visibilityModel as string) as GridColumnVisibilityModel);
-                    }
-                    setMessageAndPagination(prevState);
+                if(!response) {
+                    response = gridPreference;
                 }
+
+                let prevState:PaginatedGridInterface = state;
+                setUserGridPreference(response);
+                if(response.rowsPerPage) {
+                    prevState.pageSize = response.rowsPerPage;
+                }
+                if(response.visibilityModel) {
+                    setMessageColumnVisibilityModel(JSON.parse(response.visibilityModel as string) as GridColumnVisibilityModel);
+                }
+                setMessageAndPagination(paginatedGridModel);
             });
     }, []);
 
+
     return <>
-        <Toolbar page = "Message"/>
+        <Toolbar page = "Message" setLoading={setLoading}/>
         <OutletLayout card={true}>
             <CustomToolbar
                 checkboxes = {[
@@ -200,7 +203,7 @@ const MessagesList = () => {
                         return "deleted";
                     }
                     else {
-                        return "";
+                        return params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd';
                     }
                 }, [state])}
             />

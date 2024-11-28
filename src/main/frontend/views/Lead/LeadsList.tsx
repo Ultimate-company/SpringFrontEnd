@@ -92,22 +92,23 @@ const LeadsList = () => {
         gridApi(setLoading)
             .getGridVisibilityPreference(GridId.LEAD)
             .then((response: UserGridPreference) => {
-                if(response) {
-                    let prevState:PaginatedGridInterface = state;
-                    setUserGridPreference(response);
-                    if(response.rowsPerPage) {
-                        prevState.pageSize = response.rowsPerPage;
-                    }
-                    if(response.visibilityModel) {
-                        setLeadGridColumnVisibilityModel(JSON.parse(response.visibilityModel as string) as GridColumnVisibilityModel);
-                    }
-                    setLeadsAndPagination(prevState);
-                }
+               if(!response) {
+                   response = gridPreference;
+               }
+               let prevState:PaginatedGridInterface = state;
+               setUserGridPreference(response);
+               if(response.rowsPerPage) {
+                   prevState.pageSize = response.rowsPerPage;
+               }
+               if(response.visibilityModel) {
+                   setLeadGridColumnVisibilityModel(JSON.parse(response.visibilityModel as string) as GridColumnVisibilityModel);
+               }
+               setLeadsAndPagination(prevState);
             });
     }, []);
 
     return <>
-        <Toolbar page = "Lead"/>
+        <Toolbar page = "Lead" setLoading={setLoading}/>
         <OutletLayout card={true}>
             <CustomToolbar
                 checkboxes = {[
@@ -200,7 +201,7 @@ const LeadsList = () => {
                         return "deleted";
                     }
                     else {
-                        return "";
+                        return params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd';
                     }
                 }, [state])}
             />

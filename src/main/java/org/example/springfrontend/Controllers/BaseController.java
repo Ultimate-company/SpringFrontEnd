@@ -1,6 +1,7 @@
 package org.example.springfrontend.Controllers;
 
 import jakarta.servlet.http.HttpSession;
+import org.apache.commons.lang3.tuple.Pair;
 import org.example.FactoryExtensions;
 import org.example.Models.CommunicationModels.CarrierModels.Permissions;
 import org.example.Models.CommunicationModels.CentralModels.User;
@@ -12,6 +13,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -139,18 +143,23 @@ public class BaseController {
         }
     }
 
-    public Map<String, String> getFlash() {
-        HttpSession httpSession = getCurrentSession();
-        if (httpSession != null && httpSession.getAttribute("Flash") == null) {
-            httpSession.setAttribute("Flash", new HashMap<String, String>());
+    public static Pair<String, byte[]> getImage(String imageDirectory, String imageName) throws IOException {
+        Path imagePath = Path.of(imageDirectory, imageName);
+
+        if (Files.exists(imagePath)) {
+            byte[] imageBytes = Files.readAllBytes(imagePath);
+            String contentType = switch (imageName.substring(imageName.lastIndexOf('.')).toLowerCase()) {
+                case ".jpg" -> "image/jpeg";
+                case ".png" -> "image/png";
+                case ".bmp" -> "image/bmp";
+                case ".gif" -> "image/gif";
+                default -> "application/octet-stream";
+            };
+
+            return Pair.of(contentType, imageBytes);
+        } else {
+            return null;
         }
-        return (Map<String, String>) httpSession.getAttribute("Flash");
     }
 
-    public void setFlash(Map<String, String> flash) {
-        HttpSession httpSession = getCurrentSession();
-        if(httpSession != null){
-            httpSession.setAttribute("Flash", flash);
-        }
-    }
 }

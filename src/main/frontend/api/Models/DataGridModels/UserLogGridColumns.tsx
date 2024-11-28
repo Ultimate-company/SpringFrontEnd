@@ -14,29 +14,46 @@ export const userLogGridColumns: GridColDef[] = [
     {
         field: "TimeStamp",
         headerName: "Date & Time Of Change",
-        width: 150,
+        flex: 1,
+        minWidth: 150,
         filterable: false,
         valueGetter: (value, row) => {
             return `${format(new Date(row.updatedAt), 'do MMM yyyy')}`;
-        }
+        },
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />,
     },
     {
         field: "change",
         headerName: "Change Made",
-        width: 300,
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        flex: 2,
+        minWidth: 250,
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />,
     },
     {
         field: "oldValue",
         headerName: "Old Value",
-        width: 300,
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        flex: 2,
+        minWidth: 250,
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />,
     },
     {
         field: "newValue",
         headerName: "New Value",
-        width: 300,
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        flex: 2,
+        minWidth: 250,
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />,
     },
 ];
 
