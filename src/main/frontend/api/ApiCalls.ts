@@ -477,29 +477,29 @@ export const purchaseOrderApi = (setLoading: (loading: boolean) => void) => {
         approvedByPurchaseOrder: async (purchaseOrderId: number) => {
             return await wrappedApiFunctions<boolean>(setLoading, purchaseOrderUrls.approvedByPurchaseOrder + `?purchaseOrderId=${purchaseOrderId}`, requestMethod.POST, null);
         },
-        downloadPdf: async (purchaseOrderId: number) => {
-            const response = await Axios.get(`${purchaseOrderUrls.getPurchaseOrderPdf}?purchaseOrderId=${purchaseOrderId}`, {
-                responseType: 'arraybuffer',
-            });
-
-            // Create a blob from the response data
-            const blob = new Blob([response.data], { type: 'application/pdf' });
-            const url = window.URL.createObjectURL(blob);
-
-            // Create a link element
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', 'purchaseOrder.pdf'); // Set file name
-
-            // Append the link to the body
-            document.body.appendChild(link);
-
-            // Programmatically click the link to trigger the download
-            link.click();
-
-            // Clean up by removing the link
-            document.body.removeChild(link);
-        }
+        // downloadPdf: async (purchaseOrderId: number) => {
+        //     const response = await Axios.get(`${purchaseOrderUrls.getPurchaseOrderPdf}?purchaseOrderId=${purchaseOrderId}`, {
+        //         responseType: 'arraybuffer',
+        //     });
+        //
+        //     // Create a blob from the response data
+        //     const blob = new Blob([response.data], { type: 'application/pdf' });
+        //     const url = window.URL.createObjectURL(blob);
+        //
+        //     // Create a link element
+        //     const link = document.createElement('a');
+        //     link.href = url;
+        //     link.setAttribute('download', 'purchaseOrder.pdf'); // Set file name
+        //
+        //     // Append the link to the body
+        //     document.body.appendChild(link);
+        //
+        //     // Programmatically click the link to trigger the download
+        //     link.click();
+        //
+        //     // Clean up by removing the link
+        //     document.body.removeChild(link);
+        // }
     };
 };
 

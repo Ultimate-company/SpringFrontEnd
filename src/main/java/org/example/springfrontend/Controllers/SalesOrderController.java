@@ -1,6 +1,5 @@
 package org.example.springfrontend.Controllers;
 
-import com.itextpdf.text.DocumentException;
 import freemarker.template.TemplateException;
 import jakarta.servlet.http.HttpSession;
 import org.example.ApiRoutes;
@@ -8,11 +7,8 @@ import org.example.CommonHelpers.JsonResponse;
 import org.example.CommonHelpers.ShippingHelper;
 import org.example.Models.CommunicationModels.CarrierModels.*;
 import org.example.Models.CommunicationModels.CarrierModels.Package;
-import org.example.Models.Enums.SalesOrderStatus;
-import org.example.Models.RequestModels.ApiRequestModels.PurchaseOrderRequestModel;
 import org.example.Models.RequestModels.ApiRequestModels.SalesOrderRequestModel;
 import org.example.Models.RequestModels.GridRequestModels.GetSalesOrdersRequestModel;
-import org.example.Models.RequestModels.GridRequestModels.PaginationBaseRequestModel;
 import org.example.Models.ResponseModels.ApiResponseModels.PaginationBaseResponseModel;
 import org.example.Models.ResponseModels.ApiResponseModels.PickupLocationResponseModel;
 import org.example.Models.ResponseModels.ApiResponseModels.ProductsResponseModel;
@@ -214,8 +210,8 @@ public class SalesOrderController extends BaseController{
     }
 
     @PostMapping(ApiRoutes.SalesOrderSubRoute.GET_SALES_ORDER_PDF)
-    public void getSalesOrderPdf(@RequestParam long salesOrderId) throws TemplateException, DocumentException, IOException {
-        Response<byte[]> getSalesOrderPdfResponse = apiTranslator().getSalesOrderSubTranslator().getSalesOrderPDF(salesOrderId);
+    public void getSalesOrderPdf(@RequestParam long salesOrderId) throws TemplateException, IOException {
+        Response<String> getSalesOrderPdfResponse = apiTranslator().getSalesOrderSubTranslator().getSalesOrderPDF(salesOrderId);
     }
 
     @PutMapping(ApiRoutes.SalesOrderSubRoute.CREATE_SALES_ORDER)

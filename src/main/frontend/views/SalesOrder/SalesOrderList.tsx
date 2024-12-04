@@ -203,7 +203,7 @@ const SalesOrdersList = () => {
     ];
 
     return <>
-        <Toolbar page = "SalesOrder"/>
+        <Toolbar page = "SalesOrder" setLoading={setLoading}/>
         <OutletLayout card={true}>
             <Box sx={{ width: '100%' }}>
                 <Tabs

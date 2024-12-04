@@ -109,7 +109,7 @@ const WebTemplateList = () => {
     }, []);
 
     return <>
-        <Toolbar page = "Web Template" setLoading={setLoading}/>
+        <Toolbar page = "WebTemplate" setLoading={setLoading}/>
         <OutletLayout card={true}>
             <CustomToolbar
                 checkboxes = {[

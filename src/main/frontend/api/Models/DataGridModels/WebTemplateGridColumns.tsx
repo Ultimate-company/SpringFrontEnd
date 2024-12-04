@@ -3,7 +3,7 @@ import RenderLongCellItem from "Frontend/components/Datagrid/RenderLongCellItem"
 import React from "react";
 import {ConfirmOptions} from "material-ui-confirm";
 import {Permissions} from "Frontend/api/Models/CentralModels/User";
-import {userApi, userGroupApi, webTemplateApi} from "Frontend/api/ApiCalls";
+import {userApi, webTemplateApi} from "Frontend/api/ApiCalls";
 import {permissionChecks} from "Frontend/api/Models/CarrierModels/Permissions";
 import {navigatingRoutes} from "Frontend/navigation";
 
@@ -17,38 +17,54 @@ export const webTemplateGridColumns: GridColDef[] = [
     {
         field: "webTemplateUrl",
         headerName: "Web Template Url",
-        width: 300,
+        flex: 2,
+        minWidth: 250,
         valueGetter: (value, row) => {
             return row.webTemplate.url
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />
     },
     {
         field: "acceptedPaymentOptions",
         headerName: "Accepted Payment Options",
-        width: 300,
+        flex: 2,
+        minWidth: 250,
         valueGetter: (value, row) => {
             return row.webTemplate.acceptedPaymentOptions
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />
     },
     {
         field: "sortOptions",
         headerName: "Sort Options",
-        width: 300,
+        flex: 2,
+        minWidth: 250,
         valueGetter: (value, row) => {
             return row.webTemplate.sortOptions
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />
     },
     {
         field: "filerOptions",
         headerName: "Filter Options",
-        width: 300,
+        flex: 2,
+        minWidth: 250,
         valueGetter: (value, row) => {
             return row.webTemplate.filterOptions
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />
     }
 ];
 
@@ -63,7 +79,7 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
             confirmationButtonProps: { autoFocus: true }
         })
             .then(() => {
-                webTemplateApi(setLoading).toggleWebTemplate(params.row.webTemplate.webTemplateId).then((response: number) => {
+                webTemplateApi(setLoading).toggleWebTemplate(params.row.webTemplate.webTemplateId).then(() => {
                     window.location.reload();
                 });
             })
@@ -78,7 +94,7 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
             confirmationButtonProps: { autoFocus: true }
         })
             .then(() => {
-                webTemplateApi(setLoading).toggleWebTemplate(params.row.webTemplate.webTemplateId).then((response: number) => {
+                webTemplateApi(setLoading).toggleWebTemplate(params.row.webTemplate.webTemplateId).then(() => {
                     window.location.reload();
                 });
             })
@@ -93,7 +109,7 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
             confirmationButtonProps: { autoFocus: true }
         })
             .then(() => {
-                webTemplateApi(setLoading).deployWebTemplate(params.row.webTemplate.webTemplateId).then((response: boolean) => {
+                webTemplateApi(setLoading).deployWebTemplate(params.row.webTemplate.webTemplateId).then(() => {
                     window.location.reload();
                 });
             })
@@ -108,7 +124,8 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
         filterable: false,
         field: "Actions",
         headerName: "Actions",
-        width: 150,
+        flex: 1,
+        minWidth: 150,
         renderCell: (params: GridRenderCellParams) => (
             <div>
                 {params.row.webTemplate.deleted ? (

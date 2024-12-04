@@ -91,22 +91,24 @@ const PurchaseOrdersList = () => {
         gridApi(setLoading)
             .getGridVisibilityPreference(GridId.PURCHASE_ORDER)
             .then((response: UserGridPreference) => {
-                if(response) {
-                    let prevState:PaginatedGridInterface = state;
-                    setUserGridPreference(response);
-                    if(response.rowsPerPage) {
-                        prevState.pageSize = response.rowsPerPage;
-                    }
-                    if(response.visibilityModel) {
-                        setPurchaseOrderColumnVisibilityModel(JSON.parse(response.visibilityModel as string) as GridColumnVisibilityModel);
-                    }
-                    setPurchaseOrderAndPagination(prevState);
+                if(!response) {
+                    response = gridPreference;
                 }
+
+                let prevState:PaginatedGridInterface = state;
+                setUserGridPreference(response);
+                if(response.rowsPerPage) {
+                    prevState.pageSize = response.rowsPerPage;
+                }
+                if(response.visibilityModel) {
+                    setPurchaseOrderColumnVisibilityModel(JSON.parse(response.visibilityModel as string) as GridColumnVisibilityModel);
+                }
+                setPurchaseOrderAndPagination(paginatedGridModel);
             });
     }, []);
 
     return <>
-        <Toolbar page = "PurchaseOrder"/>
+        <Toolbar page = "PurchaseOrder" setLoading={setLoading}/>
         <OutletLayout card={true}>
             <CustomToolbar
                 checkboxes = {[

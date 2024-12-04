@@ -47,8 +47,6 @@ public class BulkController extends BaseController {
             case "Product" -> populateFieldMap(ProductRequestModel.class, fieldMap);
             case "Promo" -> populateFieldMap(Promo.class, fieldMap);
             case "PurchaseOrder" -> populateFieldMap(PurchaseOrderRequestModel.class, fieldMap);
-            //case "SalesOrder" -> {}
-            //case "Support" -> populateFieldMap(SupportRequestModel.class, fieldMap);
             case "UserGroup" -> populateFieldMap(UserGroupRequestModel.class, fieldMap);
             case "WebTemplate" -> populateFieldMap(WebTemplateRequestModel.class, fieldMap);
         }

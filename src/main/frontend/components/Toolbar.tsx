@@ -40,6 +40,7 @@ import {ProductCondition} from "Frontend/api/Models/CarrierModels/Product";
 import {CustomPaginationForGrid} from "Frontend/components/Datagrid/CustomPaginationForGrid";
 import {PickupLocation} from "Frontend/api/Models/CarrierModels/PickupLocation";
 import {GridRowClassNameParams} from "@mui/x-data-grid/models/params";
+import CustomTreeView from "Frontend/components/TreeView/CustomTreeView";
 
 interface PaperComponentProps {
     children?: React.ReactNode;
@@ -55,25 +56,37 @@ interface ImportDialogProps {
     open: boolean;
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
     page: string;
+    fileUploadChange: React.ChangeEventHandler<HTMLInputElement>;
+    uploadFile: () => void;
+    gridColumnVisibilityModel: GridColumnVisibilityModel;
+
+    // data grid cols
+    colorDataGridColumns: GridColDef[];
+    countryDataGridColumns: GridColDef[];
+    conditionDataGridColumns: GridColDef[];
+    productCategoriesDataGridColumns: GridColDef[];
+    pickupLocationGridColumns: GridColDef[];
+    paymentDataGridColumns: GridColDef[];
+    stateCitiesDataGridColumns: GridColDef[];
+    filterDataGridColumns: GridColDef[];
+    sortDataGridColumns: GridColDef[];
+
+    // data
     pickupLocationData: DataItem[];
     colorData: DataItem[];
     countryData: DataItem[];
     conditionData: DataItem[];
     productCategoryData: DataItem[];
-    pickupLocationGridColumns: GridColDef[];
-    fileUploadChange: React.ChangeEventHandler<HTMLInputElement>;
-    uploadFile: () => void;
-    gridColumnVisibilityModel: GridColumnVisibilityModel;
-    colorDataGridColumns: GridColDef[];
-    countryDataGridColumns: GridColDef[];
-    conditionDataGridColumns: GridColDef[];
-    productCategoriesDataGridColumns: GridColDef[];
+    paymentData: { [key: string]: { label: string; value: string }[] };
+    stateCitiesData: { [key: string]: string[] };
+    filterData: DataItem[];
+    sortData: DataItem[];
 
     // optional
     columns?: GridColDef[];
     rowClassNameCl?: GridColDef[];
     title?: string;
-    rows?: DataItem[] | PickupLocation[];
+    rows?: DataItem[] | PickupLocation[] | { [key: string]: { label: string; value: string }[] } | { [key: string]: string[] };
     md?: number;
 }
 
@@ -170,55 +183,87 @@ function CustomToolbar() {
     );
 }
 
-const DataGridSection = (
-    { 
-        title, 
-        rows, 
-        columns, 
-        gridColumnVisibilityModel,
-        md
-    }: Partial<ImportDialogProps>) => (
-    <Grid item md={md as number} xs={12}>
-        <Box noValidate component="form" sx={{ display: 'flex', flexDirection: 'column', m: 'auto', width: 'fit-content' }}>
-            <b>{title}</b>
-        </Box>
-        <StyledDataGrid
-            disableRowSelectionOnClick
-            style={{ height: 500 }}
-            rows={rows}
-            getRowId={(row) => row.key}
-            columns={columns as GridColDef[]}
-            columnVisibilityModel={gridColumnVisibilityModel}
-            slots={{
-                noRowsOverlay: CustomNoRowsOverlay,
-                toolbar: CustomToolbar,
-                pagination: () => <CustomPaginationForGrid pageSize={100} />,
-            }}
-            initialState={{ pagination: { paginationModel: { pageSize: 100 } } }}
-            pageSizeOptions={[10, 25, 100]}
-            getRowClassName={React.useCallback((params: GridRowClassNameParams) => {
-                return params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd';
-            }, [rows])}
-        />
-    </Grid>
-);
+const DataGridSection = ({
+                             title,
+                             rows,
+                             columns,
+                             gridColumnVisibilityModel,
+                             md
+                         }: Partial<ImportDialogProps>) => {
+
+    // Check if rows is of type { [key: string]: { label: string; value: string }[] } or { [key: string]: string[] }
+    const isComplexRowType =
+        rows &&
+        (Array.isArray(Object.values(rows)[0]) || typeof rows === 'object' && Object.values(rows)[0].hasOwnProperty('label'));
+
+    if (isComplexRowType) {
+        return(
+            <Grid item md={md as number} xs={12}>
+                <Box noValidate component="form" sx={{ display: 'flex', flexDirection: 'column', m: 'auto', width: 'fit-content' }}>
+                    <b>{title}</b>
+                </Box>
+                <CustomTreeView data={rows as { [key: string]: { label: string; value: string }[] }} />
+                <br/>
+            </Grid>
+        )
+    }
+
+    return (
+        <Grid item md={md as number} xs={12}>
+            <Box noValidate component="form" sx={{ display: 'flex', flexDirection: 'column', m: 'auto', width: 'fit-content' }}>
+                <b>{title}</b>
+            </Box>
+            <StyledDataGrid
+                disableRowSelectionOnClick
+                style={{ height: 500 }}
+                rows={rows}
+                getRowId={(row) => row.key}
+                columns={columns as GridColDef[]}
+                columnVisibilityModel={gridColumnVisibilityModel}
+                slots={{
+                    noRowsOverlay: CustomNoRowsOverlay,
+                    toolbar: CustomToolbar,
+                    pagination: () => <CustomPaginationForGrid pageSize={100} />,
+                }}
+                initialState={{ pagination: { paginationModel: { pageSize: 100 } } }}
+                pageSizeOptions={[10, 25, 100]}
+                getRowClassName={React.useCallback((params: GridRowClassNameParams) => {
+                    return params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd';
+                }, [rows])}
+            />
+        </Grid>
+    );
+};
 
 const ImportDialogContent = (
     {
         page,
-        colorData,
-        countryData,
-        pickupLocationData,
-        conditionData,
-        productCategoryData,
         fileUploadChange,
         gridColumnVisibilityModel,
+
+        // grid columns
         colorDataGridColumns,
         countryDataGridColumns,
         conditionDataGridColumns,
         pickupLocationGridColumns,
         productCategoriesDataGridColumns,
+        paymentDataGridColumns,
+        stateCitiesDataGridColumns,
+        filterDataGridColumns,
+        sortDataGridColumns,
+
+        //data
+        colorData,
+        countryData,
+        pickupLocationData,
+        conditionData,
+        productCategoryData,
+        paymentData,
+        stateCitiesData,
+        filterData,
+        sortData
     }: ImportDialogProps) => {
+    const webUrl = "ultimatecompany.dev.com";
     return (
         <DialogContent>
             <Box
@@ -229,6 +274,8 @@ const ImportDialogContent = (
                 You can import your {page} in the system directly by uploading a CSV/XLSX/XLS file.<br />
                 Depending on the size of your file, this might take some time.<br />
                 There is a sample CSV file below which contains the headers required for uploading the {page} data.<br /><br />
+
+                {/*// Conditional Rendering*/}
                 {page === "Message" && (
                     <>
                         In the sample column, either the 'userids' or 'usergroupids' column must be filled. Both
@@ -247,8 +294,28 @@ const ImportDialogContent = (
                         <hr style={{ border: '1px solid #000', width: '80%', margin: '20px auto' }} />
                     </Grid>
                 )}
+                {page === "WebTemplate" && (
+                    <>
+                        <>
+                            The url should be in this format: &nbsp;&nbsp;&nbsp;
+                            <span>https://your-wildcard-domain-name.{webUrl}</span>
+                            <br/><br/>
+                        </>
+                        <Grid container>
+                        <hr style={{ border: '1px solid #000', width: '80%', margin: '20px auto' }} />
+                            <DataGridSection md={6} title="Payment Options" rows={paymentData} columns={paymentDataGridColumns} gridColumnVisibilityModel={gridColumnVisibilityModel} />
+                            <DataGridSection md={6} title="Service State and Citities" rows={stateCitiesData} columns={stateCitiesDataGridColumns} gridColumnVisibilityModel={gridColumnVisibilityModel} />
+                            <DataGridSection md={12} title="Filter Options" rows={filterData} columns={filterDataGridColumns} gridColumnVisibilityModel={gridColumnVisibilityModel} />
+                            <DataGridSection md={12} title="Sort Options" rows={sortData} columns={sortDataGridColumns} gridColumnVisibilityModel={gridColumnVisibilityModel} />
+                            <hr style={{ border: '1px solid #000', width: '80%', margin: '20px auto' }} />
+                        </Grid>
+                    </>
+
+                )}
+
                 <a href={bulkUrls.generateBulkImportExcel + "?bulkAddType=" + page}>Import Template for {page}</a><br />
                 <input accept=".xlsx, .xls" type="file" onChange={fileUploadChange} />
+
             </Box>
         </DialogContent>
     );
@@ -256,8 +323,8 @@ const ImportDialogContent = (
 
 const ImportDialog = (props: ImportDialogProps) => (
     <Dialog
-        fullWidth={props.page === "Product"}
-        maxWidth={props.page === "Product" ? "xl" : undefined}
+        fullWidth={props.page === "Product" || props.page == "WebTemplate"}
+        maxWidth={props.page === "Product" || props.page == "WebTemplate"? "xl" : undefined}
         open={props.open}
         onClose={() => props.setOpen(false)}
         PaperComponent={(props) => <PaperComponent otherProps={props}>{props.children}</PaperComponent>}
@@ -286,6 +353,10 @@ const Toolbar = (props: ToolbarProps) => {
     const [colorDataGridColumns, setColorDataGridColumns] = React.useState<GridColDef[]>([]);
     const [pickupLocationGridColumns, setPickupLocationGridColumns] = React.useState<GridColDef[]>([]);
     const [productCategoriesDataGridColumns, setProductCategoriesDataGridColumns] = React.useState<GridColDef[]>([]);
+    const [paymentDataGridColumns, setPaymentDataGridColumns] = React.useState<GridColDef[]>([]);
+    const [stateCitiesDataGridColumns, setStateCitiesDataGridColumns] = React.useState<GridColDef[]>([]);
+    const [filterDataGridColumns, setFilterDataGridColumns] = React.useState<GridColDef[]>([]);
+    const [sortDataGridColumns, setSortDataGridColumns] = React.useState<GridColDef[]>([]);
 
     // data rows
     const [countryData, setCountryData] = React.useState<DataItem[]>([]);
@@ -293,9 +364,13 @@ const Toolbar = (props: ToolbarProps) => {
     const [colorData, setColorData] = React.useState<DataItem[]>([]);
     const [productCategoryData, setProductCategoryData] = React.useState<DataItem[]>([]);
     const [pickupLocationData, setPickupLocationData] = React.useState<DataItem[]>([]);
+    const [paymentData, setPaymentData] = React.useState<{ [key: string]: { label: string; value: string }[] }>({});
+    const [stateCitiesData, setStateCitiesData] = React.useState<{ [key: string]: string[] }>({});
+    const [filterData, setFilterData] = React.useState<DataItem[]>([]);
+    const [sortData, setSortData] = React.useState<DataItem[]>([]);
 
     // column visibility model
-    const [gridColumnVisibilityModel, setGridColumnVisibilityModel] =
+    const [gridColumnVisibilityModel] =
         React.useState<GridColumnVisibilityModel>({
             id: false,
         });
@@ -306,7 +381,7 @@ const Toolbar = (props: ToolbarProps) => {
             return;
         }
         else {
-            bulkApi(props.setLoading).bulkInsert(props.page ?? "", formData);
+            bulkApi(props.setLoading).bulkInsert(props.page ?? "", formData).then();
         }
     };
 
@@ -322,6 +397,44 @@ const Toolbar = (props: ToolbarProps) => {
     };
 
     React.useEffect(() => {
+        if(props.page == "WebTemplate"){
+            // accepted payments
+            initDataGridColumns(false).then((columns) => {
+                setPaymentDataGridColumns(columns);
+            });
+            dataApi(props.setLoading).getPaymentOptions()
+                .then((response: { [key: string]: { label: string; value: string }[] }) => {
+                    setPaymentData(response);
+                });
+
+            // serviced states and cities
+            initDataGridColumns(false).then((columns) => {
+                setStateCitiesDataGridColumns(columns);
+            });
+            dataApi(props.setLoading).getStateCityMappingOptions()
+                .then((response: { [key: string]: string[] }) => {
+                    setStateCitiesData(response);
+                });
+
+            // filter
+            initDataGridColumns(false).then((columns) => {
+                setFilterDataGridColumns(columns);
+            });
+            dataApi(props.setLoading).getFilterOptions()
+                .then((response: DataItem[]) => {
+                    setFilterData(response);
+                });
+
+            // sort
+            initDataGridColumns(false).then((columns) => {
+                setSortDataGridColumns(columns);
+            });
+            dataApi(props.setLoading).getSortOptions()
+                .then((response: DataItem[]) => {
+                    setSortData(response);
+                });
+        }
+
         if(props.page == "Product") {
             // country
             initDataGridColumns(false).then((columns) => {
@@ -412,19 +525,31 @@ const Toolbar = (props: ToolbarProps) => {
                 page={props.page as string}
                 formData={formData}
                 setFormData={setFormData}
+                gridColumnVisibilityModel={gridColumnVisibilityModel}
+                uploadFile={uploadFile}
+                fileUploadChange={fileUploadChange}
+
+                // data grid columns
                 countryDataGridColumns={countryDataGridColumns}
                 conditionDataGridColumns={conditionDataGridColumns}
                 colorDataGridColumns={colorDataGridColumns}
                 pickupLocationGridColumns={pickupLocationGridColumns}
                 productCategoriesDataGridColumns={productCategoriesDataGridColumns}
+                paymentDataGridColumns={paymentDataGridColumns}
+                stateCitiesDataGridColumns={stateCitiesDataGridColumns}
+                filterDataGridColumns={filterDataGridColumns}
+                sortDataGridColumns={sortDataGridColumns}
+
+                // data
                 countryData={countryData}
                 conditionData={conditionData}
                 colorData={colorData}
                 pickupLocationData={pickupLocationData}
                 productCategoryData={productCategoryData}
-                gridColumnVisibilityModel={gridColumnVisibilityModel}
-                uploadFile={uploadFile}
-                fileUploadChange={fileUploadChange}
+                paymentData={paymentData}
+                stateCitiesData={stateCitiesData}
+                filterData={filterData}
+                sortData={sortData}
             />
         </>
     );

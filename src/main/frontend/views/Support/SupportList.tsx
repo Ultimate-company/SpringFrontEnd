@@ -101,7 +101,7 @@ const SupportList = () => {
 
     return (
         <>
-            <Toolbar page = "Support"/>
+            <Toolbar page = "Support" setLoading={setLoading}/>
             <OutletLayout card={true}>
                 <CustomToolbar
                     checkboxes = {[

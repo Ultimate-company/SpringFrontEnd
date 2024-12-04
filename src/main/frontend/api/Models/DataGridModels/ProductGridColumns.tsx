@@ -256,7 +256,7 @@ const actionColumnsWithQuantitySelection = async (productIdQuantityMapping: Map<
             headerName: "Quantity",
             flex: 2,
             minWidth: 150,
-            editable: productIdQuantityCustomPriceMapping && typeof setProductIdQuantityCustomPriceMapping === 'function' ? false: true,
+            editable: true,  // Temporarily hardcode to test if the issue lies with the condition
             type: 'number',
             valueGetter: (_, row) => {
                 if(productIdQuantityMapping && productIdQuantityMapping.has(row.product.productId)) {

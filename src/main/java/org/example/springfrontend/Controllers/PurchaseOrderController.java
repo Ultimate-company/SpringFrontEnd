@@ -1,8 +1,10 @@
 package org.example.springfrontend.Controllers;
 
-import com.itextpdf.text.DocumentException;
-import freemarker.template.TemplateException;
 import jakarta.servlet.http.HttpSession;
+import org.example.CommonHelpers.PDFHelper;
+import org.example.Models.ResponseModels.ApiResponseModels.GetCarrierResponseModel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.example.ApiRoutes;
@@ -16,12 +18,14 @@ import org.example.springfrontend.Classes.Endpoints;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.Base64;
 
 @RestController
 @RequestMapping(ApiRoutes.ApiControllerNames.PURCHASE_ORDER)
-public class PurchaseOrderController extends BaseController{
+public class PurchaseOrderController extends BaseController {
+    @Autowired
+    private Environment environment;
+
     // Session Variables
     private boolean isIncludeDeletedSession() {
         HttpSession httpSession = getCurrentSession();
@@ -70,7 +74,7 @@ public class PurchaseOrderController extends BaseController{
     }
 
     @GetMapping(ApiRoutes.PurchaseOrderSubRoute.GET_PURCHASE_ORDER_PDF)
-    public ResponseEntity<byte[]> getPurchaseOrderPdf(@RequestParam long purchaseOrderId) throws TemplateException, DocumentException, IOException {
+    public ResponseEntity<byte[]> getPurchaseOrderPdf(@RequestParam long purchaseOrderId) throws Exception {
         Response<String> getPurchaseOrderPdfResponse = apiTranslator().getPurchaseOrderSubTranslator().getPurchaseOrderPDF(purchaseOrderId);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(org.springframework.http.MediaType.APPLICATION_PDF);

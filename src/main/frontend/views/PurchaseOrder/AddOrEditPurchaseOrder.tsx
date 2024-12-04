@@ -49,7 +49,7 @@ const AddOrEditPurchaseOrder = () => {
     const [selectedLeadIds, setSelectedLeadIds] = React.useState<GridRowSelectionModel>([]);
 
     // textarea states
-    const rteRef = React.useRef<RichTextEditorRef>(null);
+    const rteRef = React.useRef<RichTextEditorRef>();
 
     // local variables
     const isEdit = isEditMode("purchaseOrderId");
@@ -289,6 +289,7 @@ const AddOrEditPurchaseOrder = () => {
             >
                 <Grid item md={12} xs={12}>
                     <ProductSelectionGrid
+                        showCheckboxSelection={true}
                         isView={isView}
                         setLoading={setLoading}
                         selectedProductIds={selectedProductIds}
