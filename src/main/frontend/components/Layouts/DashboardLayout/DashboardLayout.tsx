@@ -55,7 +55,7 @@ const DashboardLayout = () => {
                     </div>
                 </div>
             </div>
-            <DashboardFooter/>
+            {/*<DashboardFooter/>*/}
         </Box>
     );
 };
