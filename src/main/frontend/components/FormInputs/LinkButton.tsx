@@ -8,17 +8,31 @@ interface LinkButtonInputProps {
     href?: string;
 }
 const LinkButton = (props: LinkButtonInputProps) => {
-    return(
-        <Button
-            {...(props.fullWidth !== undefined && props.fullWidth && { fullWidth: true })}
-            color="primary"
-            size="large"
-            variant="outlined"
-            {...(props.handleSubmit !== undefined ? { onClick: () => props.handleSubmit() } : {})}
-            { ...(props.href !== undefined ? { href: props.href } : {}) }
-        >
-            {props.label}
-        </Button>
-    );
+    if(props.href) {
+        return(
+            <Button
+                fullWidth={props.fullWidth || false}
+                color="primary"
+                size="large"
+                variant="outlined"
+                href={props.href}
+            >
+                {props.label}
+            </Button>
+        );
+    }
+    else{
+        return(
+            <Button
+                fullWidth={props.fullWidth || false}
+                color="primary"
+                size="large"
+                variant="outlined"
+                onClick={props.handleSubmit}
+            >
+                {props.label}
+            </Button>
+        );
+    }
 }
 export default LinkButton;
