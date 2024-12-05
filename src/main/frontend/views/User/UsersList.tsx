@@ -4,7 +4,7 @@ import {gridApi, userApi} from "../../api/ApiCalls";
 import Toolbar from "Frontend/components/Toolbar";
 import {StyledDataGrid} from "Frontend/components/Datagrid/CustomDataGrid";
 import {PaginationBaseResponseModel} from "Frontend/api/Models/BaseModel";
-import {User} from "Frontend/api/Models/CentralModels/User";
+import {Permissions, User} from "Frontend/api/Models/CentralModels/User";
 import {initUserGridColumns} from "Frontend/api/Models/DataGridModels/UserGridColumns";
 import OutletLayout from "Frontend/components/Layouts/DashboardLayout/OutletLayout";
 import CustomNoRowsOverlay from "Frontend/components/Datagrid/CustomNoRowsOverlay";
@@ -20,6 +20,7 @@ import {
     GridPreferenceRequestModel,
     UserGridPreference
 } from "Frontend/api/Models/CarrierModels/UserGridPreference";
+import {permissionChecks} from "Frontend/api/Models/CarrierModels/Permissions";
 
 const paginatedGridModel: PaginatedGridInterface = {
     start: 0,
@@ -43,6 +44,7 @@ const UsersList = () => {
     // hooks and state variables
     const confirm = useConfirm();
     const [setLoading] = useOutletContext<any>();
+    const [showToolbar, setShowToolbar] = React.useState(false);
     const [userGridColumns, setUserGridColumns] = React.useState<GridColDef[]>([]);
     const [state, setState] = React.useState<PaginatedGridInterface>(paginatedGridModel);
     const [userGridColumnVisibilityModel, setUserGridColumnVisibilityModel] =
@@ -89,6 +91,16 @@ const UsersList = () => {
     };
 
     React.useEffect(() => {
+        // check user permissions to insert users
+        userApi((loading: boolean) => {}).getLoggedInUserPermissions().then(function (permissions: Permissions) {
+            const permissionSplit = Object.values(permissions)
+                .flatMap(str => typeof str === 'string'? str.split(',') : []);
+            if(permissionSplit.includes(permissionChecks.userPermissions.insertUser)){
+                setShowToolbar(true);
+            }
+        });
+
+        // get user grid preferences
         gridApi(setLoading)
             .getGridVisibilityPreference(GridId.USER)
             .then((response: UserGridPreference) => {
@@ -109,7 +121,9 @@ const UsersList = () => {
     }, []);
 
     return <>
-        <Toolbar page = "User" setLoading={setLoading}/>
+        {showToolbar ? (
+            <Toolbar page = "User" setLoading={setLoading}/>
+        ) : <></>}
         <OutletLayout card={true}>
             <CustomToolbar
                 checkboxes = {[

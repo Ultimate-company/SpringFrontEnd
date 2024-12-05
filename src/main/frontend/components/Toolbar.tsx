@@ -1,6 +1,5 @@
 import React from "react";
-import {Button, Card, CardContent, Dialog, DialogActions, DialogContent, Grid, DialogTitle, Paper, Box, PaperTypeMap} from "@mui/material";
-import Draggable from 'react-draggable';
+import {Button, Card, CardContent, Dialog, DialogActions, DialogContent, Grid, DialogTitle, Box} from "@mui/material";
 import { notificationSettings } from "Frontend/components/Snackbar/NotificationSnackbar";
 import toast from "react-hot-toast";
 import BlueButton from "Frontend/components/FormInputs/BlueButton";
@@ -9,18 +8,7 @@ import { navigatingRoutes } from "Frontend/navigation";
 import {
     bulkApi,
     dataApi,
-    leadApi,
-    messageApi,
-    packageApi,
     pickupLocationApi,
-    productApi,
-    promoApi,
-    purchaseOrderApi,
-    salesOrderApi,
-    supportApi,
-    userApi,
-    userGroupApi,
-    webTemplateApi
 } from "Frontend/api/ApiCalls";
 import {
     bulkUrls
@@ -42,11 +30,6 @@ import {PickupLocation} from "Frontend/api/Models/CarrierModels/PickupLocation";
 import {GridRowClassNameParams} from "@mui/x-data-grid/models/params";
 import CustomTreeView from "Frontend/components/TreeView/CustomTreeView";
 
-interface PaperComponentProps {
-    children?: React.ReactNode;
-    otherProps: PaperTypeMap;
-}
-
 interface ToolbarProps {
     page?: string;
     setLoading: (loading: boolean) => void;
@@ -56,6 +39,8 @@ interface ImportDialogProps {
     open: boolean;
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
     page: string;
+    formData: FormData;
+    setFormData: (formData: FormData) => void;
     fileUploadChange: React.ChangeEventHandler<HTMLInputElement>;
     uploadFile: () => void;
     gridColumnVisibilityModel: GridColumnVisibilityModel;
@@ -90,88 +75,78 @@ interface ImportDialogProps {
     md?: number;
 }
 
-const PaperComponent = (props: PaperComponentProps) => {
-    return (
-        <Draggable handle="#draggable-dialog-title" cancel={'[class*="MuiDialogContent-root"]'}>
-            <Paper {...props.otherProps}>
-                {props.children}
-            </Paper>
-        </Draggable>
-    );
+// Define a type for the structure of each entry
+interface ImportDetail {
+    importText: string;
+    addText: string;
+    link: string;
+}
+
+// Define the type for the importDetails object
+type ImportDetails = {
+    [key: string]: ImportDetail;
 };
 
-const importDetails = {
+const importDetails: ImportDetails = {
     "User": {
         importText: "Import Users",
         addText: "Add User",
-        link: navigatingRoutes.dashboard.addUser,
-        api: userApi
+        link: navigatingRoutes.dashboard.addUser
     },
     "Lead": {
         importText: "Import Leads",
         addText: "Add Lead",
-        link: navigatingRoutes.dashboard.addLead,
-        api: leadApi
+        link: navigatingRoutes.dashboard.addLead
     },
     "UserGroup": {
         importText: "Import User Groups",
         addText: "Add User Group",
-        link: navigatingRoutes.dashboard.addUserGroup,
-        api: userGroupApi
+        link: navigatingRoutes.dashboard.addUserGroup
     },
     "PickupLocation": {
         importText: "Import Pickup Locations",
         addText: "Add Pickup Location",
-        link: navigatingRoutes.dashboard.addPickupLocation,
-        api: pickupLocationApi
+        link: navigatingRoutes.dashboard.addPickupLocation
     },
     "Promo": {
         importText: "Import Promo Codes",
         addText: "Add Promo Code",
-        link: navigatingRoutes.dashboard.addPromo,
-        api: promoApi
+        link: navigatingRoutes.dashboard.addPromo
     },
     "Message": {
         importText: "Import Messages",
         addText: "Add Message",
-        link: navigatingRoutes.dashboard.addMessage,
-        api: messageApi
+        link: navigatingRoutes.dashboard.addMessage
     },
     "PurchaseOrder": {
         importText: "Import Purchase Order",
         addText: "Add Purchase Order",
-        link: navigatingRoutes.dashboard.addPurchaseOrder,
-        api: purchaseOrderApi
+        link: navigatingRoutes.dashboard.addPurchaseOrder
     },
     "SalesOrder": {
         importText: "Import Sales Order",
         addText: "Add Sales Order",
-        link: navigatingRoutes.dashboard.addSalesOrder,
-        api: salesOrderApi
+        link: navigatingRoutes.dashboard.addSalesOrder
     },
     "Product": {
         importText: "Import Products",
         addText: "Add Product",
-        link: navigatingRoutes.dashboard.addProduct,
-        api: productApi
+        link: navigatingRoutes.dashboard.addProduct
     },
     "Package": {
         importText: "Import Packages",
         addText: "Add Package",
-        link: navigatingRoutes.dashboard.addPackage,
-        api: packageApi
+        link: navigatingRoutes.dashboard.addPackage
     },
     "Support": {
         importText: "Import Support Tickets",
         addText: "Create Support Ticket",
-        link: navigatingRoutes.dashboard.addSupport,
-        api: supportApi
+        link: navigatingRoutes.dashboard.addSupport
     },
     "WebTemplate": {
         importText: "Import Web Templates",
         addText: "Create Web Template",
-        link: navigatingRoutes.dashboard.addWebTemplate,
-        api: webTemplateApi
+        link: navigatingRoutes.dashboard.addWebTemplate
     },
 };
 
@@ -194,7 +169,13 @@ const DataGridSection = ({
     // Check if rows is of type { [key: string]: { label: string; value: string }[] } or { [key: string]: string[] }
     const isComplexRowType =
         rows &&
-        (Array.isArray(Object.values(rows)[0]) || typeof rows === 'object' && Object.values(rows)[0].hasOwnProperty('label'));
+        typeof rows === 'object' &&
+        !Array.isArray(rows) &&
+        Object.values(rows).length > 0 &&
+        (
+            Array.isArray(Object.values(rows)[0]) ||
+            (Object.values(rows)[0] && typeof Object.values(rows)[0] === 'object' && 'label' in Object.values(rows)[0])
+        );
 
     if (isComplexRowType) {
         return(
@@ -216,7 +197,7 @@ const DataGridSection = ({
             <StyledDataGrid
                 disableRowSelectionOnClick
                 style={{ height: 500 }}
-                rows={rows}
+                rows={rows as DataItem[] | PickupLocation[]}
                 getRowId={(row) => row.key}
                 columns={columns as GridColDef[]}
                 columnVisibilityModel={gridColumnVisibilityModel}
@@ -327,12 +308,10 @@ const ImportDialog = (props: ImportDialogProps) => (
         maxWidth={props.page === "Product" || props.page == "WebTemplate"? "xl" : undefined}
         open={props.open}
         onClose={() => props.setOpen(false)}
-        PaperComponent={(props) => <PaperComponent otherProps={props}>{props.children}</PaperComponent>}
         aria-labelledby="draggable-dialog-title"
     >
         <DialogTitle id="draggable-dialog-title">Import {props.page}</DialogTitle>
-        <ImportDialogContent {...props}
-        />
+        <ImportDialogContent {...props}/>
         <DialogActions>
             <Button autoFocus onClick={() => props.setOpen(false)} color="primary">Cancel</Button>
             <Button onClick={props.uploadFile} color="primary">Import</Button>
@@ -342,8 +321,6 @@ const ImportDialog = (props: ImportDialogProps) => (
 
 
 const Toolbar = (props: ToolbarProps) => {
-    const { importText, addText, link } = importDetails[props.page ?? "" as string] || {};
-
     const [open, setOpen] = React.useState<boolean>(false);
     const [formData, setFormData] = React.useState<FormData>(new FormData());
 
@@ -513,8 +490,12 @@ const Toolbar = (props: ToolbarProps) => {
                 <CardContent>
                     <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
                         <div>
-                            <LinkButton label={importText} handleSubmit={() => setOpen(true)} /> &nbsp;&nbsp;&nbsp;
-                            <BlueButton label={addText} href={link} />
+                            {props.page !== "Support" && (
+                                <>
+                                    <LinkButton label={importDetails[props.page as string]?.importText ?? ""} handleSubmit={() => setOpen(true)} /> &nbsp;&nbsp;&nbsp;
+                                </>
+                            )}
+                            <BlueButton label={importDetails[props.page as string]?.addText ?? ""} href={importDetails[props.page as string]?.link ?? ""} />
                         </div>
                     </div>
                 </CardContent>

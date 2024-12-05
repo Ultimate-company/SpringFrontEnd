@@ -16,7 +16,12 @@ type TreeData = TreeData1 | TreeData2;
 
 const isTreeData1 = (data: any): data is TreeData1 => {
     const firstValue = Object.values(data)[0];
-    return firstValue && Array.isArray(firstValue) && typeof firstValue[0] === 'object' && 'value' in firstValue[0];
+
+    // Check if the first value is an array and that its first element has the shape of { value: string }
+    return Array.isArray(firstValue) &&
+        typeof firstValue[0] === 'object' &&
+        firstValue[0] !== null &&
+        'value' in firstValue[0];
 };
 
 const CustomTreeItem = styled(TreeItem)(({ theme }) => ({

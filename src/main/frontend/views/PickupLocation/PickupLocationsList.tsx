@@ -1,6 +1,6 @@
 import {GridColDef, GridColumnVisibilityModel, GridDensity, GridFilterModel, GridToolbar} from "@mui/x-data-grid";
 import React from "react";
-import {gridApi, pickupLocationApi} from "../../api/ApiCalls";
+import {gridApi, pickupLocationApi, userApi} from "../../api/ApiCalls";
 import Toolbar from "Frontend/components/Toolbar";
 import { StyledDataGrid } from "Frontend/components/Datagrid/CustomDataGrid";
 import {PaginationBaseResponseModel} from "Frontend/api/Models/BaseModel";
@@ -20,6 +20,8 @@ import {
     GridPreferenceRequestModel,
     UserGridPreference
 } from "Frontend/api/Models/CarrierModels/UserGridPreference";
+import {Permissions} from "Frontend/api/Models/CentralModels/User";
+import {permissionChecks} from "Frontend/api/Models/CarrierModels/Permissions";
 
 const paginatedGridModel: PaginatedGridInterface = {
     start: 0,
@@ -43,6 +45,7 @@ const PickupLocationsList = () => {
     // hooks and state variables
     const confirm = useConfirm();
     const [setLoading] = useOutletContext<any>();
+    const [showToolbar, setShowToolbar] = React.useState(false);
     const [pickupLocationGridColumns, setPickupLocationGridColumns] = React.useState<GridColDef[]>([]);
     const [state, setState] = React.useState<PaginatedGridInterface>(paginatedGridModel);
     const [pickupLocationColumnVisibilityModel, setPickupLocationColumnVisibilityModel] =
@@ -88,6 +91,16 @@ const PickupLocationsList = () => {
     };
 
     React.useEffect(() => {
+        // check user permissions to insert pickuplocation
+        userApi((loading: boolean) => {}).getLoggedInUserPermissions().then(function (permissions: Permissions) {
+            const permissionSplit = Object.values(permissions)
+                .flatMap(str => typeof str === 'string'? str.split(',') : []);
+            if(permissionSplit.includes(permissionChecks.pickupLocationPermissions.insertPickupLocations)){
+                setShowToolbar(true);
+            }
+        });
+
+        // get user grid preferences
         gridApi(setLoading)
             .getGridVisibilityPreference(GridId.PICKUP_LOCATION)
             .then((response: UserGridPreference) => {
@@ -108,7 +121,9 @@ const PickupLocationsList = () => {
     }, []);
 
     return <>
-        <Toolbar page = "PickupLocation" setLoading={setLoading}/>
+        {showToolbar ? (
+            <Toolbar page = "PickupLocation" setLoading={setLoading}/>
+        ) : <></>}
         <OutletLayout card={true}>
             <CustomToolbar
                 checkboxes = {[

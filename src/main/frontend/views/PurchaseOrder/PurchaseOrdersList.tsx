@@ -9,7 +9,7 @@ import {CustomPaginationForGrid, PaginatedGridInterface} from "Frontend/componen
 import {filterChangeFunction} from "Frontend/components/Datagrid/CustomFilteringForDataGrid";
 import {useConfirm} from "material-ui-confirm";
 import CustomToolbar from "Frontend/components/Datagrid/CustomToolbar";
-import {gridApi, purchaseOrderApi} from "Frontend/api/ApiCalls";
+import {gridApi, purchaseOrderApi, userApi} from "Frontend/api/ApiCalls";
 import {PurchaseOrderResponseModel} from "Frontend/api/Models/CarrierModels/PurchaseOrder";
 import {initPurchaseOrderGridColumns} from "Frontend/api/Models/DataGridModels/PurchaseOrderGridColumns";
 import {useOutletContext} from "react-router-dom";
@@ -20,6 +20,8 @@ import {
     GridPreferenceRequestModel,
     UserGridPreference
 } from "Frontend/api/Models/CarrierModels/UserGridPreference";
+import {Permissions} from "Frontend/api/Models/CentralModels/User";
+import {permissionChecks} from "Frontend/api/Models/CarrierModels/Permissions";
 
 const paginatedGridModel: PaginatedGridInterface = {
     start: 0,
@@ -43,6 +45,7 @@ const PurchaseOrdersList = () => {
     // hooks and state variables
     const confirm = useConfirm();
     const [setLoading] = useOutletContext<any>();
+    const [showToolbar, setShowToolbar] = React.useState(false);
     const [purchaseOrderGridColumns, setPurchaseOrderGridColumns] = React.useState<GridColDef[]>([]);
     const [state, setState] = React.useState<PaginatedGridInterface>(paginatedGridModel);
     const [purchaseOrderColumnVisibilityModel, setPurchaseOrderColumnVisibilityModel] =
@@ -88,6 +91,16 @@ const PurchaseOrdersList = () => {
     };
 
     React.useEffect(() => {
+        // check user permissions to insert purchase order
+        userApi((loading: boolean) => {}).getLoggedInUserPermissions().then(function (permissions: Permissions) {
+            const permissionSplit = Object.values(permissions)
+                .flatMap(str => typeof str === 'string'? str.split(',') : []);
+            if(permissionSplit.includes(permissionChecks.purchaseOrderPermissions.insertPurchaseOrders)){
+                setShowToolbar(true);
+            }
+        });
+
+        // get user grid preferences
         gridApi(setLoading)
             .getGridVisibilityPreference(GridId.PURCHASE_ORDER)
             .then((response: UserGridPreference) => {
@@ -108,7 +121,9 @@ const PurchaseOrdersList = () => {
     }, []);
 
     return <>
-        <Toolbar page = "PurchaseOrder" setLoading={setLoading}/>
+        {showToolbar ? (
+            <Toolbar page = "PurchaseOrder" setLoading={setLoading}/>
+        ) : <></>}
         <OutletLayout card={true}>
             <CustomToolbar
                 checkboxes = {[

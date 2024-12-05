@@ -33,6 +33,8 @@ const salesOrderGridColumns: GridColDef[] = [
         headerName: "Sales Order Status",
         hideable: false,
         filterable: false,
+        flex: 2,
+        minWidth: 250,
         valueGetter: (value, row) => {
             return row.salesOrder.salesOrderStatus;
         },
@@ -64,51 +66,66 @@ const salesOrderGridColumns: GridColDef[] = [
     {
         field: "billingAddress",
         headerName: "Billing Address",
-        width: 300,
+        flex: 2,
+        minWidth: 300,
         valueGetter: (value, row) => {
             return row.billingAddress.line1 + " " + row.billingAddress.line2 + ", " + row.billingAddress.city + ", " + row.billingAddress.state + ", " + row.billingAddress.zipCode;
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
-    },
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />    },
     {
         field: "shippingAddress",
         headerName: "Shipping Address",
-        width: 300,
+        flex: 2,
+        minWidth: 300,
         valueGetter: (value, row) => {
             return row.shippingAddress.line1 + " " + row.shippingAddress.line2 + ", " + row.shippingAddress.city + ", " + row.shippingAddress.state + ", " + row.shippingAddress.zipCode;
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
-    },
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />    },
     {
         field: "purchaseOrderCreatedBy",
         headerName: "Created By",
-        width: 300,
+        flex: 2,
+        minWidth: 300,
         valueGetter: (value, row) => {
             return row.purchaseOrderCreatedBy.firstName + " " + row.purchaseOrderCreatedBy.lastName + " (" + row.purchaseOrderCreatedBy.loginName + ")";
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
-    },
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />    },
     {
         field: "approvedBy",
         headerName: "Approved By",
-        width: 300,
+        flex: 2,
+        minWidth: 300,
         valueGetter: (value, row) => {
             if(row.purchaseOrderApprovedBy != undefined) {
                 return row.purchaseOrderApprovedBy.firstName + " " + row.purchaseOrderApprovedBy.lastName + " (" + row.purchaseOrderApprovedBy.loginName + ")";
             }
             return "";
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
-    },
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />    },
     {
         field: "assignedLead",
         headerName: "Assigned Lead",
-        width: 300,
+        flex: 2,
+        minWidth: 300,
         valueGetter: (value, row) => {
             return row.lead.firstName + " " + row.lead.lastName + " (" + row.lead.email + ")";
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
-    }
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />    }
 ];
 
 const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => Promise<void>, setLoading: (loading: boolean) => void) => {
@@ -152,7 +169,8 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
         filterable: false,
         field: "Actions",
         headerName: "Actions",
-        width: 150,
+        flex: 1,
+        minWidth: 150,
         renderCell: (params: GridRenderCellParams) => (
             <div>
                 {params.row.salesOrder.deleted ? (

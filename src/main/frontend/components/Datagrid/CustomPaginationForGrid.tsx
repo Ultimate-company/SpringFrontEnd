@@ -38,7 +38,7 @@ const pagination = (props: Pick<TablePaginationProps, 'page' | 'onPageChange' | 
         <MuiPagination
             color="primary"
             className={props.className}
-            count={pageCount}
+            count={pageCount as number}
             page={props.page + 1}
             onChange={(event, newPage) => {
                 props.onPageChange(event as any, newPage);
@@ -47,7 +47,7 @@ const pagination = (props: Pick<TablePaginationProps, 'page' | 'onPageChange' | 
     );
 }
 
-export const CustomPaginationForGrid = (props: CustomPaginationForGridProps) => {
+export const CustomPaginationForGrid = () => {
     const apiRef = useGridApiContext();
     const handlePaginationChange = (
         event: any,

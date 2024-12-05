@@ -19,6 +19,7 @@
     "@mui/x-data-grid": "^7.3.0",
     "@mui/x-tree-view": "^7.23.0",
     "@polymer/polymer": "3.5.2",
+    "@react-input/mask": "^2.0.3",
     "@react-oauth/google": "^0.12.1",
     "@tiptap/core": "2.0.4",
     "@tiptap/extension-blockquote": "2.0.4",

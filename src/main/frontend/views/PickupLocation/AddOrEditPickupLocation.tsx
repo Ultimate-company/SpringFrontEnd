@@ -195,7 +195,9 @@ const AddOrEditPickupLocation = () => {
                         inputType={InputType.Phone}
                         label="Phone on Address"
                         value={phoneOnAddress}
-                        handleChange={React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => setPhoneOnAddress(event.target.value), [phoneOnAddress])}
+                        setValue={React.useCallback((phone: string) => {
+                            setPhoneOnAddress(phone);
+                        }, [phoneOnAddress])}
                         isView={isView}
                     />
                 </Grid>

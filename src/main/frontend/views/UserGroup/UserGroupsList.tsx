@@ -1,6 +1,6 @@
 import {GridColDef, GridColumnVisibilityModel, GridDensity, GridFilterModel, GridToolbar} from "@mui/x-data-grid";
 import React from "react";
-import {gridApi, userGroupApi} from "../../api/ApiCalls";
+import {gridApi, userApi, userGroupApi} from "../../api/ApiCalls";
 import Toolbar from "Frontend/components/Toolbar";
 import { StyledDataGrid } from "Frontend/components/Datagrid/CustomDataGrid";
 import {PaginationBaseResponseModel} from "Frontend/api/Models/BaseModel";
@@ -20,6 +20,8 @@ import {
     GridPreferenceRequestModel,
     UserGridPreference
 } from "Frontend/api/Models/CarrierModels/UserGridPreference";
+import {Permissions} from "Frontend/api/Models/CentralModels/User";
+import {permissionChecks} from "Frontend/api/Models/CarrierModels/Permissions";
 
 const paginatedGridModel: PaginatedGridInterface = {
     start: 0,
@@ -43,6 +45,7 @@ const UserGroupsList = () => {
     // hooks and state variables
     const confirm = useConfirm();
     const [setLoading] = useOutletContext<any>();
+    const [showToolbar, setShowToolbar] = React.useState(false);
     const [userGroupGridColumns, setUserGroupGridColumns] = React.useState<GridColDef[]>([]);
     const [state, setState] = React.useState<PaginatedGridInterface>(paginatedGridModel);
     const [userGroupGridColumnVisibilityModel, setUserGroupGridColumnVisibilityModel] =
@@ -89,6 +92,16 @@ const UserGroupsList = () => {
     };
 
     React.useEffect(() => {
+        // check user permissions to insert user group
+        userApi((loading: boolean) => {}).getLoggedInUserPermissions().then(function (permissions: Permissions) {
+            const permissionSplit = Object.values(permissions)
+                .flatMap(str => typeof str === 'string'? str.split(',') : []);
+            if(permissionSplit.includes(permissionChecks.groupsPermissions.insertGroups)){
+                setShowToolbar(true);
+            }
+        });
+
+        // get user grid preferences
         gridApi(setLoading)
             .getGridVisibilityPreference(GridId.USER_GROUP)
             .then((response: UserGridPreference) => {
@@ -109,7 +122,9 @@ const UserGroupsList = () => {
     }, []);
 
     return <>
-        <Toolbar page = "UserGroup" setLoading={setLoading}/>
+        {showToolbar ? (
+            <Toolbar page = "UserGroup" setLoading={setLoading}/>
+        ) : <></>}
         <OutletLayout card={true}>
             <CustomToolbar
                 checkboxes = {[

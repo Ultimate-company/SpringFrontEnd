@@ -9,7 +9,7 @@ import {CustomPaginationForGrid, PaginatedGridInterface} from "Frontend/componen
 import {filterChangeFunction} from "Frontend/components/Datagrid/CustomFilteringForDataGrid";
 import {useConfirm} from "material-ui-confirm";
 import CustomToolbar from "Frontend/components/Datagrid/CustomToolbar";
-import {gridApi, productApi} from "Frontend/api/ApiCalls";
+import {gridApi, productApi, userApi} from "Frontend/api/ApiCalls";
 import {ProductsResponseModel} from "Frontend/api/Models/CarrierModels/Product";
 import {initProductGridColumns} from "Frontend/api/Models/DataGridModels/ProductGridColumns";
 import {useOutletContext} from "react-router-dom";
@@ -20,6 +20,8 @@ import {
     GridPreferenceRequestModel,
     UserGridPreference
 } from "Frontend/api/Models/CarrierModels/UserGridPreference";
+import {Permissions} from "Frontend/api/Models/CentralModels/User";
+import {permissionChecks} from "Frontend/api/Models/CarrierModels/Permissions";
 
 const paginatedGridModel: PaginatedGridInterface = {
     start: 0,
@@ -43,6 +45,7 @@ const ProductsList = () => {
     // hooks and state variables
     const confirm = useConfirm();
     const [setLoading] = useOutletContext<any>();
+    const [showToolbar, setShowToolbar] = React.useState(false);
     const [productGridColumns, setProductGridColumns] = React.useState<GridColDef[]>([]);
     const [state, setState] = React.useState<PaginatedGridInterface>(paginatedGridModel);
     const [productColumnVisibilityModel, setProductColumnVisibilityModel] =
@@ -89,6 +92,16 @@ const ProductsList = () => {
     };
 
     React.useEffect(() => {
+        // check user permissions to insert lead
+        userApi((loading: boolean) => {}).getLoggedInUserPermissions().then(function (permissions: Permissions) {
+            const permissionSplit = Object.values(permissions)
+                .flatMap(str => typeof str === 'string'? str.split(',') : []);
+            if(permissionSplit.includes(permissionChecks.productsPermissions.insertProducts)){
+                setShowToolbar(true);
+            }
+        });
+
+        // get user grid preferences
         gridApi(setLoading)
             .getGridVisibilityPreference(GridId.PRODUCT)
             .then((response: UserGridPreference) => {
@@ -109,7 +122,9 @@ const ProductsList = () => {
     }, []);
 
     return <>
-        <Toolbar page = "Product" setLoading={setLoading}/>
+        {showToolbar ? (
+            <Toolbar page = "Product" setLoading={setLoading}/>
+        ) : <></>}
         <OutletLayout card={true}>
             <CustomToolbar
                 checkboxes = {[

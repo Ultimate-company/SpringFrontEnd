@@ -671,7 +671,9 @@ const AddOrEditUser = () => {
                         inputType={InputType.Phone}
                         label="Phone"
                         value={phone}
-                        handleChange={React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => setPhone(event.target.value), [phone])}
+                        setValue={React.useCallback((phone: string) => {
+                            setPhone(phone);
+                        }, [phone])}
                         isView={isView}
                     />
                 </Grid>

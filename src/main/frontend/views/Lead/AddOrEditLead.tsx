@@ -182,7 +182,9 @@ const AddOrEditLead = () => {
                         inputType={InputType.Phone}
                         label="Phone"
                         value={phone}
-                        handleChange={React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => setPhone(event.target.value), [phone])}
+                        setValue={React.useCallback((phone: string) => {
+                            setPhone(phone);
+                        }, [phone])}
                         isView={isView}
                     />
                 </Grid>
@@ -192,7 +194,9 @@ const AddOrEditLead = () => {
                         label="Fax"
                         required={false}
                         value={fax}
-                        handleChange={React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => setFax(event.target.value), [fax])}
+                        setValue={React.useCallback((phone: string) => {
+                            setFax(phone);
+                        }, [fax])}
                         isView={isView}
                     />
                 </Grid>

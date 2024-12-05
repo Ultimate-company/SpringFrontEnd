@@ -1,6 +1,6 @@
 import {GridColDef, GridColumnVisibilityModel, GridDensity, GridFilterModel, GridToolbar} from "@mui/x-data-grid";
 import React from "react";
-import {gridApi, messageApi} from "../../api/ApiCalls";
+import {gridApi, messageApi, userApi} from "../../api/ApiCalls";
 import Toolbar from "Frontend/components/Toolbar";
 import { StyledDataGrid } from "Frontend/components/Datagrid/CustomDataGrid";
 import {PaginationBaseResponseModel} from "Frontend/api/Models/BaseModel";
@@ -20,6 +20,8 @@ import {
     GridPreferenceRequestModel,
     UserGridPreference
 } from "Frontend/api/Models/CarrierModels/UserGridPreference";
+import {Permissions} from "Frontend/api/Models/CentralModels/User";
+import {permissionChecks} from "Frontend/api/Models/CarrierModels/Permissions";
 
 const paginatedGridModel: PaginatedGridInterface = {
     start: 0,
@@ -43,6 +45,7 @@ const MessagesList = () => {
     // hooks and state variables
     const confirm = useConfirm();
     const [setLoading] = useOutletContext<any>();
+    const [showToolbar, setShowToolbar] = React.useState(false);
     const [messageGridColumns, setMessageGridColumns] = React.useState<GridColDef[]>([]);
     const [state, setState] = React.useState<PaginatedGridInterface>(paginatedGridModel);
     const [messageColumnVisibilityModel, setMessageColumnVisibilityModel] =
@@ -89,6 +92,16 @@ const MessagesList = () => {
     };
 
     React.useEffect(() => {
+        // check user permissions to insert message
+        userApi((loading: boolean) => {}).getLoggedInUserPermissions().then(function (permissions: Permissions) {
+            const permissionSplit = Object.values(permissions)
+                .flatMap(str => typeof str === 'string'? str.split(',') : []);
+            if(permissionSplit.includes(permissionChecks.messagesPermissions.insertMessages)){
+                setShowToolbar(true);
+            }
+        });
+
+        // get user grid preferences
         gridApi(setLoading)
             .getGridVisibilityPreference(GridId.MESSAGE)
             .then((response: UserGridPreference) => {
@@ -110,7 +123,9 @@ const MessagesList = () => {
 
 
     return <>
-        <Toolbar page = "Message" setLoading={setLoading}/>
+        {showToolbar ? (
+            <Toolbar page = "Message" setLoading={setLoading}/>
+        ) : <></>}
         <OutletLayout card={true}>
             <CustomToolbar
                 checkboxes = {[

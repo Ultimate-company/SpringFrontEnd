@@ -1,5 +1,5 @@
 import {styled, alpha} from "@mui/material/styles";
-import {DataGrid, gridClasses} from "@mui/x-data-grid";
+import {DataGrid, DataGridProps, gridClasses} from "@mui/x-data-grid";
 import React from "react";
 import {grey} from "@mui/material/colors";
 
@@ -130,7 +130,7 @@ const MyDataGrid = styled(DataGrid)(({theme}) => ({
     },
 }));
 
-export const StyledDataGrid = React.memo(MyDataGrid, (prevProps, nextProps) => {
+export const StyledDataGrid = React.memo(MyDataGrid, (prevProps: DataGridProps, nextProps: DataGridProps) => {
     // Only re-render if gridData or columns change
     return prevProps.rows === nextProps.rows
         && prevProps.columns === nextProps.columns
