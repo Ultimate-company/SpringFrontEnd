@@ -10,10 +10,10 @@ import {
     isEditMode,
     isViewMode
 } from "Frontend/components/commonHelperFunctions";
-import {pickupLocationApi, productApi} from "Frontend/api/ApiCalls";
+import {dataApi, pickupLocationApi, productApi} from "Frontend/api/ApiCalls";
 import {useOutletContext} from "react-router-dom";
 import {
-    GetProductCategoryResponseModel, Product,
+    Product,
     ProductCategory,
     ProductCondition, ProductReview, ProductReviewResponseModel, ProductsResponseModel
 } from "Frontend/api/Models/CarrierModels/Product";
@@ -78,20 +78,20 @@ const AddEditProduct = () => {
     const [formData, setFormData] = React.useState<FormData>(new FormData());
 
     // textarea states
-    const rteRef = React.useRef<RichTextEditorRef>(null);
-    const rteRefModification = React.useRef<RichTextEditorRef>(null);
-    const rteRefReview = React.useRef<RichTextEditorRef>(null);
+    const rteRef = React.useRef<RichTextEditorRef>();
+    const rteRefModification = React.useRef<RichTextEditorRef>();
+    const rteRefReview = React.useRef<RichTextEditorRef>();
 
     // misc state variables
     const [notes, setNotes] = React.useState<string>("");
-    const [dense, setDense] =  React.useState<boolean>(false);
+    const [dense] =  React.useState<boolean>(false);
     const [listItems, setListItems] = React.useState<ProductCategory[]>([]);
-    const [colors, setColors] = React.useState<Map<string, string>[]>([]);
+    const [colors, setColors] = React.useState<DataItem[]>([]);
     const [pickupLocations, setPickupLocations] = React.useState<PickupLocation[]>([]);
     const [categoryStack, setCategoryStack] = React.useState<string[]>([]);
 
     // state variables for product review
-    const [review, setReview] = React.useState<string>("");
+    const [review] = React.useState<string>("");
     const [rating, setRating] = React.useState<number>(0.0);
     const [state, setState] = React.useState<PaginatedGridInterface>(paginatedGridModel);
     const [subComments, setSubComments] = React.useState<any>({});
@@ -110,38 +110,32 @@ const AddEditProduct = () => {
 
     // select list or navigate to next list when clicked on product category list
     const handleListItemClick = (productCategory: string, isEnd: boolean) => {
-        productApi(setLoading).setProductCategory(productCategory)
-            .then((_) => {
-            if(isEnd) {
-                let tempList: ProductCategory[] = [];
-                for (let i = 0; i < listItems.length; i++) {
-                    if (listItems[i].name == productCategory) {
-                        listItems[i].isSelected = true;
-                        tempList.push(listItems[i]);
-                    } else {
-                        tempList.push(listItems[i]);
-                    }
+        if(isEnd) {
+            let tempList: ProductCategory[] = [];
+            for (let i = 0; i < listItems.length; i++) {
+                if (listItems[i].name == productCategory) {
+                    tempList.push(listItems[i]);
+                } else {
+                    tempList.push(listItems[i]);
                 }
-
-                setListItems(tempList);
-                setProductCategory(productCategory);
             }
-            else {
-                setProductCategory("");
-                categoryStack.push(productCategory);
-                setCategoryStack(categoryStack);
 
-                // axios call to get the next list
-                productApi(setLoading).getProductCategories()
-                    .then((response: GetProductCategoryResponseModel) => {
-                        setListItems(response.productCategories)
-                    });
-            }
-        });
+            setListItems(tempList);
+            setProductCategory(productCategory);
+        }
+        else {
+            setProductCategory("");
+            categoryStack.push(productCategory);
+            setCategoryStack(categoryStack);
+
+            // axios call to get the next list
+            handleFetchProductCategories(productCategory);
+        }
     };
 
-    // handle back click on product categrory list
+    // handle back click on product category list
     const goBackInCategories = () => {
+        console.log(categoryStack);
         if (categoryStack.length > 0) {
             categoryStack.pop();
             setCategoryStack(categoryStack);
@@ -273,26 +267,11 @@ const AddEditProduct = () => {
             });
     }
 
-    const handleFetchProductCategories = () => {
-        productApi(setLoading).getProductCategories()
-            .then((response: GetProductCategoryResponseModel) => {
-                setCategoryStack(response.allParents);
-                if (response.end) {
-                    let TempList = [];
-                    for (let i = 0; i < response.productCategories.length; i++) {
-                        if (response.productCategories[i].name == response.selectedText) {
-                            response.productCategories[i].isSelected = true;
-                            TempList.push(response.productCategories[i]);
-                        } else {
-                            TempList.push(response.productCategories[i]);
-                        }
-                    }
-
-                    setListItems(TempList);
-                    setProductCategory(response.selectedText);
-                } else {
-                    setListItems(response.productCategories);
-                }
+    const handleFetchProductCategories = (currentCategory: string) => {
+        productApi(setLoading).getProductCategories(currentCategory)
+            .then((response: ProductCategory[]) => {
+                console.log(response);
+                setListItems(response);
             });
     }
 
@@ -310,11 +289,7 @@ const AddEditProduct = () => {
                     proseMirrorDiv[0].innerHTML = product.descriptionHtml ?? "";
                 }
 
-                // set the product category
-                productApi(setLoading).setProductCategory(productCategory.name)
-                    .then((_: boolean) => {
-                        handleFetchProductCategories();
-                    })
+                handleFetchProductCategories(product.category);
 
                 // set the product details
                 setCondition(product.condition as number);
@@ -485,9 +460,8 @@ const AddEditProduct = () => {
     }
 
     React.useEffect(() => {
-        // get the product category types
-        productApi(setLoading).getColors()
-            .then((response: Map<string, string>[]) => {
+        dataApi(setLoading).getColors()
+            .then((response: DataItem[]) => {
                 setColors(response);
             });
 
@@ -501,7 +475,7 @@ const AddEditProduct = () => {
             handleFetchProductReviews(paginatedGridModel);
         }
         else{
-            handleFetchProductCategories();
+            handleFetchProductCategories("root");
         }
     }, []);
 
@@ -553,7 +527,7 @@ const AddEditProduct = () => {
                                         onClick={() => handleListItemClick(item.name, item.end)}
                                         divider={true}
                                         disabled={isView}
-                                        selected={item.isSelected}
+                                        selected={productCategory == item.name}
                                     >
                                         <ListItemText primary={item.name}/>
                                         <ListItemSecondaryAction>
@@ -663,7 +637,10 @@ const AddEditProduct = () => {
                             setColorLabel(value.label as string);
                         }, [color, colorLabel, colors])}
                         isView={isView}
-                        autoCompleteOptions={colors}
+                        autoCompleteOptions={colors.map(item => ({
+                            id: item.key,
+                            label: item.value
+                        }))}
                         onInputChange={React.useCallback((
                             event: React.SyntheticEvent<Element, Event>,
                             value: string,

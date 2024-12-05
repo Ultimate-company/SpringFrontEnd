@@ -1,6 +1,6 @@
 import {GridColDef, GridColumnVisibilityModel, GridDensity, GridFilterModel, GridToolbar} from "@mui/x-data-grid";
 import React from "react";
-import {gridApi, leadApi} from "../../api/ApiCalls";
+import {gridApi, leadApi, userApi} from "../../api/ApiCalls";
 import Toolbar from "Frontend/components/Toolbar";
 import { StyledDataGrid } from "Frontend/components/Datagrid/CustomDataGrid";
 import {PaginationBaseResponseModel} from "Frontend/api/Models/BaseModel";
@@ -20,6 +20,8 @@ import {
     GridPreferenceRequestModel,
     UserGridPreference
 } from "Frontend/api/Models/CarrierModels/UserGridPreference";
+import {Permissions} from "Frontend/api/Models/CentralModels/User";
+import {permissionChecks} from "Frontend/api/Models/CarrierModels/Permissions";
 
 const paginatedGridModel: PaginatedGridInterface = {
     start: 0,
@@ -43,6 +45,7 @@ const LeadsList = () => {
     // hooks and state variables
     const confirm = useConfirm();
     const [setLoading] = useOutletContext<any>();
+    const [showToolbar, setShowToolbar] = React.useState(false);
     const [leadGridColumns, setLeadGridColumns] = React.useState<GridColDef[]>([]);
     const [state, setState] = React.useState<PaginatedGridInterface>(paginatedGridModel);
     const [leadGridColumnVisibilityModel, setLeadGridColumnVisibilityModel] =
@@ -89,25 +92,38 @@ const LeadsList = () => {
     };
 
     React.useEffect(() => {
+        // check user permissions to insert lead
+        userApi(setLoading).getLoggedInUserPermissions().then(function (permissions: Permissions) {
+            const permissionSplit = Object.values(permissions)
+                .flatMap(str => typeof str === 'string'? str.split(',') : []);
+            if(permissionSplit.includes(permissionChecks.leadsPermissions.insertLeads)){
+                setShowToolbar(true);
+            }
+        });
+
+        // get user grid preferences
         gridApi(setLoading)
             .getGridVisibilityPreference(GridId.LEAD)
             .then((response: UserGridPreference) => {
-                if(response) {
-                    let prevState:PaginatedGridInterface = state;
-                    setUserGridPreference(response);
-                    if(response.rowsPerPage) {
-                        prevState.pageSize = response.rowsPerPage;
-                    }
-                    if(response.visibilityModel) {
-                        setLeadGridColumnVisibilityModel(JSON.parse(response.visibilityModel as string) as GridColumnVisibilityModel);
-                    }
-                    setLeadsAndPagination(prevState);
-                }
+               if(!response) {
+                   response = gridPreference;
+               }
+               let prevState:PaginatedGridInterface = state;
+               setUserGridPreference(response);
+               if(response.rowsPerPage) {
+                   prevState.pageSize = response.rowsPerPage;
+               }
+               if(response.visibilityModel) {
+                   setLeadGridColumnVisibilityModel(JSON.parse(response.visibilityModel as string) as GridColumnVisibilityModel);
+               }
+               setLeadsAndPagination(prevState);
             });
     }, []);
 
     return <>
-        <Toolbar page = "Lead"/>
+        {showToolbar ? (
+            <Toolbar page = "Lead" setLoading={setLoading}/>
+        ) : <></>}
         <OutletLayout card={true}>
             <CustomToolbar
                 checkboxes = {[
@@ -135,7 +151,7 @@ const LeadsList = () => {
                     gridApi(setLoading).updateGridVisibilityPreference({
                         visibilityJsonBody: JSON.stringify(newModel),
                         gridId: GridId.LEAD
-                    } as GridPreferenceRequestModel);
+                    } as GridPreferenceRequestModel).then();
                     setLeadGridColumnVisibilityModel(newModel);
                 }, [leadGridColumnVisibilityModel])}
                 onDensityChange = {(newModel: string) => {
@@ -146,16 +162,13 @@ const LeadsList = () => {
                     gridApi(setLoading).updateGridDensityVisibilityPreference({
                         density: newModel,
                         gridId: GridId.LEAD
-                    } as GridPreferenceRequestModel);
+                    } as GridPreferenceRequestModel).then();
                 }}
                 density={userGridPreference.density as GridDensity}
                 slots={{
                     noRowsOverlay: CustomNoRowsOverlay,
                     toolbar: GridToolbar,
-                    pagination: () =>
-                        <CustomPaginationForGrid
-                            pageSize={state.pageSize}
-                        />,
+                    pagination: () => <CustomPaginationForGrid />
                 }}
                 initialState={{
                     pagination: { paginationModel: { pageSize: state.pageSize } },
@@ -182,7 +195,7 @@ const LeadsList = () => {
                         gridApi(setLoading).updateRowsPerPagePreference({
                             rowsPerPage: newModel.pageSize,
                             gridId: GridId.LEAD
-                        } as GridPreferenceRequestModel);
+                        } as GridPreferenceRequestModel).then();
                     }
                     setLeadsAndPagination({
                         includeDeleted: state.includeDeleted,
@@ -200,7 +213,7 @@ const LeadsList = () => {
                         return "deleted";
                     }
                     else {
-                        return "";
+                        return params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd';
                     }
                 }, [state])}
             />

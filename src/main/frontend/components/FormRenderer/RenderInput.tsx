@@ -45,6 +45,7 @@ export interface InputProps {
     autoCompleteOptions?: any;
     name?: string;
     value?: string | Date | any;
+    setValue?: (value: string) => void;
     handleChange?: any;
     onInputChange?: any;
     disabled?: boolean;
@@ -139,6 +140,7 @@ const RenderInput = (inputProp: InputProps) => {
             }
             return (
                 <PhoneInput
+                    setValue={inputProp.setValue}
                     disabled={inputProp.disabled ?? false}
                     inputRef={inputProp.inputRef}
                     required={inputProp.required ?? true}
@@ -146,7 +148,6 @@ const RenderInput = (inputProp: InputProps) => {
                     label={inputProp.label}
                     name={inputProp.name as string}
                     value={inputProp.value as string}
-                    onChange={inputProp.handleChange}
                 />
             );
         case InputType.Dropdown:

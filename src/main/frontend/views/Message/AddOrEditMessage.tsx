@@ -31,7 +31,7 @@ const AddOrEditMessage = () => {
     const [selectedUserGroupIds, setSelectedUserGroupIds] = React.useState<GridRowSelectionModel>([]);
 
     // textarea states
-    const rteRef = React.useRef<RichTextEditorRef>(null);
+    const rteRef = React.useRef<RichTextEditorRef>();
 
     // local variables
     const isEdit = isEditMode("messageId");
@@ -47,7 +47,7 @@ const AddOrEditMessage = () => {
             setDescriptionHtml(messageResponseModel.message.descriptionHtml);
 
             const proseMirrorDiv = document.querySelector('.ProseMirror');
-            if(proseMirrorDiv != null) {
+            if(proseMirrorDiv) {
                 proseMirrorDiv.innerHTML = messageResponseModel.message.descriptionHtml;
             }
 

@@ -1,13 +1,10 @@
 import {StyledDataGrid} from "Frontend/components/Datagrid/CustomDataGrid";
 import CustomNoRowsOverlay from "Frontend/components/Datagrid/CustomNoRowsOverlay";
 import {
-    GridCellEditStopParams,
-    GridCellEditStopReasons,
     GridColDef,
     GridColumnVisibilityModel,
-    GridFilterModel, GridRowModel, GridRowParams,
-    GridRowSelectionModel,
-    GridToolbar, MuiEvent
+    GridFilterModel, GridRowModel, GridRowSelectionModel,
+    GridToolbar
 } from "@mui/x-data-grid";
 import {CustomPaginationForGrid, PaginatedGridInterface} from "Frontend/components/Datagrid/CustomPaginationForGrid";
 import React from "react";
@@ -132,12 +129,11 @@ const ProductSelectionGrid = (props: ProductSelectionGridProps) => {
                 getRowId={(row) => row.product.productId}
                 rows={state.data}
                 columns={productGridColumns}
-                isCellEditable={(params) => true}
-                // isCellEditable={(params) => !props.isView &&
-                //     params.row.product.itemAvailableFrom &&
-                //     isDateGreaterThanOrEqualToToday(params.row.product.itemAvailableFrom)
-                // }
-                processRowUpdate={(newRow, oldRow) =>
+                isCellEditable={(params) => !props.isView &&
+                    params.row.product.itemAvailableFrom &&
+                    isDateGreaterThanOrEqualToToday(params.row.product.itemAvailableFrom)
+                }
+                processRowUpdate={(newRow) =>
                     new Promise<GridRowModel>((resolve) => {
                         //newRow.quantity = calculateNewQuantity(newRow); // Replace calculateNewQuantity with your logic
                         if(props.productIdQuantityCustomPriceMapping && props.setProductIdQuantityCustomPriceMapping) {
@@ -164,10 +160,7 @@ const ProductSelectionGrid = (props: ProductSelectionGridProps) => {
                 slots={{
                     noRowsOverlay: CustomNoRowsOverlay,
                     toolbar: GridToolbar,
-                    pagination: () =>
-                        <CustomPaginationForGrid
-                            pageSize={state.pageSize}
-                        />,
+                    pagination: () => <CustomPaginationForGrid />
                 }}
                 initialState={{
                     pagination: { paginationModel: { pageSize: state.pageSize } },
@@ -193,7 +186,7 @@ const ProductSelectionGrid = (props: ProductSelectionGridProps) => {
                 params.row.product.itemAvailableFrom &&
                 isDateGreaterThanOrEqualToToday(params.row.product.itemAvailableFrom)
             }
-            processRowUpdate={(newRow, oldRow) =>
+            processRowUpdate={(newRow) =>
                 new Promise<GridRowModel>((resolve) => {
                     //newRow.quantity = calculateNewQuantity(newRow); // Replace calculateNewQuantity with your logic
                     if(props.productIdQuantityCustomPriceMapping && props.setProductIdQuantityCustomPriceMapping) {
@@ -220,10 +213,7 @@ const ProductSelectionGrid = (props: ProductSelectionGridProps) => {
             slots={{
                 noRowsOverlay: CustomNoRowsOverlay,
                 toolbar: GridToolbar,
-                pagination: () =>
-                    <CustomPaginationForGrid
-                        pageSize={state.pageSize}
-                    />,
+                pagination: () => <CustomPaginationForGrid />
             }}
             initialState={{
                 pagination: { paginationModel: { pageSize: state.pageSize } },
@@ -260,14 +250,14 @@ const ProductSelectionGrid = (props: ProductSelectionGridProps) => {
                 props.setSelectedProductIds(newRowSelectionModel);
             }, [state, props.selectedProductIds, props.productIdQuantityCustomPriceMapping, props.productIdQuantityMapping])}
 
-            {...((props.isRowSelectable && !props.isRowSelectable) || props.isView ? { isRowSelectable: (params: GridRowParams) => false } : {})}
+            {...((props.isRowSelectable && !props.isRowSelectable) || props.isView ? { isRowSelectable: () => false } : {})}
             rowSelectionModel={props.selectedProductIds}
             getRowClassName={React.useCallback((params: GridRowClassNameParams) => {
                 if (params.row.deleted) {
                     return "deleted";
                 }
                 else {
-                    return "";
+                    return params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd';
                 }
             }, [state, props.selectedProductIds, props.productIdQuantityCustomPriceMapping, props.productIdQuantityMapping])}
         />

@@ -4,7 +4,7 @@ import {gridApi, userApi} from "../../api/ApiCalls";
 import Toolbar from "Frontend/components/Toolbar";
 import {StyledDataGrid} from "Frontend/components/Datagrid/CustomDataGrid";
 import {PaginationBaseResponseModel} from "Frontend/api/Models/BaseModel";
-import {User} from "Frontend/api/Models/CentralModels/User";
+import {Permissions, User} from "Frontend/api/Models/CentralModels/User";
 import {initUserGridColumns} from "Frontend/api/Models/DataGridModels/UserGridColumns";
 import OutletLayout from "Frontend/components/Layouts/DashboardLayout/OutletLayout";
 import CustomNoRowsOverlay from "Frontend/components/Datagrid/CustomNoRowsOverlay";
@@ -20,6 +20,7 @@ import {
     GridPreferenceRequestModel,
     UserGridPreference
 } from "Frontend/api/Models/CarrierModels/UserGridPreference";
+import {permissionChecks} from "Frontend/api/Models/CarrierModels/Permissions";
 
 const paginatedGridModel: PaginatedGridInterface = {
     start: 0,
@@ -43,6 +44,7 @@ const UsersList = () => {
     // hooks and state variables
     const confirm = useConfirm();
     const [setLoading] = useOutletContext<any>();
+    const [showToolbar, setShowToolbar] = React.useState(false);
     const [userGridColumns, setUserGridColumns] = React.useState<GridColDef[]>([]);
     const [state, setState] = React.useState<PaginatedGridInterface>(paginatedGridModel);
     const [userGridColumnVisibilityModel, setUserGridColumnVisibilityModel] =
@@ -89,25 +91,39 @@ const UsersList = () => {
     };
 
     React.useEffect(() => {
+        // check user permissions to insert users
+        userApi(setLoading).getLoggedInUserPermissions().then(function (permissions: Permissions) {
+            const permissionSplit = Object.values(permissions)
+                .flatMap(str => typeof str === 'string'? str.split(',') : []);
+            if(permissionSplit.includes(permissionChecks.userPermissions.insertUser)){
+                setShowToolbar(true);
+            }
+        });
+
+        // get user grid preferences
         gridApi(setLoading)
             .getGridVisibilityPreference(GridId.USER)
             .then((response: UserGridPreference) => {
-                if(response) {
-                    let prevState:PaginatedGridInterface = state;
-                    setUserGridPreference(response);
-                    if(response.rowsPerPage) {
-                        prevState.pageSize = response.rowsPerPage;
-                    }
-                    if(response.visibilityModel) {
-                        setUserGridColumnVisibilityModel(JSON.parse(response.visibilityModel as string) as GridColumnVisibilityModel);
-                    }
-                    setUsersAndPagination(prevState);
+                if(!response) {
+                    response = gridPreference;
                 }
+
+                let prevState:PaginatedGridInterface = state;
+                setUserGridPreference(response);
+                if(response.rowsPerPage) {
+                    prevState.pageSize = response.rowsPerPage;
+                }
+                if(response.visibilityModel) {
+                    setUserGridColumnVisibilityModel(JSON.parse(response.visibilityModel as string) as GridColumnVisibilityModel);
+                }
+                setUsersAndPagination(prevState);
             });
     }, []);
 
     return <>
-        <Toolbar page = "User"/>
+        {showToolbar ? (
+            <Toolbar page = "User" setLoading={setLoading}/>
+        ) : <></>}
         <OutletLayout card={true}>
             <CustomToolbar
                 checkboxes = {[
@@ -135,7 +151,7 @@ const UsersList = () => {
                     gridApi(setLoading).updateGridVisibilityPreference({
                         visibilityJsonBody: JSON.stringify(newModel),
                         gridId: GridId.USER
-                    } as GridPreferenceRequestModel);
+                    } as GridPreferenceRequestModel).then();
                     setUserGridColumnVisibilityModel(newModel);
                 }, [userGridColumnVisibilityModel])}
                 onDensityChange = {(newModel: string) => {
@@ -146,16 +162,13 @@ const UsersList = () => {
                     gridApi(setLoading).updateGridDensityVisibilityPreference({
                         density: newModel,
                         gridId: GridId.USER
-                    } as GridPreferenceRequestModel);
+                    } as GridPreferenceRequestModel).then();
                 }}
                 density={userGridPreference.density as GridDensity}
                 slots={{
                     noRowsOverlay: CustomNoRowsOverlay,
                     toolbar: GridToolbar,
-                    pagination: () =>
-                        <CustomPaginationForGrid
-                            pageSize={state.pageSize}
-                        />,
+                    pagination: () => <CustomPaginationForGrid />
                 }}
                 initialState={{
                     pagination: { paginationModel: { pageSize: state.pageSize } },
@@ -182,7 +195,7 @@ const UsersList = () => {
                         gridApi(setLoading).updateRowsPerPagePreference({
                             rowsPerPage: newModel.pageSize,
                             gridId: GridId.USER
-                        } as GridPreferenceRequestModel);
+                        } as GridPreferenceRequestModel).then();
                     }
                     setUsersAndPagination({
                         includeDeleted: state.includeDeleted,
@@ -200,7 +213,7 @@ const UsersList = () => {
                         return "deleted";
                     }
                     else {
-                        return "";
+                        return params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd';
                     }
                 }, [state])}
             />

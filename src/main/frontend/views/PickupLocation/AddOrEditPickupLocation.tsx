@@ -1,7 +1,7 @@
 import {getURLParamValue, isEditMode, isViewMode } from "Frontend/components/commonHelperFunctions";
 import React from "react";
 import {useOutletContext} from "react-router-dom";
-import {dataApi, leadApi, pickupLocationApi} from "Frontend/api/ApiCalls";
+import {dataApi, pickupLocationApi} from "Frontend/api/ApiCalls";
 import {
     PickupLocationRequestModel,
     PickupLocationResponseModel
@@ -195,7 +195,9 @@ const AddOrEditPickupLocation = () => {
                         inputType={InputType.Phone}
                         label="Phone on Address"
                         value={phoneOnAddress}
-                        handleChange={React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => setPhoneOnAddress(event.target.value), [phoneOnAddress])}
+                        setValue={React.useCallback((phone: string) => {
+                            setPhoneOnAddress(phone);
+                        }, [phoneOnAddress])}
                         isView={isView}
                     />
                 </Grid>
@@ -204,7 +206,6 @@ const AddOrEditPickupLocation = () => {
                         inputType={InputType.TextField}
                         label="Email at Address"
                         value={emailAtAddress}
-                        required={false}
                         handleChange={React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => setEmailAtAddress(event.target.value), [emailAtAddress])}
                         isView={isView}
                     />

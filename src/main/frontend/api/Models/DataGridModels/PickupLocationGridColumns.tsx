@@ -29,47 +29,64 @@ const pickupLocationGridColumns: GridColDef[] = [
     {
         field: "locationName",
         headerName: "Location Name",
-        width: 300,
+        flex: 2,
+        minWidth: 250,
         valueGetter: (value, row) => {
             return row.pickupLocation.addressNickName;
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />,
     },
     {
         field: "address",
         headerName: "Address",
-        width: 300,
+        flex: 4,
+        minWidth: 350,
         valueGetter: (value, row) => {
             return row.address.line1 + " " + row.address.line2 + ", " + row.address.city + ", " + row.address.state + ", " + row.address.zipCode;
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />,
     },
     {
         field: "nameOnAddress",
         headerName: "Name On Address",
-        width: 300,
+        flex: 2,
+        minWidth: 250,
         filterable: false,
         valueGetter: (value, row) => {
             return row.address.nameOnAddress;
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />,
     },
     {
         field: "phoneOnAddress",
         headerName: "Phone On Address",
-        width: 200,
+        flex: 2,
+        minWidth: 150,
         valueGetter: (value, row) => {
-            return `(${row.address.phoneOnAddress.substr(0, 3)}) - ${row.address.phoneOnAddress.substr(3, 3)} - ${row.address.phoneOnAddress.substr(6)}`;
+            return `(${row.address.phoneOnAddress.slice(0, 3)}) - ${row.address.phoneOnAddress.slice(3, 6)} - ${row.address.phoneOnAddress.slice(6)}`;
         }
     },
     {
         field: "emailAtAddress",
         headerName: "Email On Address",
-        width: 300,
+        flex: 2,
+        minWidth: 250,
         valueGetter: (value, row) => {
             return row.address.emailAtAddress;
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />,
     }
 ];
 
@@ -84,7 +101,7 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
             confirmationButtonProps: { autoFocus: true }
         })
             .then(() => {
-                pickupLocationApi(setLoading).togglePickupLocation(params.row.pickupLocation.pickupLocationId).then((response: number) => {
+                pickupLocationApi(setLoading).togglePickupLocation(params.row.pickupLocation.pickupLocationId).then(() => {
                     window.location.reload();
                 });
             })
@@ -99,7 +116,7 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
             confirmationButtonProps: { autoFocus: true }
         })
             .then(() => {
-                pickupLocationApi(setLoading).togglePickupLocation(params.row.pickupLocation.pickupLocationId).then((response: number) => {
+                pickupLocationApi(setLoading).togglePickupLocation(params.row.pickupLocation.pickupLocationId).then(() => {
                     window.location.reload();
                 });
             })
@@ -114,7 +131,8 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
         filterable: false,
         field: "Actions",
         headerName: "Actions",
-        width: 150,
+        flex: 1,
+        minWidth: 150,
         renderCell: (params: GridRenderCellParams) => (
             <div>
                 {params.row.pickupLocation.deleted ? (

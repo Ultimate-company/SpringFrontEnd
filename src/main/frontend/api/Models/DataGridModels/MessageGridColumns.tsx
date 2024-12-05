@@ -31,25 +31,48 @@ export const messagesGridColumns: GridColDef[] = [
     {
         field: "title",
         headerName: "Title",
-        width: 300,
+        flex: 2,
+        minWidth: 250,
         valueGetter: (value, row) => {
             return row.message.title;
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />,
+    },
+    {
+        field: "description",
+        headerName: "Description",
+        flex: 8,
+        minWidth: 250,
+        valueGetter: (value, row) => {
+            return row.message.descriptionHtml;
+        },
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />,
     },
     {
         field: "publishDate",
         headerName: "Publish Date",
-        width: 150,
+        flex: 1,
+        minWidth: 150,
         valueGetter: (value, row) => {
             let publishDate = row.message.publishDate;
             return `${format(new Date(publishDate), 'do MMM yyyy')}`;
-        }
+        },
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />,
     },
     {
         field: "sendAsEmail",
         headerName: "Send As Email",
-        width: 150,
+        flex: 1,
+        minWidth: 150,
         filterable:false,
         valueGetter: (value, row) => {
             if(row.message.sendAsEmail) {
@@ -63,7 +86,8 @@ export const messagesGridColumns: GridColDef[] = [
     {
         field: "IntendedUsers",
         headerName: "Intended Users Count",
-        width: 200,
+        flex: 1,
+        minWidth: 150,
         filterable: false,
         valueGetter: (value, row) => {
             return row.totalUsers;
@@ -72,7 +96,8 @@ export const messagesGridColumns: GridColDef[] = [
     {
         field: "IntendedGroups",
         headerName: "Intended User Groups Count",
-        width: 200,
+        flex: 1,
+        minWidth: 150,
         filterable: false,
         valueGetter: (value, row) => {
             return row.totalUserGroups;
@@ -91,7 +116,7 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
             confirmationButtonProps: { autoFocus: true }
         })
             .then(() => {
-                messageApi(setLoading).toggleMessage(params.row.message.messageId).then((response: number) => {
+                messageApi(setLoading).toggleMessage(params.row.message.messageId).then(() => {
                     window.location.reload();
                 });
             })
@@ -106,7 +131,7 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
             confirmationButtonProps: { autoFocus: true }
         })
             .then(() => {
-                messageApi(setLoading).toggleMessage(params.row.message.messageId).then((response: number) => {
+                messageApi(setLoading).toggleMessage(params.row.message.messageId).then(() => {
                     window.location.reload();
                 });
             })
@@ -121,7 +146,8 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
         filterable: false,
         field: "Actions",
         headerName: "Actions",
-        width: 150,
+        flex: 1,
+        minWidth: 150,
         renderCell: (params: GridRenderCellParams) => (
             <div>
                 {params.row.message.deleted ? (

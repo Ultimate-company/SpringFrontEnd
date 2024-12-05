@@ -57,20 +57,17 @@ export const isEditMode = (param: string) => {
     const isViewParam = getURLParamValue('isView');
 
     return (
-        paramValue !== undefined &&
         paramValue !== null &&
         paramValue !== '' &&
-        (isViewParam === undefined || isViewParam === null)
+        isViewParam === null
     );
 }
 
 export const isViewMode = (param: string) => {
     const paramValue = getURLParamValue(param);
     return (
-        paramValue !== undefined &&
         paramValue !== null &&
         paramValue !== '' &&
-        getURLParamValue("isView") !== undefined &&
         getURLParamValue("isView") !== null
     );
 }
@@ -344,7 +341,7 @@ export const renderComment = (comment: string, body: Body) => {
 
         // Process image replacement in HTML
         let attachmentIndex = 1;
-        html = html.replace(/<img\s+[^>]*src="https:\/\/[^\s]+\/rest\/api\/3\/attachment\/content\/(\d+)"[^>]*>/gi, (match, id) => {
+        html = html.replace(/<img\s+[^>]*src="https:\/\/\S+\/rest\/api\/3\/attachment\/content\/(\d+)"[^>]*>/gi, (match, id) => {
             return `<a href="${supportUrls.getAttachmentById}/${id}" download>Attachment ${attachmentIndex++}</a>`;
         });
 

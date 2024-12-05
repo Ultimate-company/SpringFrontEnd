@@ -1,4 +1,4 @@
-import {Rating, Box, Grid} from "@mui/material";
+import {Rating, Grid} from "@mui/material";
 import React from "react";
 import StarIcon from '@mui/icons-material/Star';
 

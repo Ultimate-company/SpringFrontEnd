@@ -1,6 +1,6 @@
 import {GridColDef, GridColumnVisibilityModel, GridDensity, GridFilterModel, GridToolbar} from "@mui/x-data-grid";
 import React from "react";
-import {gridApi, packageApi} from "../../api/ApiCalls";
+import {gridApi, packageApi, userApi} from "../../api/ApiCalls";
 import Toolbar from "Frontend/components/Toolbar";
 import { StyledDataGrid } from "Frontend/components/Datagrid/CustomDataGrid";
 import {PaginationBaseResponseModel} from "Frontend/api/Models/BaseModel";
@@ -20,6 +20,8 @@ import {
     GridPreferenceRequestModel,
     UserGridPreference
 } from "Frontend/api/Models/CarrierModels/UserGridPreference";
+import {Permissions} from "Frontend/api/Models/CentralModels/User";
+import {permissionChecks} from "Frontend/api/Models/CarrierModels/Permissions";
 
 const paginatedGridModel: PaginatedGridInterface = {
     start: 0,
@@ -43,6 +45,7 @@ const PackageList = () => {
     // hooks and state variables
     const confirm = useConfirm();
     const [setLoading] = useOutletContext<any>();
+    const [showToolbar, setShowToolbar] = React.useState(false);
     const [packageGridColumns, setPackageGridColumns] = React.useState<GridColDef[]>([]);
     const [state, setState] = React.useState<PaginatedGridInterface>(paginatedGridModel);
     const [packageColumnVisibilityModel, setPackageColumnVisibilityModel] =
@@ -89,25 +92,39 @@ const PackageList = () => {
     };
 
     React.useEffect(() => {
+        // check user permissions to insert package
+        userApi(setLoading).getLoggedInUserPermissions().then(function (permissions: Permissions) {
+            const permissionSplit = Object.values(permissions)
+                .flatMap(str => typeof str === 'string'? str.split(',') : []);
+            if(permissionSplit.includes(permissionChecks.packagePermissions.insertPackages)){
+                setShowToolbar(true);
+            }
+        });
+
+        // get user grid preferences
         gridApi(setLoading)
             .getGridVisibilityPreference(GridId.PACKAGES)
             .then((response: UserGridPreference) => {
-                if(response) {
-                    let prevState:PaginatedGridInterface = state;
-                    setUserGridPreference(response);
-                    if(response.rowsPerPage) {
-                        prevState.pageSize = response.rowsPerPage;
-                    }
-                    if(response.visibilityModel) {
-                        setPackageColumnVisibilityModel(JSON.parse(response.visibilityModel as string) as GridColumnVisibilityModel);
-                    }
-                    setPackageAndPagination(prevState);
+                if(!response) {
+                    response = gridPreference;
                 }
+
+                let prevState:PaginatedGridInterface = state;
+                setUserGridPreference(response);
+                if(response.rowsPerPage) {
+                    prevState.pageSize = response.rowsPerPage;
+                }
+                if(response.visibilityModel) {
+                    setPackageColumnVisibilityModel(JSON.parse(response.visibilityModel as string) as GridColumnVisibilityModel);
+                }
+                setPackageAndPagination(paginatedGridModel);
             });
     }, []);
 
     return <>
-        <Toolbar page = "Package"/>
+        {showToolbar ? (
+            <Toolbar page = "Package" setLoading={setLoading}/>
+        ) : <></>}
         <OutletLayout card={true}>
             <CustomToolbar
                 checkboxes = {[
@@ -135,7 +152,7 @@ const PackageList = () => {
                     gridApi(setLoading).updateGridVisibilityPreference({
                         visibilityJsonBody: JSON.stringify(newModel),
                         gridId: GridId.PACKAGES
-                    } as GridPreferenceRequestModel);
+                    } as GridPreferenceRequestModel).then();
                     setPackageColumnVisibilityModel(newModel);
                 }, [packageColumnVisibilityModel])}
                 onDensityChange = {(newModel: string) => {
@@ -146,16 +163,13 @@ const PackageList = () => {
                     gridApi(setLoading).updateGridDensityVisibilityPreference({
                         density: newModel,
                         gridId: GridId.PACKAGES
-                    } as GridPreferenceRequestModel);
+                    } as GridPreferenceRequestModel).then();
                 }}
                 density={userGridPreference.density as GridDensity}
                 slots={{
                     noRowsOverlay: CustomNoRowsOverlay,
                     toolbar: GridToolbar,
-                    pagination: () =>
-                        <CustomPaginationForGrid
-                            pageSize={state.pageSize}
-                        />,
+                    pagination: () => <CustomPaginationForGrid />
                 }}
                 initialState={{
                     pagination: { paginationModel: { pageSize: state.pageSize } },
@@ -182,7 +196,7 @@ const PackageList = () => {
                         gridApi(setLoading).updateRowsPerPagePreference({
                             rowsPerPage: newModel.pageSize,
                             gridId: GridId.PACKAGES
-                        } as GridPreferenceRequestModel);
+                        } as GridPreferenceRequestModel).then();
                     }
                     setPackageAndPagination({
                         includeDeleted: state.includeDeleted,
@@ -200,7 +214,7 @@ const PackageList = () => {
                         return "deleted";
                     }
                     else {
-                        return "";
+                        return params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd';
                     }
                 }, [state])}
             />

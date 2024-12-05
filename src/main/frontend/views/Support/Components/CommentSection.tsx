@@ -41,7 +41,7 @@ const CommentSection = (props: CommentSectionProps) => {
     const [editingCommentId, setEditingCommentId] = React.useState<string | null>(null);
     const [formData, setFormData] = React.useState<FormData>(new FormData());
     const [editValue, setEditValue] = React.useState<string>('');
-    const rteRef = React.useRef<RichTextEditorRef>(null);
+    const rteRef = React.useRef<RichTextEditorRef>();
 
     // local helper function
     const fileUploadChange = (event: ChangeEvent<HTMLInputElement>) => {

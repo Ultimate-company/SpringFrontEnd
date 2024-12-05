@@ -1,7 +1,6 @@
 import {
     gridPageCountSelector,
     GridPagination,
-    PaginationPropsOverrides,
     useGridApiContext,
     useGridSelector
 } from "@mui/x-data-grid";
@@ -26,13 +25,10 @@ export interface PaginatedGridInterface {
     totalPaginationBlockCount: number,
     filterExpr: FilterModel
 }
-export interface CustomPaginationForGridProps extends PaginationPropsOverrides {
-    pageSize: number;
-}
 
 const pagination = (props: Pick<TablePaginationProps, 'page' | 'onPageChange' | 'className'>) => {
     const apiRef = useGridApiContext();
-    const pageCount = useGridSelector(apiRef, gridPageCountSelector);
+    let pageCount = useGridSelector(apiRef, gridPageCountSelector) as number;
 
     return (
         <MuiPagination
@@ -47,7 +43,7 @@ const pagination = (props: Pick<TablePaginationProps, 'page' | 'onPageChange' | 
     );
 }
 
-export const CustomPaginationForGrid = (props: CustomPaginationForGridProps) => {
+export const CustomPaginationForGrid = () => {
     const apiRef = useGridApiContext();
     const handlePaginationChange = (
         event: any,

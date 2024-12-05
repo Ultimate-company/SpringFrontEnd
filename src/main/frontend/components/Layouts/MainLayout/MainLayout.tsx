@@ -3,8 +3,6 @@ import { styled } from '@mui/system';
 import MainNavbar from './MainNavbar';
 import {GoogleOAuthProvider} from "@react-oauth/google";
 import {Box} from "@mui/material";
-import NotificationSnackbar from '../../Snackbar/NotificationSnackbar';
-import { Toaster } from 'react-hot-toast';
 
 const MainLayoutRoot = styled('div')({
     backgroundColor: "#ffff",

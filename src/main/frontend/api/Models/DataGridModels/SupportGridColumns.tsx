@@ -5,7 +5,7 @@ import {GridColDef, GridRenderCellParams} from "@mui/x-data-grid";
 import RenderLongCellItem from "Frontend/components/Datagrid/RenderLongCellItem";
 import {formatDate, removeHtmlTags} from "Frontend/components/commonHelperFunctions";
 import {Permissions} from "Frontend/api/Models/CentralModels/User";
-import {promoApi, supportApi, userApi} from "Frontend/api/ApiCalls";
+import {supportApi, userApi} from "Frontend/api/ApiCalls";
 import {permissionChecks} from "Frontend/api/Models/CarrierModels/Permissions";
 import {navigatingRoutes} from "Frontend/navigation";
 
@@ -33,7 +33,8 @@ const supportGridColumns: GridColDef[]  = [
     {
         field: "key",
         headerName: "Ticket Id",
-        width: 200,
+        flex: 2,
+        minWidth: 200,
         valueGetter: (value, row) => {
             return row.key;
         }
@@ -41,16 +42,21 @@ const supportGridColumns: GridColDef[]  = [
     {
         field: "issueType",
         headerName: "Issue Type",
-        width: 200,
+        flex: 2,
+        minWidth: 200,
         valueGetter: (value, row) => {
             return row.fields.issuetype.name;
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />
     },
     {
         field: "status",
         headerName: "Status",
-        width: 200,
+        flex: 2,
+        minWidth: 200,
         valueGetter: (value, row) => {
             return row.fields.status.name;
         },
@@ -74,16 +80,21 @@ const supportGridColumns: GridColDef[]  = [
     {
         field: "priority",
         headerName: "Priority",
-        width: 200,
+        flex: 2,
+        minWidth: 200,
         valueGetter: (value, row) => {
             return row.fields.priority.name;
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />
     },
     {
         field: "createdAt",
         headerName: "Created At",
-        width: 200,
+        flex: 2,
+        minWidth: 200,
         valueGetter: (value, row) => {
             return row.renderedFields.created;
         }
@@ -91,7 +102,8 @@ const supportGridColumns: GridColDef[]  = [
     {
         field: "updatedAt",
         headerName: "Updated At",
-        width: 200,
+        flex: 2,
+        minWidth: 200,
         valueGetter: (value, row) => {
             return row.renderedFields.updated;
         }
@@ -99,25 +111,35 @@ const supportGridColumns: GridColDef[]  = [
     {
         field: "summary",
         headerName: "Summary",
-        width: 300,
+        flex: 4,
+        minWidth: 300,
         valueGetter: (value, row) => {
             return row.fields.summary;
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />
     },
     {
         field: "description",
         headerName: "Description",
-        width: 300,
+        flex: 4,
+        minWidth: 300,
         valueGetter: (value, row) => {
             return removeHtmlTags(row.renderedFields.description);
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value} html={params.row.renderedFields.description}/>
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+            // html={params.row.renderedFields.description}
+        />
     },
     {
         field: "resolvedAt",
         headerName: "Resolved At",
-        width: 300,
+        flex: 4,
+        minWidth: 300,
         valueGetter: (value, row) => {
             if(row.fields.resolutiondate) {
                 return formatDate(row.fields.resolutiondate, "mm dd yy, HH:mm");
@@ -153,7 +175,8 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
         filterable: false,
         field: "Actions",
         headerName: "Actions",
-        width: 150,
+        flex: 1,
+        minWidth: 150,
         renderCell: (params: GridRenderCellParams) => (
             <div>
                 <>

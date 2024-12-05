@@ -23,7 +23,8 @@ const packagingEstimateGridColumns: GridColDef[] = [
     {
         field: "dimensions",
         headerName: "Package Dimensions",
-        width: 150,
+        flex: 2,
+        minWidth: 150,
         valueGetter: (_, row) => {
             return row._package.length + " x " + row._package.breadth + " x " + row._package.height;
         }
@@ -31,7 +32,8 @@ const packagingEstimateGridColumns: GridColDef[] = [
     {
         field: "products",
         headerName: "Products In Package",
-        width: 500,
+        flex: 4,
+        minWidth: 500,
         valueGetter: (_, row) => {
             let result = "";
             for(let i = 0; i<row.products.length; i++) {
@@ -40,12 +42,16 @@ const packagingEstimateGridColumns: GridColDef[] = [
             }
             return result;
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />
     },
     {
         field: "costPerPackage",
         headerName: "Packaging Cost",
-        width: 250,
+        flex: 2,
+        minWidth: 250,
         valueGetter: (_, row) => {
            return row._package.pricePerQuantity + " ₹";
         }
@@ -53,7 +59,8 @@ const packagingEstimateGridColumns: GridColDef[] = [
     {
         field: "pickupLocationAddress",
         headerName: "Pickup Location Address",
-        width: 300,
+        flex: 2,
+        minWidth: 300,
         valueGetter: (_, row) => {
             return row.pickupLocationResponseModel.address.line1 + " " +
                 row.pickupLocationResponseModel.address.line2 + ", " +
@@ -61,8 +68,10 @@ const packagingEstimateGridColumns: GridColDef[] = [
                 row.pickupLocationResponseModel.address.state + ", " +
                 row.pickupLocationResponseModel.address.zipCode;
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
-
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />
     }
 ];
 

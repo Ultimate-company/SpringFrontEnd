@@ -8,6 +8,7 @@ export interface TextFieldInputProps {
     label: string;
     name: string;
     value?: string;
+    setValue?: (value: string) => void;
     onChange?: React.ChangeEventHandler<HTMLInputElement>;
     onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
     placeholder?: string;

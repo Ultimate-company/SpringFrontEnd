@@ -1,6 +1,6 @@
 import Toolbar from "Frontend/components/Toolbar";
 import CustomToolbar from "Frontend/components/Datagrid/CustomToolbar";
-import {gridApi, supportApi} from "Frontend/api/ApiCalls";
+import {gridApi, supportApi, userApi} from "Frontend/api/ApiCalls";
 import React from "react";
 import OutletLayout from "Frontend/components/Layouts/DashboardLayout/OutletLayout";
 import {CustomPaginationForGrid, PaginatedGridInterface} from "Frontend/components/Datagrid/CustomPaginationForGrid";
@@ -19,6 +19,8 @@ import {
     GridPreferenceRequestModel,
     UserGridPreference
 } from "Frontend/api/Models/CarrierModels/UserGridPreference";
+import {Permissions} from "Frontend/api/Models/CentralModels/User";
+import {permissionChecks} from "Frontend/api/Models/CarrierModels/Permissions";
 
 const paginatedGridModel: PaginatedGridInterface = {
     start: 0,
@@ -42,6 +44,7 @@ const SupportList = () => {
     // hooks and state variables
     const confirm = useConfirm();
     const [setLoading] = useOutletContext<any>();
+    const [showToolbar, setShowToolbar] = React.useState(false);
     const [supportGridColumns, setSupportGridColumns] = React.useState<GridColDef[]>([]);
     const [state, setState] = React.useState<PaginatedGridInterface>(paginatedGridModel);
     const [supportColumnVisibilityModel, setSupportColumnVisibilityModel] =
@@ -81,6 +84,16 @@ const SupportList = () => {
     };
 
     React.useEffect(() => {
+        // check user permissions to insert tickets
+        userApi(setLoading).getLoggedInUserPermissions().then(function (permissions: Permissions) {
+            const permissionSplit = Object.values(permissions)
+                .flatMap(str => typeof str === 'string'? str.split(',') : []);
+            if(permissionSplit.includes(permissionChecks.supportPermissions.raiseTickets)){
+                setShowToolbar(true);
+            }
+        });
+
+        // get user grid preferences
         gridApi(setLoading)
             .getGridVisibilityPreference(GridId.SUPPORT)
             .then((response: UserGridPreference) => {
@@ -101,7 +114,9 @@ const SupportList = () => {
 
     return (
         <>
-            <Toolbar page = "Support"/>
+            {showToolbar ? (
+                <Toolbar page = "Support" setLoading={setLoading}/>
+            ) : <></>}
             <OutletLayout card={true}>
                 <CustomToolbar
                     checkboxes = {[
@@ -129,7 +144,7 @@ const SupportList = () => {
                         gridApi(setLoading).updateGridVisibilityPreference({
                             visibilityJsonBody: JSON.stringify(newModel),
                             gridId: GridId.SUPPORT
-                        } as GridPreferenceRequestModel);
+                        } as GridPreferenceRequestModel).then();
                         setSupportColumnVisibilityModel(newModel);
                     }, [supportColumnVisibilityModel])}
                     onDensityChange = {(newModel: string) => {
@@ -140,16 +155,13 @@ const SupportList = () => {
                         gridApi(setLoading).updateGridDensityVisibilityPreference({
                             density: newModel,
                             gridId: GridId.SUPPORT
-                        } as GridPreferenceRequestModel);
+                        } as GridPreferenceRequestModel).then();
                     }}
                     density={userGridPreference.density as GridDensity}
                     slots={{
                         noRowsOverlay: CustomNoRowsOverlay,
                         toolbar: GridToolbar,
-                        pagination: () =>
-                            <CustomPaginationForGrid
-                                pageSize={state.pageSize}
-                            />,
+                        pagination: () => <CustomPaginationForGrid />
                     }}
                     initialState={{
                         pagination: { paginationModel: { pageSize: state.pageSize } },
@@ -176,7 +188,7 @@ const SupportList = () => {
                             gridApi(setLoading).updateRowsPerPagePreference({
                                 rowsPerPage: newModel.pageSize,
                                 gridId: GridId.SUPPORT
-                            } as GridPreferenceRequestModel);
+                            } as GridPreferenceRequestModel).then();
                         }
                         setSupportAndPagination({
                             includeDeleted: state.includeDeleted,
@@ -194,7 +206,7 @@ const SupportList = () => {
                             return "deleted";
                         }
                         else {
-                            return "";
+                            return params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd';
                         }
                     }, [state])}
                 />

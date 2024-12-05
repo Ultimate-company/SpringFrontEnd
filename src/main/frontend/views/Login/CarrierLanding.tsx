@@ -1,7 +1,6 @@
 import React from 'react';
 import {
     Container, Grid,
-    Pagination,
 } from "@mui/material";
 import {carrierApi} from "Frontend/api/ApiCalls";
 import {Carrier} from "Frontend/api/Models/CentralModels/Carrier";

@@ -81,26 +81,18 @@ export type Product = {
 export type ProductCategory = {
     categoryId: number;
     id: number;
-    end: boolean;
-    isSelected: boolean;
     name: string;
     parentId?: number;
     createdAt: Date;
     updatedAt: Date;
     notes?: string;
     auditUserId?: number;
-}
+    end: boolean;
+};
 
 export type ProductsResponseModel = {
     product: Product;
     productCategory: ProductCategory;
     pickupLocationResponseModel: PickupLocationResponseModel;
     imageBase64Mapping: Map<string, string>;
-}
-
-export type GetProductCategoryResponseModel = {
-    allParents: string[];
-    productCategories: ProductCategory[];
-    selectedText: string;
-    end: boolean;
 }

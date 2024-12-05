@@ -60,8 +60,8 @@ const MultipleAutoCompleteDropdown = (props: MultipleAutoCompleteProps) => {
                             autoComplete: "new-password", // disable autocomplete and autofill
                         }}
                         margin="dense"
-                        {...(props.label && { label: props.label })}
-                        {...(props.required && { required: true })}
+                        label={props.label || ""}
+                        required={props.required || false}
                         InputLabelProps={{ shrink: true }}
                     />
                 )}

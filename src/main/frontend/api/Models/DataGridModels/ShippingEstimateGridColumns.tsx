@@ -24,7 +24,8 @@ const shippingEstimateGridColumns: GridColDef[] = [
     {
         field: "pickupLocationAddress",
         headerName: "Pickup Location Address",
-        width: 800,
+        flex: 6,
+        minWidth: 800,
         valueGetter: (value, row) => {
             return row.pickupLocationResponseModel.address.line1 + " " +
                 row.pickupLocationResponseModel.address.line2 + ", " +
@@ -33,7 +34,7 @@ const shippingEstimateGridColumns: GridColDef[] = [
                 row.pickupLocationResponseModel.address.zipCode;
         },
         renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
-            length={100}
+            columnWidth={params.colDef.computedWidth}
             value={params.value}
         />
     }
@@ -67,7 +68,8 @@ export const initShippingEstimateGridColumns = async (modalProps: CustomModalPro
     columns.push({
         field: "availableCourier",
         headerName: "Available Courier",
-        width: 300,
+        flex: 2,
+        minWidth: 300,
         valueGetter: (value, row) => {
             let data: DataItem[] = [];
             for (let i = 0; i < row.data.available_courier_companies.length; i++) {
@@ -110,7 +112,8 @@ export const initShippingEstimateGridColumns = async (modalProps: CustomModalPro
     columns.push({
         field: "pickupDate",
         headerName: "Schedule Pickup Date",
-        width: 300,
+        flex: 2,
+        minWidth: 300,
         renderCell: (params: GridRenderCellParams) => {
             return (
                 <DateInput
@@ -141,7 +144,8 @@ export const initShippingEstimateGridColumns = async (modalProps: CustomModalPro
         filterable: false,
         field: "details",
         headerName: "Details",
-        width: 150,
+        flex: 2,
+        minWidth: 150,
         renderCell: (params: GridRenderCellParams) => {
             return (
                 <div>

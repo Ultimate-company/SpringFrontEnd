@@ -1,6 +1,6 @@
-import {GridColDef, GridColumnVisibilityModel, GridFilterModel, GridToolbar} from "@mui/x-data-grid";
+import {GridColDef, GridColumnVisibilityModel, GridDensity, GridFilterModel, GridToolbar} from "@mui/x-data-grid";
 import React from "react";
-import {userGroupApi} from "../../api/ApiCalls";
+import {gridApi, userApi, userGroupApi} from "../../api/ApiCalls";
 import Toolbar from "Frontend/components/Toolbar";
 import { StyledDataGrid } from "Frontend/components/Datagrid/CustomDataGrid";
 import {PaginationBaseResponseModel} from "Frontend/api/Models/BaseModel";
@@ -15,6 +15,13 @@ import {initUserGroupGridColumns} from "Frontend/api/Models/DataGridModels/UserG
 import {useOutletContext} from "react-router-dom";
 import {GridRowClassNameParams} from "@mui/x-data-grid/models/params";
 import {GridPaginationModel} from "@mui/x-data-grid/models/gridPaginationProps";
+import {
+    GridId,
+    GridPreferenceRequestModel,
+    UserGridPreference
+} from "Frontend/api/Models/CarrierModels/UserGridPreference";
+import {Permissions} from "Frontend/api/Models/CentralModels/User";
+import {permissionChecks} from "Frontend/api/Models/CarrierModels/Permissions";
 
 const paginatedGridModel: PaginatedGridInterface = {
     start: 0,
@@ -30,11 +37,15 @@ const paginatedGridModel: PaginatedGridInterface = {
         filterText: ""
     }
 }
+const gridPreference: UserGridPreference = {
+    density: "standard"
+}
 
 const UserGroupsList = () => {
     // hooks and state variables
     const confirm = useConfirm();
     const [setLoading] = useOutletContext<any>();
+    const [showToolbar, setShowToolbar] = React.useState(false);
     const [userGroupGridColumns, setUserGroupGridColumns] = React.useState<GridColDef[]>([]);
     const [state, setState] = React.useState<PaginatedGridInterface>(paginatedGridModel);
     const [userGroupGridColumnVisibilityModel, setUserGroupGridColumnVisibilityModel] =
@@ -42,6 +53,7 @@ const UserGroupsList = () => {
             id: false,
             deleted: false
         });
+    const [userGridPreference, setUserGridPreference] = React.useState<UserGridPreference>(gridPreference);
 
     // function which will take start and end and will get the messages in batches from the database
     const setUserGroupAndPagination = (paginationRequestModel: PaginatedGridInterface) => {
@@ -71,7 +83,8 @@ const UserGroupsList = () => {
                             columnName: paginationRequestModel.filterExpr.columnName,
                             condition: paginationRequestModel.filterExpr.condition,
                             filterText: paginationRequestModel.filterExpr.filterText,
-                        }
+                        },
+                        pageSize: paginationRequestModel.pageSize
                     });
                 });
             });
@@ -79,11 +92,39 @@ const UserGroupsList = () => {
     };
 
     React.useEffect(() => {
-        setUserGroupAndPagination(paginatedGridModel);
+        // check user permissions to insert user group
+        userApi(setLoading).getLoggedInUserPermissions().then(function (permissions: Permissions) {
+            const permissionSplit = Object.values(permissions)
+                .flatMap(str => typeof str === 'string'? str.split(',') : []);
+            if(permissionSplit.includes(permissionChecks.groupsPermissions.insertGroups)){
+                setShowToolbar(true);
+            }
+        });
+
+        // get user grid preferences
+        gridApi(setLoading)
+            .getGridVisibilityPreference(GridId.USER_GROUP)
+            .then((response: UserGridPreference) => {
+                if(!response) {
+                    response = gridPreference;
+                }
+
+                let prevState:PaginatedGridInterface = state;
+                setUserGridPreference(response);
+                if(response.rowsPerPage) {
+                    prevState.pageSize = response.rowsPerPage;
+                }
+                if(response.visibilityModel) {
+                    setUserGroupGridColumnVisibilityModel(JSON.parse(response.visibilityModel as string) as GridColumnVisibilityModel);
+                }
+                setUserGroupAndPagination(paginatedGridModel);
+            });
     }, []);
 
     return <>
-        <Toolbar page = "User Group"/>
+        {showToolbar ? (
+            <Toolbar page = "UserGroup" setLoading={setLoading}/>
+        ) : <></>}
         <OutletLayout card={true}>
             <CustomToolbar
                 checkboxes = {[
@@ -108,15 +149,27 @@ const UserGroupsList = () => {
                 paginationMode="server"
                 columnVisibilityModel={userGroupGridColumnVisibilityModel}
                 onColumnVisibilityModelChange={React.useCallback((newModel: GridColumnVisibilityModel) => {
+                    gridApi(setLoading).updateGridVisibilityPreference({
+                        visibilityJsonBody: JSON.stringify(newModel),
+                        gridId: GridId.USER_GROUP
+                    } as GridPreferenceRequestModel).then();
                     setUserGroupGridColumnVisibilityModel(newModel);
                 }, [userGroupGridColumnVisibilityModel])}
+                onDensityChange = {(newModel: string) => {
+                    setUserGridPreference({
+                        ...userGridPreference,
+                        density: newModel
+                    });
+                    gridApi(setLoading).updateGridDensityVisibilityPreference({
+                        density: newModel,
+                        gridId: GridId.USER_GROUP
+                    } as GridPreferenceRequestModel).then();
+                }}
+                density={userGridPreference.density as GridDensity}
                 slots={{
                     noRowsOverlay: CustomNoRowsOverlay,
                     toolbar: GridToolbar,
-                    pagination: () =>
-                        <CustomPaginationForGrid
-                            pageSize={state.pageSize}
-                        />,
+                    pagination: () => <CustomPaginationForGrid />
                 }}
                 initialState={{
                     pagination: { paginationModel: { pageSize: state.pageSize } },
@@ -137,11 +190,18 @@ const UserGroupsList = () => {
                             data: state.data
                         }
                     }), [state])}
+                paginationModel={{page: Math.floor(state.start/state.pageSize), pageSize: state.pageSize}}
                 onPaginationModelChange={React.useCallback((newModel: GridPaginationModel) => {
+                    if(newModel.pageSize != state.pageSize) {
+                        gridApi(setLoading).updateRowsPerPagePreference({
+                            rowsPerPage: newModel.pageSize,
+                            gridId: GridId.USER_GROUP
+                        } as GridPreferenceRequestModel).then();
+                    }
                     setUserGroupAndPagination({
                         includeDeleted: state.includeDeleted,
                         filterExpr: state.filterExpr,
-                        pageSize: state.pageSize,
+                        pageSize: newModel.pageSize,
                         start: newModel.pageSize * newModel.page,
                         end: (newModel.pageSize * newModel.page) + newModel.pageSize,
                         actualDataCount: state.actualDataCount,
@@ -154,7 +214,7 @@ const UserGroupsList = () => {
                         return "deleted";
                     }
                     else {
-                        return "";
+                        return params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd';
                     }
                 }, [state])}
             />

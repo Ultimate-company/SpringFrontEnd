@@ -1,6 +1,6 @@
 import {StyledDataGrid} from "Frontend/components/Datagrid/CustomDataGrid";
 import React from "react";
-import {GridColDef, GridColumnVisibilityModel, GridRowSelectionModel, GridToolbar} from "@mui/x-data-grid";
+import {GridColDef, GridColumnVisibilityModel, GridToolbar} from "@mui/x-data-grid";
 import CustomNoRowsOverlay from "Frontend/components/Datagrid/CustomNoRowsOverlay";
 import {salesOrderApi} from "Frontend/api/ApiCalls";
 import {GetPaymentMode} from "Frontend/api/Models/CarrierModels/Payment";
@@ -8,7 +8,6 @@ import {SelectedCourier, ShippingOptionsResponseModel} from "Frontend/api/Models
 import {initShippingEstimateGridColumns} from "Frontend/api/Models/DataGridModels/ShippingEstimateGridColumns";
 import {useOutletContext} from "react-router-dom";
 import {CustomModalProps} from "Frontend/components/OtherComponents/CustomModal";
-import {CustomPaginationForGrid} from "Frontend/components/Datagrid/CustomPaginationForGrid";
 
 interface AvailableCourierSelectionGridProps {
     pickupZipCodeProductIdMapping: Map<string, number[]>;
@@ -21,12 +20,6 @@ interface AvailableCourierSelectionGridProps {
 
     customModalProps: CustomModalProps;
     setCustomModalProps: (customModalProps: CustomModalProps) => void;
-}
-
-export interface ShippingEstimateResponseModel {
-    id: number;
-    pickupLocationAddress: string;
-    availableCourier: ShippingOptionsResponseModel;
 }
 
 const AvailableCourierSelectionGrid = (props: AvailableCourierSelectionGridProps) => {
@@ -51,7 +44,7 @@ const AvailableCourierSelectionGrid = (props: AvailableCourierSelectionGridProps
 
                 let localRowIdDropdownValueMapping: Map<number, string> = new Map<number, string>();
                 let localRowIdPickupDateMapping: Map<number, string> = new Map<number, string>();
-                for (var x = 0; x < shippingOptionsResponseModels.length; x++) {
+                for (let x = 0; x < shippingOptionsResponseModels.length; x++) {
                     localRowIdDropdownValueMapping.set(shippingOptionsResponseModels[x].pickupLocationResponseModel.pickupLocation.pickupLocationId as number,
                         shippingOptionsResponseModels[x].data.available_courier_companies.length > 0 ? shippingOptionsResponseModels[x].data.available_courier_companies[0].courier_company_id : "");
                     localRowIdPickupDateMapping.set(shippingOptionsResponseModels[x].pickupLocationResponseModel.pickupLocation.pickupLocationId as number,

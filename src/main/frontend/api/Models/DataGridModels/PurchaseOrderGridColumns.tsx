@@ -7,8 +7,8 @@ import {Permissions} from "Frontend/api/Models/CentralModels/User";
 import {purchaseOrderApi, userApi} from "Frontend/api/ApiCalls";
 import {permissionChecks} from "Frontend/api/Models/CarrierModels/Permissions";
 import {navigatingRoutes} from "Frontend/navigation";
-import {isDateGreaterThanOrEqualToToday} from "Frontend/components/commonHelperFunctions";
 import BlueButton from "Frontend/components/FormInputs/BlueButton";
+import {purchaseOrderUrls} from "Frontend/api/Endpoints";
 
 const purchaseOrderGridColumns: GridColDef[] = [
     {
@@ -31,16 +31,21 @@ const purchaseOrderGridColumns: GridColDef[] = [
     {
         field: "address",
         headerName: "Address",
-        width: 300,
+        flex: 4,
+        minWidth: 550,
         valueGetter: (value, row) => {
             return row.address.line1 + " " + row.address.line2 + ", " + row.address.city + ", " + row.address.state + ", " + row.address.zipCode;
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />,
     },
     {
         field: "expectedShipmentDate",
         headerName: "Expected Shipment Date",
-        width: 150,
+        flex: 2,
+        minWidth: 150,
         valueGetter: (value, row) => {
             return `${format(new Date(row.purchaseOrder.expectedShipmentDate), 'do MMM yyyy')}`;
         }
@@ -48,53 +53,72 @@ const purchaseOrderGridColumns: GridColDef[] = [
     {
         field: "vendorNumber",
         headerName: "Vendor Number",
-        width: 300,
+        flex: 2,
+        minWidth: 250,
         valueGetter: (value, row) => {
             return row.purchaseOrder.vendorNumber;
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />,
     },
     {
         field: "orderReceipt",
         headerName: "Order Receipt",
-        width: 300,
+        flex: 2,
+        minWidth: 250,
         valueGetter: (value, row) => {
             return row.purchaseOrder.orderReceipt;
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />,
     },
     {
         field: "createdBy",
         headerName: "Created By",
-        width: 300,
+        flex: 2,
+        minWidth: 250,
         valueGetter: (value, row) => {
             return row.createdByUser.firstName + " " + row.createdByUser.lastName + " (" + row.createdByUser.loginName + ")";
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />,
     },
     {
         field: "approvedBy",
         headerName: "Approved By",
-        width: 300,
+        flex: 2,
+        minWidth: 250,
         valueGetter: (value, row) => {
-            if(row.approvedByUser == null){
-                return "";
-            }
-            return row.approvedByUser.firstName + " " + row.approvedByUser.lastName + " (" + row.approvedByUser.loginName + ")";
+            return row.approvedByUser
+                ? row.approvedByUser.firstName + " " + row.approvedByUser.lastName + " (" + row.approvedByUser.loginName + ")"
+                : "";
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />,
     },
     {
         field: "assignedLead",
         headerName: "Assigned Lead",
-        width: 300,
+        flex: 2,
+        minWidth: 250,
         valueGetter: (value, row) => {
             if(row.lead == null){
                 return "";
             }
             return row.lead.firstName + " " + row.lead.lastName + " (" + row.lead.email + ")";
         },
-        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem value={params.value}/>
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />,
     }
 ];
 
@@ -109,7 +133,7 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
             confirmationButtonProps: { autoFocus: true }
         })
             .then(() => {
-                purchaseOrderApi(setLoading).togglePurchaseOrder(params.row.purchaseOrder.purchaseOrderId).then((response: number) => {
+                purchaseOrderApi(setLoading).togglePurchaseOrder(params.row.purchaseOrder.purchaseOrderId).then(() => {
                     window.location.reload();
                 });
             })
@@ -124,7 +148,7 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
             confirmationButtonProps: { autoFocus: true }
         })
             .then(() => {
-                purchaseOrderApi(setLoading).togglePurchaseOrder(params.row.purchaseOrder.purchaseOrderId).then((response: number) => {
+                purchaseOrderApi(setLoading).togglePurchaseOrder(params.row.purchaseOrder.purchaseOrderId).then(() => {
                     window.location.reload();
                 });
             })
@@ -139,7 +163,7 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
             confirmationButtonProps: { autoFocus: true }
         })
             .then(() => {
-                purchaseOrderApi(setLoading).approvedByPurchaseOrder(params.row.purchaseOrder.purchaseOrderId).then((response: boolean) => {
+                purchaseOrderApi(setLoading).approvedByPurchaseOrder(params.row.purchaseOrder.purchaseOrderId).then(() => {
                     window.location.reload();
                 });
             })
@@ -155,7 +179,8 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
         filterable: false,
         field: "Approve",
         headerName: "Approve",
-        width: 200,
+        flex: 2,
+        minWidth: 200,
         renderCell: (params: GridRenderCellParams) => {
             return (
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
@@ -178,7 +203,8 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
         filterable: false,
         field: "Actions",
         headerName: "Actions",
-        width: 150,
+        flex: 1,
+        minWidth: 150,
         renderCell: (params: GridRenderCellParams) => (
             <div>
                 {params.row.purchaseOrder.deleted ? (
@@ -212,17 +238,19 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
         filterable: false,
         field: "downloadPDF",
         headerName: "Download PDF",
-        width: 200,
+        flex: 2,
+        minWidth: 200,
         renderCell: (params: GridRenderCellParams) => {
             return (
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
                     {
                         !params.row.purchaseOrder.deleted && (params.row.approvedByUser != undefined || params.row.approvedByUser != null) &&
                         permissionSplit.includes(permissionChecks.purchaseOrderPermissions.viewPurchaseOrders) ? (
-                        <BlueButton
-                            label="Download PDF"
-                            handleSubmit={() => purchaseOrderApi(setLoading).downloadPdf(params.row.purchaseOrder.purchaseOrderId)}
-                        />
+                            <a href={`${purchaseOrderUrls.getPurchaseOrderPdf}?purchaseOrderId=${params.row.purchaseOrder.purchaseOrderId}`} download="purchaseOrder.pdf">
+                                <BlueButton
+                                    label="Download PDF"
+                                />
+                            </a>
                     ) : (
                         <></>
                     )}

@@ -43,11 +43,11 @@ const TaskList = (props: TaskListProps) => {
                                     <ListItemIcon>
                                         <CheckboxInput
                                             name={"checkbox_" + item.todoId}
-                                            checked={item.done != undefined && item.done}
+                                            checked={item.done}
                                         />
                                     </ListItemIcon>
 
-                                    {item.done != undefined && item.done ?
+                                    {item.done ?
                                         <ListItemText id={(item.todoId as number).toString()} primary={item.task} style={{ textDecoration: "line-through" }} /> :
                                         <ListItemText id={(item.todoId as number).toString()} primary={item.task} />
                                     }

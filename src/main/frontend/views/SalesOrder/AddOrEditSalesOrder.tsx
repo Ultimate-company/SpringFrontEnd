@@ -419,7 +419,9 @@ const AddOrEditSalesOrder = () => {
                         inputType={InputType.Phone}
                         label="Phone on Address"
                         value={phoneOnAddress}
-                        handleChange={React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => setPhoneOnAddress(event.target.value), [phoneOnAddress])}
+                        setValue={React.useCallback((phone: string) => {
+                            setPhoneOnAddress(phone);
+                        }, [phoneOnAddress])}
                         isView={isView}
                     />
                 </Grid>
@@ -490,7 +492,9 @@ const AddOrEditSalesOrder = () => {
                         inputType={InputType.Phone}
                         label="Phone on Address"
                         value={b_phoneOnAddress}
-                        handleChange={React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => b_setPhoneOnAddress(event.target.value), [b_phoneOnAddress])}
+                        setValue={React.useCallback((phone: string) => {
+                            b_setPhoneOnAddress(phone);
+                        }, [b_phoneOnAddress])}
                         isView={isView}
                     />
                 </Grid>

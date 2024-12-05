@@ -3,7 +3,6 @@
   "license": "UNLICENSED",
   "type": "module",
   "dependencies": {
-    "@atlaskit/adf-schema": "^4.3.1",
     "@atlaskit/editor-common": "^43.0.0",
     "@atlaskit/editor-json-transformer": "^8.18.0",
     "@atlaskit/editor-markdown-transformer": "^5.11.0",
@@ -18,7 +17,9 @@
     "@mui/icons-material": "^5.15.15",
     "@mui/material": "^5.15.15",
     "@mui/x-data-grid": "^7.3.0",
+    "@mui/x-tree-view": "^7.23.0",
     "@polymer/polymer": "3.5.2",
+    "@react-input/mask": "^2.0.3",
     "@react-oauth/google": "^0.12.1",
     "@tiptap/core": "2.0.4",
     "@tiptap/extension-blockquote": "2.0.4",
@@ -217,7 +218,7 @@
       "workbox-core": "7.1.0",
       "workbox-precaching": "7.1.0"
     },
-    "hash": "10c9da7103e2bef88928fd5999c537605c54570f977b573071ca96928cb936c0"
+    "hash": "75fa291a82cd2ff656e1ab6b489c0f9d9c0b4a352aef517b917241089cea56d6"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
@@ -245,7 +246,6 @@
     "@vaadin/vaadin-themable-mixin": "$@vaadin/vaadin-themable-mixin",
     "@vaadin/vaadin-lumo-styles": "$@vaadin/vaadin-lumo-styles",
     "@vaadin/vaadin-material-styles": "$@vaadin/vaadin-material-styles",
-    "@atlaskit/adf-schema": "$@atlaskit/adf-schema",
     "@atlaskit/editor-common": "$@atlaskit/editor-common",
     "@atlaskit/editor-json-transformer": "$@atlaskit/editor-json-transformer",
     "@atlaskit/editor-markdown-transformer": "$@atlaskit/editor-markdown-transformer",
@@ -330,6 +330,8 @@
     "react-number-format": "$react-number-format",
     "turndown": "$turndown",
     "@mui/base": "$@mui/base",
-    "react-helmet": "$react-helmet"
+    "react-helmet": "$react-helmet",
+    "@mui/x-tree-view": "$@mui/x-tree-view",
+    "@react-input/mask": "$@react-input/mask"
   }
 }

@@ -34,11 +34,12 @@ public class UserController extends BaseController {
     // Session Variables
     private boolean isIncludeDeletedSession() {
         HttpSession httpSession = getCurrentSession();
-        if(httpSession.getAttribute("User_IncludeDeleted") != null) {
+        if (httpSession.getAttribute("User_IncludeDeleted") != null) {
             return (boolean) httpSession.getAttribute("User_IncludeDeleted");
         }
         return false;
     }
+
     private void setIncludeDeletedSession(boolean value) {
         HttpSession httpSession = getCurrentSession();
         httpSession.setAttribute("User_IncludeDeleted", value);
@@ -99,20 +100,20 @@ public class UserController extends BaseController {
 
         // fetch user address
         Response<Address> getAddressByIdResponse = apiTranslator().getAddressSubTranslator().getAddressByUserId(getUserByIdResponse.getItem().getUser().getUserId());
-        if(getAddressByIdResponse.isSuccess() && getAddressByIdResponse.getItem() != null) {
+        if (getAddressByIdResponse.isSuccess() && getAddressByIdResponse.getItem() != null) {
             getUserByIdResponse.getItem().setAddress(getAddressByIdResponse.getItem());
         }
 
         // fetch user permissions
         Response<Permissions> getPermissionByIdResponse = apiTranslator().getUserSubTranslator().getUserPermissionsById(getUserByIdResponse.getItem().getUser().getUserId());
-        if(!getPermissionByIdResponse.isSuccess()) {
+        if (!getPermissionByIdResponse.isSuccess()) {
             return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Error, getPermissionByIdResponse.getMessage(), null));
         }
         getUserByIdResponse.getItem().setPermissions(getPermissionByIdResponse.getItem());
 
         // fetch user group ids the user is a part of
         Response<List<Long>> getUserGroupIdsByUserIdResponse = apiTranslator().getUserGroupSubTranslator().getUserGroupIdsByUserId(userId);
-        if(!getUserGroupIdsByUserIdResponse.isSuccess()) {
+        if (!getUserGroupIdsByUserIdResponse.isSuccess()) {
             return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Error, getUserGroupIdsByUserIdResponse.getMessage(), null));
         }
         getUserByIdResponse.getItem().setGroupIds(getUserGroupIdsByUserIdResponse.getItem());
@@ -123,7 +124,7 @@ public class UserController extends BaseController {
     @PutMapping(ApiRoutes.UsersSubRoute.CREATE_USER)
     public ResponseEntity<JsonResponse<Long>> createUser(@RequestBody UsersRequestModel usersRequestModel) throws Exception {
         Response<Long> createUserResponse = apiTranslator().getUserSubTranslator().createUser(usersRequestModel);
-        if(!createUserResponse.isSuccess()) {
+        if (!createUserResponse.isSuccess()) {
             return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Error, createUserResponse.getMessage(), null));
         }
 
@@ -133,7 +134,7 @@ public class UserController extends BaseController {
     @PostMapping(ApiRoutes.UsersSubRoute.UPDATE_USER)
     public ResponseEntity<JsonResponse<Long>> updateUser(@RequestBody UsersRequestModel usersRequestModel) throws Exception {
         Response<Long> updateUserResponse = apiTranslator().getUserSubTranslator().updateUser(usersRequestModel);
-        if(!updateUserResponse.isSuccess()) {
+        if (!updateUserResponse.isSuccess()) {
             return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Error, updateUserResponse.getMessage(), null));
         }
 
@@ -144,12 +145,12 @@ public class UserController extends BaseController {
     public ResponseEntity<byte[]> getUserProfileImage(@RequestParam long userId) {
         try {
             Response<UserResponseModel> getUserDetailsResponse = apiTranslator().getUserSubTranslator().getUserById(userId);
-            if(!getUserDetailsResponse.isSuccess()) {
+            if (!getUserDetailsResponse.isSuccess()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 
             Response<GetCarrierResponseModel> getCarrierResponse = apiTranslator().getCarrierSubTranslator().getCarrierDetailsById(getCurrentCarrier().getCarrierId());
-            if(!getCarrierResponse.isSuccess()) {
+            if (!getCarrierResponse.isSuccess()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 
@@ -161,7 +162,7 @@ public class UserController extends BaseController {
 
             FirebaseHelper firebaseHelper = new FirebaseHelper(getCarrierResponse.getItem().getGoogleCred());
             byte[] imageBytes = firebaseHelper.downloadFileAsBytesFromFirebase(filePath);
-            if(imageBytes == null) {
+            if (imageBytes == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 

@@ -49,7 +49,7 @@ const AddOrEditPurchaseOrder = () => {
     const [selectedLeadIds, setSelectedLeadIds] = React.useState<GridRowSelectionModel>([]);
 
     // textarea states
-    const rteRef = React.useRef<RichTextEditorRef>(null);
+    const rteRef = React.useRef<RichTextEditorRef>();
 
     // local variables
     const isEdit = isEditMode("purchaseOrderId");
@@ -63,7 +63,7 @@ const AddOrEditPurchaseOrder = () => {
            setVendorNumber(purchaseOrderResponseModel.purchaseOrder.vendorNumber ?? "");
            setTermsAndConditionsHtml(purchaseOrderResponseModel.purchaseOrder.termsConditionsHtml ?? "");
             const proseMirrorDiv = document.querySelector('.ProseMirror');
-            if(proseMirrorDiv != null) {
+            if(proseMirrorDiv) {
                 proseMirrorDiv.innerHTML = purchaseOrderResponseModel.purchaseOrder.termsConditionsHtml ?? "";
             }
 
@@ -246,7 +246,9 @@ const AddOrEditPurchaseOrder = () => {
                         inputType={InputType.Phone}
                         label="Phone on Address"
                         value={phoneOnAddress}
-                        handleChange={React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => setPhoneOnAddress(event.target.value), [phoneOnAddress])}
+                        setValue={React.useCallback((phone: string) => {
+                            setPhoneOnAddress(phone);
+                        }, [phoneOnAddress])}
                         isView={isView}
                     />
                 </Grid>
@@ -289,6 +291,7 @@ const AddOrEditPurchaseOrder = () => {
             >
                 <Grid item md={12} xs={12}>
                     <ProductSelectionGrid
+                        showCheckboxSelection={true}
                         isView={isView}
                         setLoading={setLoading}
                         selectedProductIds={selectedProductIds}

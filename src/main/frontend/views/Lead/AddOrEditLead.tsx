@@ -5,7 +5,7 @@ import {DataItem} from "Frontend/api/Models/CentralModels/Data";
 import {Grid} from "@mui/material";
 import RenderInput, {InputType} from "Frontend/components/FormRenderer/RenderInput";
 import {getURLParamValue, isEditMode, isViewMode} from "Frontend/components/commonHelperFunctions";
-import {dataApi, leadApi, userApi} from "Frontend/api/ApiCalls";
+import {dataApi, leadApi} from "Frontend/api/ApiCalls";
 import {useOutletContext} from "react-router-dom";
 import {GridRowSelectionModel} from "@mui/x-data-grid";
 import UserSelectionGrid from "Frontend/components/DataGridsForSelection/UserSelectionGrid";
@@ -182,7 +182,9 @@ const AddOrEditLead = () => {
                         inputType={InputType.Phone}
                         label="Phone"
                         value={phone}
-                        handleChange={React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => setPhone(event.target.value), [phone])}
+                        setValue={React.useCallback((phone: string) => {
+                            setPhone(phone);
+                        }, [phone])}
                         isView={isView}
                     />
                 </Grid>
@@ -192,7 +194,9 @@ const AddOrEditLead = () => {
                         label="Fax"
                         required={false}
                         value={fax}
-                        handleChange={React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => setFax(event.target.value), [fax])}
+                        setValue={React.useCallback((phone: string) => {
+                            setFax(phone);
+                        }, [fax])}
                         isView={isView}
                     />
                 </Grid>

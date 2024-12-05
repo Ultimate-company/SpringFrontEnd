@@ -10,7 +10,7 @@ interface ImageGridLayoutProps {
     itemsPerRow: number;
     totalRows: number;
     onItemClick?: (id: number) => void;
-};
+}
 
 const ImageGridLayout = (props: ImageGridLayoutProps) => {
     const handleItemClick = (id:number) => {

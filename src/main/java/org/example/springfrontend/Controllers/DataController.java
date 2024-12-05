@@ -1,8 +1,11 @@
 package org.example.springfrontend.Controllers;
 
+import elemental.json.Json;
 import org.example.ApiRoutes;
 import org.example.CommonHelpers.HelperUtils;
 import org.example.CommonHelpers.JsonResponse;
+import org.example.Models.CommunicationModels.CentralModels.ProductCategory;
+import org.example.Models.ResponseModels.Response;
 import org.example.springfrontend.Models.DataModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +17,22 @@ import java.util.*;
 @RestController
 @RequestMapping(ApiRoutes.ApiControllerNames.DATA)
 public class DataController extends BaseController {
+
+    @GetMapping(ApiRoutes.DataSubRoute.GET_COLORS)
+    public ResponseEntity<JsonResponse<List<DataModel>>> getColors() {
+        List<DataModel> dataModels = new ArrayList<>();
+        for(Map.Entry<String, String> color : HelperUtils.getColors().entrySet())
+        {
+            DataModel dataModel = new DataModel();
+            dataModel.setKey(color.getKey());
+            dataModel.setValue(color.getValue());
+            dataModel.setTitle(color.getValue());
+
+            dataModels.add(dataModel);
+        }
+
+        return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Success, null, dataModels));
+    }
 
     @GetMapping(ApiRoutes.DataSubRoute.GET_STATES)
     public ResponseEntity<JsonResponse<List<DataModel>>> getStates() {
@@ -114,6 +133,27 @@ public class DataController extends BaseController {
             dataModel.setKey(fontStyle);
             dataModel.setValue(fontStyle);
             dataModel.setTitle(fontStyle);
+
+            dataModels.add(dataModel);
+        }
+
+        return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Success, null, dataModels));
+    }
+
+    @GetMapping(ApiRoutes.ProductCategorySubRoute.FIND_CATEGORIES_WITHOUT_CHILDREN)
+    public ResponseEntity<JsonResponse<List<DataModel>>> findCategoriesWithoutChildren() {
+        Response<List<ProductCategory>> findCategoriesWithoutChildrenResponse = apiTranslator().getProductCategorySubTranslator().findCategoriesWithoutChildren();
+        if(!findCategoriesWithoutChildrenResponse.isSuccess()) {
+            return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Error, findCategoriesWithoutChildrenResponse.getMessage(), null));
+        }
+
+        List<DataModel> dataModels = new ArrayList<>();
+        for(ProductCategory productCategory : findCategoriesWithoutChildrenResponse.getItem())
+        {
+            DataModel dataModel = new DataModel();
+            dataModel.setKey(String.valueOf(productCategory.getCategoryId()));
+            dataModel.setValue(productCategory.getName());
+            dataModel.setTitle(productCategory.getName());
 
             dataModels.add(dataModel);
         }

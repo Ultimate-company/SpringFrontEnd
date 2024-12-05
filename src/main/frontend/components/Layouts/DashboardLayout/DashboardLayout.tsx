@@ -4,6 +4,7 @@ import DashboardNavbar from './DashboardNavbar';
 import DashboardSidebar from './DashboardSidebar';
 import {Box, CircularProgress, CssBaseline} from "@mui/material";
 import {loginApi} from "Frontend/api/ApiCalls";
+import DashboardFooter from "Frontend/components/Layouts/DashboardLayout/DashboardFooter";
 
 const DashboardLayout = () => {
     const [open, setOpen] = React.useState<boolean>(true);

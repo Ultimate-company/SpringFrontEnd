@@ -1,5 +1,5 @@
 import React from "react";
-import {Box, Divider, Modal, Typography} from "@mui/material";
+import {Box, Divider, Modal} from "@mui/material";
 import Header from "Frontend/components/Fonts/Header";
 import BodyText from "Frontend/components/Fonts/BodyText";
 import ReactJson from "react-json-view";

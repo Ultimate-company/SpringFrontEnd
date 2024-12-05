@@ -2,7 +2,7 @@ import SectionLayout from "Frontend/components/Layouts/DashboardLayout/SectionLa
 import {Divider, Grid} from "@mui/material";
 import RenderInput, {InputType} from "Frontend/components/FormRenderer/RenderInput";
 import React from "react";
-import {GridColDef, GridColumnVisibilityModel, GridRowSelectionModel, GridToolbar} from "@mui/x-data-grid";
+import {GridColDef, GridColumnVisibilityModel, GridToolbar} from "@mui/x-data-grid";
 import CustomNoRowsOverlay from "Frontend/components/Datagrid/CustomNoRowsOverlay";
 import {StyledDataGrid} from "Frontend/components/Datagrid/CustomDataGrid";
 import {
@@ -63,7 +63,7 @@ const OrderSummary = (props: OrderSummaryProps) => {
 
     // state variables for products grid
     const [products, setProducts] = React.useState<any>([]);
-    const [productColumnVisibilityModel, setProductColumnVisibilityModel] =
+    const [productColumnVisibilityModel] =
         React.useState<GridColumnVisibilityModel>({
             id: false,
             deleted: false
@@ -73,7 +73,7 @@ const OrderSummary = (props: OrderSummaryProps) => {
     // state variables for packaging grid:
     const [packagingEstimateResponseModels, setPackagingEstimateResponseModels] = React.useState<any>([]);
     const [packagingEstimateGridColumns, setPackagingEstimateGridColumns] = React.useState<GridColDef[]>([]);
-    const [packagingEstimateColumnVisibilityModel, setPackagingEstimateColumnVisibilityModel] =
+    const [packagingEstimateColumnVisibilityModel] =
         React.useState<GridColumnVisibilityModel>({
             id: false,
         });

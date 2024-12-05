@@ -1,15 +1,4 @@
 import React from "react";
-import {
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
-    Checkbox,
-    IconButton,
-    Divider,
-} from "@mui/material";
-import {faTrash} from '@fortawesome/free-solid-svg-icons'
 import {Todo} from "Frontend/api/Models/CarrierModels/Todo";
 import {toDoApi} from "Frontend/api/ApiCalls";
 import OutletLayout from "Frontend/components/Layouts/DashboardLayout/OutletLayout";
@@ -105,14 +94,14 @@ const TodoList = () => {
             </div>
             <br/><br/>
             <TaskList
-                tasks={toDoList.filter(item => item.done !== undefined && !item.done)}
+                tasks={toDoList.filter(item => !item.done)}
                 title="My Pending Tasks"
                 onDelete={(todoId: number) => handleToggle(todoId)}
                 onToggleDone={(todoId: number) => handleDone(todoId)}
             />
             <br/><br/>
             <TaskList
-                tasks={toDoList.filter(item => item.done !== undefined && item.done)}
+                tasks={toDoList.filter(item => item.done)}
                 title="My Completed Tasks"
                 onDelete={(todoId: number) => handleToggle(todoId)}
                 onToggleDone={(todoId: number) => handleDone(todoId)}

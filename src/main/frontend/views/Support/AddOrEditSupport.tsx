@@ -60,8 +60,8 @@ const AddOrEditSupport = () => {
     const [attachments, setAttachments] = React.useState<Attachment[]>([]);
 
     // textarea states
-    const rteRef = React.useRef<RichTextEditorRef>(null);
-    const rteRefComment = React.useRef<RichTextEditorRef>(null);
+    const rteRef = React.useRef<RichTextEditorRef>();
+    const rteRefComment = React.useRef<RichTextEditorRef>();
 
     // local variables
     const isEdit = isEditMode("ticketId");

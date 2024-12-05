@@ -8,7 +8,7 @@ import CustomNoRowsOverlay from "Frontend/components/Datagrid/CustomNoRowsOverla
 import {CustomPaginationForGrid, PaginatedGridInterface} from "Frontend/components/Datagrid/CustomPaginationForGrid";
 import {filterChangeFunction} from "Frontend/components/Datagrid/CustomFilteringForDataGrid";
 import {useConfirm} from "material-ui-confirm";
-import {salesOrderApi} from "Frontend/api/ApiCalls";
+import {salesOrderApi, userApi} from "Frontend/api/ApiCalls";
 import {
     GetSalesOrdersRequestModel,
     SalesOrderResponseModel,
@@ -21,6 +21,8 @@ import {GridPaginationModel} from "@mui/x-data-grid/models/gridPaginationProps";
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
+import {Permissions} from "Frontend/api/Models/CentralModels/User";
+import {permissionChecks} from "Frontend/api/Models/CarrierModels/Permissions";
 
 const paginatedGridModel: PaginatedGridInterface = {
     start: 0,
@@ -83,10 +85,7 @@ function CustomTabPanel(props: TabPanelProps) {
                         slots={{
                             noRowsOverlay: CustomNoRowsOverlay,
                             toolbar: GridToolbar,
-                            pagination: () =>
-                                <CustomPaginationForGrid
-                                    pageSize={props.state.pageSize}
-                                />,
+                            pagination: () => <CustomPaginationForGrid />
                         }}
                         initialState={{
                             pagination: { paginationModel: { pageSize: props.state.pageSize } },
@@ -124,7 +123,7 @@ function CustomTabPanel(props: TabPanelProps) {
                                 return "deleted";
                             }
                             else {
-                                return "";
+                                return params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd';
                             }
                         }, [props.state])}
                     />
@@ -144,6 +143,7 @@ const SalesOrdersList = () => {
 
     const confirm = useConfirm();
     const [setLoading] = useOutletContext<any>();
+    const [showToolbar, setShowToolbar] = React.useState(false);
     const [salesOrderGridColumns, setSalesOrderGridColumns] = React.useState<GridColDef[]>([]);
     const [state, setState] = React.useState<PaginatedGridInterface>(paginatedGridModel);
     const [salesOrderColumnVisibilityModel, setSalesOrderColumnVisibilityModel] =
@@ -188,6 +188,15 @@ const SalesOrdersList = () => {
     };
 
     React.useEffect(() => {
+        // check user permissions to insert Sales orders
+        userApi((loading: boolean) => {}).getLoggedInUserPermissions().then(function (permissions: Permissions) {
+            const permissionSplit = Object.values(permissions)
+                .flatMap(str => typeof str === 'string'? str.split(',') : []);
+            if(permissionSplit.includes(permissionChecks.salesOrderPermissions.insertSalesOrders)){
+                setShowToolbar(true);
+            }
+        });
+
         setSalesOrderAndPagination(paginatedGridModel);
     }, [value]);
 
@@ -203,7 +212,9 @@ const SalesOrdersList = () => {
     ];
 
     return <>
-        <Toolbar page = "SalesOrder"/>
+        {showToolbar ? (
+            <Toolbar page = "SalesOrder" setLoading={setLoading}/>
+        ) : <></>}
         <OutletLayout card={true}>
             <Box sx={{ width: '100%' }}>
                 <Tabs

@@ -8,17 +8,31 @@ interface RedButtonInputProps {
     href?: string;
 }
 const RedButton = (props: RedButtonInputProps) => {
-    return(
-        <Button
-            {...(props.fullWidth !== undefined && props.fullWidth && { fullWidth: true })}
-            color="error"
-            size="large"
-            variant="contained"
-            {...(props.handleSubmit !== undefined ? { onClick: () => props.handleSubmit() } : {})}
-            { ...(props.href !== undefined ? { href: props.href } : {}) }
-        >
-            {props.label}
-        </Button>
-    );
+    if(props.href){
+        return(
+            <Button
+                fullWidth={props.fullWidth || false}
+                color="error"
+                size="large"
+                variant="contained"
+                href={props.href || ""}
+            >
+                {props.label}
+            </Button>
+        );
+    }
+    else {
+        return(
+            <Button
+                fullWidth={props.fullWidth || false}
+                color="error"
+                size="large"
+                variant="contained"
+                onClick={props.handleSubmit ? () => props.handleSubmit() : () => {}}
+            >
+                {props.label}
+            </Button>
+        );
+    }
 }
 export default RedButton;

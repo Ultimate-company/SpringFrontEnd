@@ -21,8 +21,8 @@ const RadioInput= (props: RadioInputProps) => {
                 <RadioGroup
                     row
                     value={props.value}
-                    {...(props.name && { name: props.name })}
-                    {...(props.onChange && { onChange: props.onChange })}
+                    name={props.name || "defaultName"}
+                    onChange={props.onChange || (() => {})}
                 >
                     {props.data &&
                         props.data.map(option => (

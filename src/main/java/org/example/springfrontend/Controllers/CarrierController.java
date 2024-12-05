@@ -26,12 +26,10 @@ public class CarrierController extends BaseController {
     @Autowired
     private Environment environment;
 
-    private static final String carrierImageParentDirectory = "src/main/resources/";
-
     @GetMapping(ApiRoutes.CarriersSubRoute.GET_LOGGED_IN_CARRIER)
-    public ResponseEntity<JsonResponse<Carrier>> getLoggedInCarrier() throws IOException {
-        Carrier carrier = getCurrentCarrier();
-        return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Success, "", carrier));
+    public ResponseEntity<JsonResponse<Carrier>> getLoggedInCarrier() {
+        return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Success, "",
+                getCurrentCarrier()));
     }
 
     @GetMapping(ApiRoutes.CarriersSubRoute.GET_CARRIER_IN_BATCHES)

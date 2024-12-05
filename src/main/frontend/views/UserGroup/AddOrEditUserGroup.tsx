@@ -8,9 +8,7 @@ import SectionLayout from "Frontend/components/Layouts/DashboardLayout/SectionLa
 import {GridRowSelectionModel} from "@mui/x-data-grid";
 import ActionFooter from "Frontend/components/FormRenderer/ActionFooter";
 import {navigatingRoutes} from "Frontend/navigation";
-import {LeadRequestModel} from "Frontend/api/Models/CarrierModels/Lead";
-import {dataApi, leadApi, userGroupApi} from "Frontend/api/ApiCalls";
-import {DataItem} from "Frontend/api/Models/CentralModels/Data";
+import {userGroupApi} from "Frontend/api/ApiCalls";
 import {UserGroupRequestModel, UserGroupResponseModel} from "Frontend/api/Models/CarrierModels/UserGroup";
 import UserSelectionGrid from "Frontend/components/DataGridsForSelection/UserSelectionGrid";
 

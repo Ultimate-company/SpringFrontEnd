@@ -14,7 +14,7 @@ import {
     dataUrls,
     userLogUrls,
     packageUrls,
-    supportUrls, webTemplateUrls, gridUrls
+    supportUrls, webTemplateUrls, gridUrls, bulkUrls
 } from "./Endpoints";
 import Axios from "axios";
 import {LoginRequestModel} from "./Models/CentralModels/Login";
@@ -39,8 +39,7 @@ import {Todo} from "Frontend/api/Models/CarrierModels/Todo";
 import {Promo} from "Frontend/api/Models/CarrierModels/Promo";
 import {MessageRequestModel, MessageResponseModel} from "Frontend/api/Models/CarrierModels/Message";
 import {
-    GetProductCategoryResponseModel,
-    Product, ProductReview, ProductReviewResponseModel,
+    Product, ProductCategory, ProductReview, ProductReviewResponseModel,
     ProductsResponseModel
 } from "Frontend/api/Models/CarrierModels/Product";
 import {PurchaseOrderRequestModel, PurchaseOrderResponseModel} from "Frontend/api/Models/CarrierModels/PurchaseOrder";
@@ -55,9 +54,7 @@ import {Package} from "Frontend/api/Models/CarrierModels/Package";
 import {Address} from "Frontend/api/Models/CarrierModels/Address";
 import {
     AddCommentResponseModel,
-    CreateAttachmentResponseModel,
     CreateTicketResponseModel,
-    GetCommentsResponseModel,
     GetTicketDetailsResponseModel,
     GetTicketsResponseModel, SupportRequestModel,
 } from "Frontend/api/Models/CarrierModels/Support";
@@ -225,7 +222,7 @@ export const leadApi = (setLoading: (loading: boolean) => void) => {
         },
         updateLead: async (leadRequestModel: LeadRequestModel) => {
             return await wrappedApiFunctions<number>(setLoading, leadUrls.updateLead, requestMethod.POST, leadRequestModel);
-        },
+        }
     };
 };
 
@@ -280,7 +277,7 @@ export const pickupLocationApi = (setLoading: (loading: boolean) => void) => {
         },
         getAllPickupLocations: async () => {
             return await wrappedApiFunctions<PickupLocation[]>(setLoading, pickupLocationUrls.getAllPickupLocations , requestMethod.GET, null);
-        },
+        }
     };
 };
 
@@ -395,7 +392,7 @@ export const messageApi = (setLoading: (loading: boolean) => void) => {
         },
         setMessageReadByUserIdAndMessageId: async (messageId: number) => {
             return await wrappedApiFunctions<boolean>(setLoading, messageUrls.setMessageReadByUserIdAndMessageId + "?messageId=" + messageId, requestMethod.POST, null);
-        },
+        }
     };
 };
 
@@ -419,14 +416,8 @@ export const productApi = (setLoading: (loading: boolean) => void) => {
         getProductDetailsByIds: async (productIds: number[]) => {
             return await wrappedApiFunctions<ProductsResponseModel[]>(setLoading, productUrls.getProductDetailsByIds + `?productIds=${productIds.join(',')}`, requestMethod.GET, null);
         },
-        setProductCategory: async (productCategory: string) => {
-            return await wrappedApiFunctions<boolean>(setLoading, productUrls.setProductCategory, requestMethod.PUT, productCategory);
-        },
-        getProductCategories: async () => {
-            return await wrappedApiFunctions<GetProductCategoryResponseModel>(setLoading, productUrls.getProductCategories, requestMethod.GET, null);
-        },
-        getColors: async () => {
-            return await wrappedApiFunctions<Map<string, string>[]>(setLoading, productUrls.getColors, requestMethod.GET, null);
+        getProductCategories: async (currentCategory: string) => {
+            return await wrappedApiFunctions<ProductCategory[]>(setLoading, productUrls.getProductCategories + `?currentCategory=${encodeURIComponent(currentCategory)}`, requestMethod.GET, null);
         },
         addProduct: async (product: Product, images: Map<string, string>) => {
             return await wrappedApiFunctions<number>(setLoading, productUrls.addProduct, requestMethod.PUT, {
@@ -484,29 +475,29 @@ export const purchaseOrderApi = (setLoading: (loading: boolean) => void) => {
         approvedByPurchaseOrder: async (purchaseOrderId: number) => {
             return await wrappedApiFunctions<boolean>(setLoading, purchaseOrderUrls.approvedByPurchaseOrder + `?purchaseOrderId=${purchaseOrderId}`, requestMethod.POST, null);
         },
-        downloadPdf: async (purchaseOrderId: number) => {
-            const response = await Axios.get(`${purchaseOrderUrls.getPurchaseOrderPdf}?purchaseOrderId=${purchaseOrderId}`, {
-                responseType: 'arraybuffer',
-            });
-
-            // Create a blob from the response data
-            const blob = new Blob([response.data], { type: 'application/pdf' });
-            const url = window.URL.createObjectURL(blob);
-
-            // Create a link element
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', 'purchaseOrder.pdf'); // Set file name
-
-            // Append the link to the body
-            document.body.appendChild(link);
-
-            // Programmatically click the link to trigger the download
-            link.click();
-
-            // Clean up by removing the link
-            document.body.removeChild(link);
-        }
+        // downloadPdf: async (purchaseOrderId: number) => {
+        //     const response = await Axios.get(`${purchaseOrderUrls.getPurchaseOrderPdf}?purchaseOrderId=${purchaseOrderId}`, {
+        //         responseType: 'arraybuffer',
+        //     });
+        //
+        //     // Create a blob from the response data
+        //     const blob = new Blob([response.data], { type: 'application/pdf' });
+        //     const url = window.URL.createObjectURL(blob);
+        //
+        //     // Create a link element
+        //     const link = document.createElement('a');
+        //     link.href = url;
+        //     link.setAttribute('download', 'purchaseOrder.pdf'); // Set file name
+        //
+        //     // Append the link to the body
+        //     document.body.appendChild(link);
+        //
+        //     // Programmatically click the link to trigger the download
+        //     link.click();
+        //
+        //     // Clean up by removing the link
+        //     document.body.removeChild(link);
+        // }
     };
 };
 
@@ -553,12 +544,15 @@ export const salesOrderApi = (setLoading: (loading: boolean) => void) => {
                 salesOrderUrls.updateSalesOrderPickupAddress + `?salesOrderId=${salesOrderId}&shipRocketOrderId=${shipRocketOrderId}&pickupLocationId=${pickupLocationId}`,
                 requestMethod.POST,
                 null);
-        },
+        }
     };
 };
 
 export const dataApi = (setLoading: (loading: boolean) => void) => {
     return {
+        getColors: async () => {
+            return await wrappedApiFunctions<DataItem[]>(setLoading, dataUrls.getColors, requestMethod.GET, null);
+        },
         getStates: async () => {
             return await wrappedApiFunctions<DataItem[]>(setLoading, dataUrls.getStates, requestMethod.GET, null);
         },
@@ -582,6 +576,9 @@ export const dataApi = (setLoading: (loading: boolean) => void) => {
         },
         getFontStyles: async () => {
             return await wrappedApiFunctions<DataItem[]>(setLoading, dataUrls.getFontStyles, requestMethod.GET, null);
+        },
+        findCategoriesWithoutChildren: async () => {
+            return await wrappedApiFunctions<DataItem[]>(setLoading, dataUrls.findCategoriesWithoutChildren, requestMethod.GET, null);
         },
     };
 };
@@ -616,7 +613,7 @@ export const packageApi = (setLoading: (loading: boolean) => void) => {
         },
         updatePackage: async (_package: Package) => {
             return await wrappedApiFunctions<number>(setLoading, packageUrls.updatePackage, requestMethod.POST, _package);
-        },
+        }
     };
 };
 
@@ -666,7 +663,20 @@ export const gridApi = (setLoading: (loading: boolean) => void) => {
     }
 };
 
-function handleResponse<T>(response: any,): Promise<T> {
+export const bulkApi = (setLoading: (loading: boolean) => void) => {
+    return {
+        bulkInsert: async (bulkAddType: string, formData: FormData) => {
+            return await wrappedApiFunctions<boolean>(setLoading,
+                bulkUrls.bulkInsert + "?bulkAddType=" + bulkAddType,
+                requestMethod.PUT, formData, {
+                'Content-Type': 'multipart/form-data',
+            });
+        }
+    }
+};
+
+
+function handleResponse<T>(response: any): Promise<T> {
     if (response.responseType == "Success") {
         // display success toast
         if(response.message != null && response.message != ""){

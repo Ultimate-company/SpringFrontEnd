@@ -28,7 +28,8 @@ const packageGridColumns: GridColDef[] = [
     {
         field: "dimensions",
         headerName: "Dimensions",
-        width: 200,
+        flex: 1,
+        minWidth: 150,
         valueGetter: (value, row) => {
             return row.length + " x " + row.breadth + " x " + row.height;
         },
@@ -36,7 +37,8 @@ const packageGridColumns: GridColDef[] = [
     {
         field: "pricePerQuantity",
         headerName: "Price Per Quantity",
-        width: 200,
+        flex: 1,
+        minWidth: 150,
         valueGetter: (value, row) => {
             return row.pricePerQuantity + " ₹";
         },
@@ -44,7 +46,8 @@ const packageGridColumns: GridColDef[] = [
     {
         field: "quantity",
         headerName: "Quantity",
-        width: 100,
+        flex: 1,
+        minWidth: 150,
         valueGetter: (value, row) => {
             return row.quantity;
         },
@@ -92,7 +95,8 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
         filterable: false,
         field: "Actions",
         headerName: "Actions",
-        width: 150,
+        flex: 1,
+        minWidth: 150,
         renderCell: (params: GridRenderCellParams) => (
             <div>
                 {params.row.deleted ? (
