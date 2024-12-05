@@ -1,4 +1,4 @@
-import {Autocomplete, Chip, FormControl, Grid, TextField} from "@mui/material";
+import {Autocomplete, Chip, Grid, TextField} from "@mui/material";
 import RenderInput, {InputType} from "Frontend/components/FormRenderer/RenderInput";
 import React from "react";
 import OutletLayout from "Frontend/components/Layouts/DashboardLayout/OutletLayout";
@@ -8,7 +8,7 @@ import {carrierUrls, productUrls} from "Frontend/api/Endpoints";
 import BlueButton from "Frontend/components/FormInputs/BlueButton";
 import ActionFooter from "Frontend/components/FormRenderer/ActionFooter";
 import {navigatingRoutes} from "Frontend/navigation";
-import {carrierApi, pickupLocationApi, productApi, userApi} from "Frontend/api/ApiCalls";
+import {carrierApi, userApi} from "Frontend/api/ApiCalls";
 import {useOutletContext} from "react-router-dom";
 import {Carrier} from "Frontend/api/Models/CentralModels/Carrier";
 import {imageToByteArrayMap} from "Frontend/components/commonHelperFunctions";
@@ -50,7 +50,7 @@ const AddOrEditApiKeys = () => {
     // carrier details
     const [name, setName] = React.useState<string>("");
     const [website, setWebsite] = React.useState<string>("");
-    const [description, setDescription] = React.useState<string>("");
+    const [description] = React.useState<string>("");
 
     // database details
     const [databaseName, setDatabaseName] = React.useState<string>("");
@@ -79,7 +79,7 @@ const AddOrEditApiKeys = () => {
     const [carrierId, setCarrierId] = React.useState<number>();
     const [formData, setFormData] = React.useState<FormData>(new FormData());
     const [imageBase64, setImageBase64] = React.useState<string>("");
-    const rteRef = React.useRef<RichTextEditorRef>(null);
+    const rteRef = React.useRef<RichTextEditorRef>();
     const [isView, setIsView] = React.useState<boolean>(false);
     let imageKey = "carrierImage";
 
@@ -195,7 +195,7 @@ const AddOrEditApiKeys = () => {
                 setName(carrier.name ?? "");
                 setWebsite(carrier.website ?? "");
                 const proseMirrorDiv = document.querySelectorAll('.ProseMirror');
-                if(proseMirrorDiv.length >= 1 && proseMirrorDiv[0] != null) {
+                if(proseMirrorDiv.length >= 1) {
                     proseMirrorDiv[0].innerHTML = carrier.description ?? "";
                 }
 

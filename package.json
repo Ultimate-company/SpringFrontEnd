@@ -218,7 +218,7 @@
       "workbox-core": "7.1.0",
       "workbox-precaching": "7.1.0"
     },
-    "hash": "af47a3df559cd2edfdfcbf174f0107d95bcb312abd5017d47a5324f6f74e5bc6"
+    "hash": "75fa291a82cd2ff656e1ab6b489c0f9d9c0b4a352aef517b917241089cea56d6"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
@@ -331,6 +331,7 @@
     "turndown": "$turndown",
     "@mui/base": "$@mui/base",
     "react-helmet": "$react-helmet",
-    "@mui/x-tree-view": "$@mui/x-tree-view"
+    "@mui/x-tree-view": "$@mui/x-tree-view",
+    "@react-input/mask": "$@react-input/mask"
   }
 }

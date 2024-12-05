@@ -1,17 +1,16 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import {Box, IconButton, Popper, Toolbar, Typography, Switch, Avatar} from '@mui/material';
+import {Box, IconButton, Popper, Toolbar, Switch, Avatar} from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faList, faCalendar, faBell, faSignOut, faBars} from '@fortawesome/free-solid-svg-icons'
 import {carrierApi, loginApi, messageApi} from "../../../api/ApiCalls";
 import { styled} from '@mui/material/styles';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
-import Logo from "Frontend/components/Layouts/DashboardLayout/Logo";
 import MessageList from "Frontend/views/Message/Components/MessageList";
 import {MessageResponseModel} from "Frontend/api/Models/CarrierModels/Message";
 import {StyledBadge} from "Frontend/components/OtherComponents/StyledBadge";
 import BodyText from "Frontend/components/Fonts/BodyText";
-import {carrierUrls, userUrls} from "Frontend/api/Endpoints";
+import {carrierUrls} from "Frontend/api/Endpoints";
 import {Carrier} from "Frontend/api/Models/CentralModels/Carrier";
 import Header from "Frontend/components/Fonts/Header";
 

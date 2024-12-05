@@ -85,10 +85,7 @@ function CustomTabPanel(props: TabPanelProps) {
                         slots={{
                             noRowsOverlay: CustomNoRowsOverlay,
                             toolbar: GridToolbar,
-                            pagination: () =>
-                                <CustomPaginationForGrid
-                                    pageSize={props.state.pageSize}
-                                />,
+                            pagination: () => <CustomPaginationForGrid />
                         }}
                         initialState={{
                             pagination: { paginationModel: { pageSize: props.state.pageSize } },

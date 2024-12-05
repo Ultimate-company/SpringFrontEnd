@@ -7,7 +7,6 @@ import {Permissions} from "Frontend/api/Models/CentralModels/User";
 import {purchaseOrderApi, userApi} from "Frontend/api/ApiCalls";
 import {permissionChecks} from "Frontend/api/Models/CarrierModels/Permissions";
 import {navigatingRoutes} from "Frontend/navigation";
-import {isDateGreaterThanOrEqualToToday} from "Frontend/components/commonHelperFunctions";
 import BlueButton from "Frontend/components/FormInputs/BlueButton";
 import {purchaseOrderUrls} from "Frontend/api/Endpoints";
 
@@ -96,10 +95,9 @@ const purchaseOrderGridColumns: GridColDef[] = [
         flex: 2,
         minWidth: 250,
         valueGetter: (value, row) => {
-            if(row.approvedByUser == null){
-                return "";
-            }
-            return row.approvedByUser.firstName + " " + row.approvedByUser.lastName + " (" + row.approvedByUser.loginName + ")";
+            return row.approvedByUser
+                ? row.approvedByUser.firstName + " " + row.approvedByUser.lastName + " (" + row.approvedByUser.loginName + ")"
+                : "";
         },
         renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
             columnWidth={params.colDef.computedWidth}
@@ -135,7 +133,7 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
             confirmationButtonProps: { autoFocus: true }
         })
             .then(() => {
-                purchaseOrderApi(setLoading).togglePurchaseOrder(params.row.purchaseOrder.purchaseOrderId).then((response: number) => {
+                purchaseOrderApi(setLoading).togglePurchaseOrder(params.row.purchaseOrder.purchaseOrderId).then(() => {
                     window.location.reload();
                 });
             })
@@ -150,7 +148,7 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
             confirmationButtonProps: { autoFocus: true }
         })
             .then(() => {
-                purchaseOrderApi(setLoading).togglePurchaseOrder(params.row.purchaseOrder.purchaseOrderId).then((response: number) => {
+                purchaseOrderApi(setLoading).togglePurchaseOrder(params.row.purchaseOrder.purchaseOrderId).then(() => {
                     window.location.reload();
                 });
             })
@@ -165,7 +163,7 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
             confirmationButtonProps: { autoFocus: true }
         })
             .then(() => {
-                purchaseOrderApi(setLoading).approvedByPurchaseOrder(params.row.purchaseOrder.purchaseOrderId).then((response: boolean) => {
+                purchaseOrderApi(setLoading).approvedByPurchaseOrder(params.row.purchaseOrder.purchaseOrderId).then(() => {
                     window.location.reload();
                 });
             })

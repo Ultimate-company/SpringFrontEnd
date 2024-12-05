@@ -93,7 +93,7 @@ const MessagesList = () => {
 
     React.useEffect(() => {
         // check user permissions to insert message
-        userApi((loading: boolean) => {}).getLoggedInUserPermissions().then(function (permissions: Permissions) {
+        userApi(setLoading).getLoggedInUserPermissions().then(function (permissions: Permissions) {
             const permissionSplit = Object.values(permissions)
                 .flatMap(str => typeof str === 'string'? str.split(',') : []);
             if(permissionSplit.includes(permissionChecks.messagesPermissions.insertMessages)){
@@ -153,7 +153,7 @@ const MessagesList = () => {
                     gridApi(setLoading).updateGridVisibilityPreference({
                         visibilityJsonBody: JSON.stringify(newModel),
                         gridId: GridId.MESSAGE
-                    } as GridPreferenceRequestModel);
+                    } as GridPreferenceRequestModel).then();
                     setMessageColumnVisibilityModel(newModel);
                 }, [messageColumnVisibilityModel])}
                 onDensityChange = {(newModel: string) => {
@@ -164,16 +164,13 @@ const MessagesList = () => {
                     gridApi(setLoading).updateGridDensityVisibilityPreference({
                         density: newModel,
                         gridId: GridId.MESSAGE
-                    } as GridPreferenceRequestModel);
+                    } as GridPreferenceRequestModel).then();
                 }}
                 density={userGridPreference.density as GridDensity}
                 slots={{
                     noRowsOverlay: CustomNoRowsOverlay,
                     toolbar: GridToolbar,
-                    pagination: () =>
-                        <CustomPaginationForGrid
-                            pageSize={state.pageSize}
-                        />,
+                    pagination: () => <CustomPaginationForGrid />
                 }}
                 initialState={{
                     pagination: { paginationModel: { pageSize: state.pageSize } },
@@ -200,7 +197,7 @@ const MessagesList = () => {
                         gridApi(setLoading).updateRowsPerPagePreference({
                             rowsPerPage: newModel.pageSize,
                             gridId: GridId.MESSAGE
-                        } as GridPreferenceRequestModel);
+                        } as GridPreferenceRequestModel).then();
                     }
                     setMessageAndPagination({
                         includeDeleted: state.includeDeleted,

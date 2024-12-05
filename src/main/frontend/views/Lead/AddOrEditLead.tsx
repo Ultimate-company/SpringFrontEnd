@@ -5,7 +5,7 @@ import {DataItem} from "Frontend/api/Models/CentralModels/Data";
 import {Grid} from "@mui/material";
 import RenderInput, {InputType} from "Frontend/components/FormRenderer/RenderInput";
 import {getURLParamValue, isEditMode, isViewMode} from "Frontend/components/commonHelperFunctions";
-import {dataApi, leadApi, userApi} from "Frontend/api/ApiCalls";
+import {dataApi, leadApi} from "Frontend/api/ApiCalls";
 import {useOutletContext} from "react-router-dom";
 import {GridRowSelectionModel} from "@mui/x-data-grid";
 import UserSelectionGrid from "Frontend/components/DataGridsForSelection/UserSelectionGrid";

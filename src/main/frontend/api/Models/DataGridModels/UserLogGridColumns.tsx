@@ -57,9 +57,6 @@ export const userLogGridColumns: GridColDef[] = [
     },
 ];
 
-const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => Promise<void>) => {
+export const initUserLogGridColumns = async () => {
     return [...userLogGridColumns];
-}
-export const initUserLogGridColumns = async (confirm: (options?: ConfirmOptions | undefined) => Promise<void>) => {
-    return await actionColumns(confirm);
 }

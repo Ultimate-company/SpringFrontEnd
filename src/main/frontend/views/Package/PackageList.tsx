@@ -93,7 +93,7 @@ const PackageList = () => {
 
     React.useEffect(() => {
         // check user permissions to insert package
-        userApi((loading: boolean) => {}).getLoggedInUserPermissions().then(function (permissions: Permissions) {
+        userApi(setLoading).getLoggedInUserPermissions().then(function (permissions: Permissions) {
             const permissionSplit = Object.values(permissions)
                 .flatMap(str => typeof str === 'string'? str.split(',') : []);
             if(permissionSplit.includes(permissionChecks.packagePermissions.insertPackages)){
@@ -152,7 +152,7 @@ const PackageList = () => {
                     gridApi(setLoading).updateGridVisibilityPreference({
                         visibilityJsonBody: JSON.stringify(newModel),
                         gridId: GridId.PACKAGES
-                    } as GridPreferenceRequestModel);
+                    } as GridPreferenceRequestModel).then();
                     setPackageColumnVisibilityModel(newModel);
                 }, [packageColumnVisibilityModel])}
                 onDensityChange = {(newModel: string) => {
@@ -163,16 +163,13 @@ const PackageList = () => {
                     gridApi(setLoading).updateGridDensityVisibilityPreference({
                         density: newModel,
                         gridId: GridId.PACKAGES
-                    } as GridPreferenceRequestModel);
+                    } as GridPreferenceRequestModel).then();
                 }}
                 density={userGridPreference.density as GridDensity}
                 slots={{
                     noRowsOverlay: CustomNoRowsOverlay,
                     toolbar: GridToolbar,
-                    pagination: () =>
-                        <CustomPaginationForGrid
-                            pageSize={state.pageSize}
-                        />,
+                    pagination: () => <CustomPaginationForGrid />
                 }}
                 initialState={{
                     pagination: { paginationModel: { pageSize: state.pageSize } },
@@ -199,7 +196,7 @@ const PackageList = () => {
                         gridApi(setLoading).updateRowsPerPagePreference({
                             rowsPerPage: newModel.pageSize,
                             gridId: GridId.PACKAGES
-                        } as GridPreferenceRequestModel);
+                        } as GridPreferenceRequestModel).then();
                     }
                     setPackageAndPagination({
                         includeDeleted: state.includeDeleted,

@@ -110,7 +110,7 @@ const leadGridColumns: GridColDef[] = [
         flex: 2,
         minWidth: 150,
         valueGetter: (value, row) => {
-            return `(${row.lead.phone.substr(0, 3)}) - ${row.lead.phone.substr(3, 3)} - ${row.lead.phone.substr(6)}`;
+            return `(${row.lead.phone.slice(0, 3)}) - ${row.lead.phone.slice(3, 6)} - ${row.lead.phone.slice(6)}`;
         }
     },
     {

@@ -298,7 +298,7 @@ const actionColumnsWithQuantitySelection = async (productIdQuantityMapping: Map<
             editable: true,
             type: 'number',
             valueGetter: (_, row) => {
-                if(productIdQuantityCustomPriceMapping != undefined){
+                if(productIdQuantityCustomPriceMapping != null){
                     const salesOrdersProductQuantityMap = productIdQuantityCustomPriceMapping.find(
                         (map: SalesOrdersProductQuantityMap) => map.productId === row.product.productId
                     );

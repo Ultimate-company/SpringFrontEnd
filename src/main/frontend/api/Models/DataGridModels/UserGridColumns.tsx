@@ -130,7 +130,7 @@ const userGridColumns: GridColDef[] = [
         minWidth: 150,
         valueGetter: (value, row) => {
             let phone = row.phone;
-            return `(${phone.substr(0, 3)}) - ${phone.substr(3, 3)} - ${phone.substr(6)}`;
+            return `(${phone.slice(0, 3)}) - ${phone.slice(3, 6)} - ${phone.slice(6)}`;
         },
     },
     {

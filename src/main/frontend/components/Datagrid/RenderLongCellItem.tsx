@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React from "react";
 import { Tooltip } from "@mui/material";
 
 interface RenderLongCellItemProps {
@@ -7,10 +7,10 @@ interface RenderLongCellItemProps {
 }
 
 const RenderLongCellItem: React.FC<RenderLongCellItemProps> = ({ value, columnWidth }) => {
-    const [isOverflowing, setIsOverflowing] = useState(false);
-    const textRef = useRef<HTMLDivElement | null>(null);
+    const [isOverflowing, setIsOverflowing] = React.useState(false);
+    const textRef = React.useRef<HTMLDivElement | null>(null);
 
-    useEffect(() => {
+    React.useEffect(() => {
         if (textRef.current) {
             // Check if the content overflows the 80% width of the column
             setIsOverflowing(textRef.current?.scrollWidth > textRef.current?.offsetWidth);

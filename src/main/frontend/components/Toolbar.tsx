@@ -204,7 +204,7 @@ const DataGridSection = ({
                 slots={{
                     noRowsOverlay: CustomNoRowsOverlay,
                     toolbar: CustomToolbar,
-                    pagination: () => <CustomPaginationForGrid pageSize={100} />,
+                    pagination: () =>  <CustomPaginationForGrid />
                 }}
                 initialState={{ pagination: { paginationModel: { pageSize: 100 } } }}
                 pageSizeOptions={[10, 25, 100]}

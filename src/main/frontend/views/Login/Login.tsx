@@ -47,18 +47,18 @@ const Login = () => {
         });
     }
 
-    const handleOnSuccessGoogleLogin = async (googleData: any) => {
-        // await LoginApi.GoogleSignIn({
-        //     AccessToken: googleData.accessToken,
-        //     GoogleId: googleData.googleId,
-        //     TokenId: googleData.tokenId,
-        //     ImageUrl: googleData.profileObj.imageUrl,
-        //     Email: googleData.profileObj.email,
-        //     FamilyName: googleData.profileObj.familyName,
-        //     GivenName: googleData.profileObj.givenName,
-        //     Name: googleData.profileObj.name,
-        // });
-    };
+    // const handleOnSuccessGoogleLogin = async (googleData: any) => {
+    //     // await LoginApi.GoogleSignIn({
+    //     //     AccessToken: googleData.accessToken,
+    //     //     GoogleId: googleData.googleId,
+    //     //     TokenId: googleData.tokenId,
+    //     //     ImageUrl: googleData.profileObj.imageUrl,
+    //     //     Email: googleData.profileObj.email,
+    //     //     FamilyName: googleData.profileObj.familyName,
+    //     //     GivenName: googleData.profileObj.givenName,
+    //     //     Name: googleData.profileObj.name,
+    //     // });
+    //};
 
     const handleShowPasswordStateChange = () => {
         setState({
@@ -72,7 +72,7 @@ const Login = () => {
             loginName: state.email,
             password: state.password,
         };
-        loginApi.signIn(loginRequestModel as LoginRequestModel);
+        loginApi.signIn(loginRequestModel as LoginRequestModel).then();
     }
 
     const handlePasswordReset = () => {

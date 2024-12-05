@@ -93,7 +93,6 @@ export const mentionSuggestionOptions: MentionOptions["suggestion"] = {
                 popup = tippy("body", {
                     getReferenceClientRect: () =>
                         props.clientRect?.() ?? DOM_RECT_FALLBACK,
-                    appendTo: () => document.body,
                     content: component.element,
                     showOnCreate: true,
                     interactive: true,

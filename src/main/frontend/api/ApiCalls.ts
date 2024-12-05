@@ -54,9 +54,7 @@ import {Package} from "Frontend/api/Models/CarrierModels/Package";
 import {Address} from "Frontend/api/Models/CarrierModels/Address";
 import {
     AddCommentResponseModel,
-    CreateAttachmentResponseModel,
     CreateTicketResponseModel,
-    GetCommentsResponseModel,
     GetTicketDetailsResponseModel,
     GetTicketsResponseModel, SupportRequestModel,
 } from "Frontend/api/Models/CarrierModels/Support";
@@ -678,7 +676,7 @@ export const bulkApi = (setLoading: (loading: boolean) => void) => {
 };
 
 
-function handleResponse<T>(response: any,): Promise<T> {
+function handleResponse<T>(response: any): Promise<T> {
     if (response.responseType == "Success") {
         // display success toast
         if(response.message != null && response.message != ""){

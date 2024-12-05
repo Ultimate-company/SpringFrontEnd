@@ -85,7 +85,7 @@ const SupportList = () => {
 
     React.useEffect(() => {
         // check user permissions to insert tickets
-        userApi((loading: boolean) => {}).getLoggedInUserPermissions().then(function (permissions: Permissions) {
+        userApi(setLoading).getLoggedInUserPermissions().then(function (permissions: Permissions) {
             const permissionSplit = Object.values(permissions)
                 .flatMap(str => typeof str === 'string'? str.split(',') : []);
             if(permissionSplit.includes(permissionChecks.supportPermissions.raiseTickets)){
@@ -144,7 +144,7 @@ const SupportList = () => {
                         gridApi(setLoading).updateGridVisibilityPreference({
                             visibilityJsonBody: JSON.stringify(newModel),
                             gridId: GridId.SUPPORT
-                        } as GridPreferenceRequestModel);
+                        } as GridPreferenceRequestModel).then();
                         setSupportColumnVisibilityModel(newModel);
                     }, [supportColumnVisibilityModel])}
                     onDensityChange = {(newModel: string) => {
@@ -155,16 +155,13 @@ const SupportList = () => {
                         gridApi(setLoading).updateGridDensityVisibilityPreference({
                             density: newModel,
                             gridId: GridId.SUPPORT
-                        } as GridPreferenceRequestModel);
+                        } as GridPreferenceRequestModel).then();
                     }}
                     density={userGridPreference.density as GridDensity}
                     slots={{
                         noRowsOverlay: CustomNoRowsOverlay,
                         toolbar: GridToolbar,
-                        pagination: () =>
-                            <CustomPaginationForGrid
-                                pageSize={state.pageSize}
-                            />,
+                        pagination: () => <CustomPaginationForGrid />
                     }}
                     initialState={{
                         pagination: { paginationModel: { pageSize: state.pageSize } },
@@ -191,7 +188,7 @@ const SupportList = () => {
                             gridApi(setLoading).updateRowsPerPagePreference({
                                 rowsPerPage: newModel.pageSize,
                                 gridId: GridId.SUPPORT
-                            } as GridPreferenceRequestModel);
+                            } as GridPreferenceRequestModel).then();
                         }
                         setSupportAndPagination({
                             includeDeleted: state.includeDeleted,

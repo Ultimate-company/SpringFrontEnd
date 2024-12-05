@@ -93,7 +93,7 @@ const ProductsList = () => {
 
     React.useEffect(() => {
         // check user permissions to insert lead
-        userApi((loading: boolean) => {}).getLoggedInUserPermissions().then(function (permissions: Permissions) {
+        userApi(setLoading).getLoggedInUserPermissions().then(function (permissions: Permissions) {
             const permissionSplit = Object.values(permissions)
                 .flatMap(str => typeof str === 'string'? str.split(',') : []);
             if(permissionSplit.includes(permissionChecks.productsPermissions.insertProducts)){
@@ -153,7 +153,7 @@ const ProductsList = () => {
                     gridApi(setLoading).updateGridVisibilityPreference({
                         visibilityJsonBody: JSON.stringify(newModel),
                         gridId: GridId.PRODUCT
-                    } as GridPreferenceRequestModel);
+                    } as GridPreferenceRequestModel).then();
                     setProductColumnVisibilityModel(newModel);
                 }, [productColumnVisibilityModel])}
                 onDensityChange = {(newModel: string) => {
@@ -164,16 +164,13 @@ const ProductsList = () => {
                     gridApi(setLoading).updateGridDensityVisibilityPreference({
                         density: newModel,
                         gridId: GridId.PRODUCT
-                    } as GridPreferenceRequestModel);
+                    } as GridPreferenceRequestModel).then();
                 }}
                 density={userGridPreference.density as GridDensity}
                 slots={{
                     noRowsOverlay: CustomNoRowsOverlay,
                     toolbar: GridToolbar,
-                    pagination: () =>
-                        <CustomPaginationForGrid
-                            pageSize={state.pageSize}
-                        />,
+                    pagination: () => <CustomPaginationForGrid />
                 }}
                 initialState={{
                     pagination: { paginationModel: { pageSize: state.pageSize } },
@@ -200,7 +197,7 @@ const ProductsList = () => {
                         gridApi(setLoading).updateRowsPerPagePreference({
                             rowsPerPage: newModel.pageSize,
                             gridId: GridId.PRODUCT
-                        } as GridPreferenceRequestModel);
+                        } as GridPreferenceRequestModel).then();
                     }
                     setProductAndPagination({
                         includeDeleted: state.includeDeleted,

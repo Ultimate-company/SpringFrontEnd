@@ -105,10 +105,9 @@ const salesOrderGridColumns: GridColDef[] = [
         flex: 2,
         minWidth: 300,
         valueGetter: (value, row) => {
-            if(row.purchaseOrderApprovedBy != undefined) {
-                return row.purchaseOrderApprovedBy.firstName + " " + row.purchaseOrderApprovedBy.lastName + " (" + row.purchaseOrderApprovedBy.loginName + ")";
-            }
-            return "";
+            return row.purchaseOrderApprovedBy
+                ? row.purchaseOrderApprovedBy.firstName + " " + row.purchaseOrderApprovedBy.lastName + " (" + row.purchaseOrderApprovedBy.loginName + ")"
+                : "";
         },
         renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
             columnWidth={params.colDef.computedWidth}
@@ -139,7 +138,7 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
             confirmationButtonProps: { autoFocus: true }
         })
             .then(() => {
-                salesOrderApi(setLoading).toggleSalesOrder(params.row.salesOrder.salesOrderId).then((response: number) => {
+                salesOrderApi(setLoading).toggleSalesOrder(params.row.salesOrder.salesOrderId).then(() => {
                     window.location.reload();
                 });
             })
@@ -154,7 +153,7 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
             confirmationButtonProps: { autoFocus: true }
         })
             .then(() => {
-                salesOrderApi(setLoading).toggleSalesOrder(params.row.salesOrder.salesOrderId).then((response: number) => {
+                salesOrderApi(setLoading).toggleSalesOrder(params.row.salesOrder.salesOrderId).then(() => {
                     window.location.reload();
                 });
             })

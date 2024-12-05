@@ -92,7 +92,7 @@ const PurchaseOrdersList = () => {
 
     React.useEffect(() => {
         // check user permissions to insert purchase order
-        userApi((loading: boolean) => {}).getLoggedInUserPermissions().then(function (permissions: Permissions) {
+        userApi(setLoading).getLoggedInUserPermissions().then(function (permissions: Permissions) {
             const permissionSplit = Object.values(permissions)
                 .flatMap(str => typeof str === 'string'? str.split(',') : []);
             if(permissionSplit.includes(permissionChecks.purchaseOrderPermissions.insertPurchaseOrders)){
@@ -151,7 +151,7 @@ const PurchaseOrdersList = () => {
                     gridApi(setLoading).updateGridVisibilityPreference({
                         visibilityJsonBody: JSON.stringify(newModel),
                         gridId: GridId.PURCHASE_ORDER
-                    } as GridPreferenceRequestModel);
+                    } as GridPreferenceRequestModel).then();
                     setPurchaseOrderColumnVisibilityModel(newModel);
                 }, [purchaseOrderColumnVisibilityModel])}
                 onDensityChange = {(newModel: string) => {
@@ -162,16 +162,13 @@ const PurchaseOrdersList = () => {
                     gridApi(setLoading).updateGridDensityVisibilityPreference({
                         density: newModel,
                         gridId: GridId.PURCHASE_ORDER
-                    } as GridPreferenceRequestModel);
+                    } as GridPreferenceRequestModel).then();
                 }}
                 density={userGridPreference.density as GridDensity}
                 slots={{
                     noRowsOverlay: CustomNoRowsOverlay,
                     toolbar: GridToolbar,
-                    pagination: () =>
-                        <CustomPaginationForGrid
-                            pageSize={state.pageSize}
-                        />,
+                    pagination: () => <CustomPaginationForGrid />
                 }}
                 initialState={{
                     pagination: { paginationModel: { pageSize: state.pageSize } },
@@ -198,7 +195,7 @@ const PurchaseOrdersList = () => {
                         gridApi(setLoading).updateRowsPerPagePreference({
                             rowsPerPage: newModel.pageSize,
                             gridId: GridId.PURCHASE_ORDER
-                        } as GridPreferenceRequestModel);
+                        } as GridPreferenceRequestModel).then();
                     }
                     setPurchaseOrderAndPagination({
                         includeDeleted: state.includeDeleted,

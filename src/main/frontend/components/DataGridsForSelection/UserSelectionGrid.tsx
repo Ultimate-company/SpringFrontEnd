@@ -3,7 +3,7 @@ import CustomNoRowsOverlay from "Frontend/components/Datagrid/CustomNoRowsOverla
 import {
     GridColDef,
     GridColumnVisibilityModel,
-    GridFilterModel, GridRowParams,
+    GridFilterModel,
     GridRowSelectionModel,
     GridToolbar
 } from "@mui/x-data-grid";
@@ -15,7 +15,7 @@ import {PaginationBaseResponseModel} from "Frontend/api/Models/BaseModel";
 import {GridRowClassNameParams} from "@mui/x-data-grid/models/params";
 import {GridPaginationModel} from "@mui/x-data-grid/models/gridPaginationProps";
 import {User} from "Frontend/api/Models/CentralModels/User";
-import {initUserColumnsForSelection, initUserGridColumns} from "Frontend/api/Models/DataGridModels/UserGridColumns";
+import {initUserColumnsForSelection} from "Frontend/api/Models/DataGridModels/UserGridColumns";
 
 interface UserSelectionGridProps {
     setLoading: (loading: boolean) => void;
@@ -110,9 +110,7 @@ const UserSelectionGrid = (props: UserSelectionGridProps) => {
                 noRowsOverlay: CustomNoRowsOverlay,
                 toolbar: GridToolbar,
                 pagination: () =>
-                    <CustomPaginationForGrid
-                        pageSize={state.pageSize}
-                    />,
+                    <CustomPaginationForGrid />,
             }}
             initialState={{
                 pagination: { paginationModel: { pageSize: state.pageSize } },
@@ -148,7 +146,7 @@ const UserSelectionGrid = (props: UserSelectionGridProps) => {
             onRowSelectionModelChange={React.useCallback((newRowSelectionModel: GridRowSelectionModel) => {
                 props.setSelectedUserIds(newRowSelectionModel);
             }, [state, props.selectedUserIds])}
-            {...(props.isView ? { isRowSelectable: (params: GridRowParams) => false } : {})}
+            {...(props.isView ? { isRowSelectable: () => false } : {})}
             rowSelectionModel={props.selectedUserIds}
             getRowClassName={React.useCallback((params: GridRowClassNameParams) => {
                 if (params.row.deleted) {

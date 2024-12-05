@@ -110,10 +110,7 @@ const PurchaseOrderSelectionGrid = (props: PurchaseOrderSelectionGridProps) => {
             slots={{
                 noRowsOverlay: CustomNoRowsOverlay,
                 toolbar: GridToolbar,
-                pagination: () =>
-                    <CustomPaginationForGrid
-                        pageSize={state.pageSize}
-                    />,
+                pagination: () => <CustomPaginationForGrid />
             }}
             initialState={{
                 pagination: { paginationModel: { pageSize: state.pageSize } },

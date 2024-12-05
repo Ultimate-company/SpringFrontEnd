@@ -16,7 +16,6 @@ import {
 } from "@mui/x-data-grid";
 import {CustomPaginationForGrid, PaginatedGridInterface} from "Frontend/components/Datagrid/CustomPaginationForGrid";
 import {filterChangeFunction} from "Frontend/components/Datagrid/CustomFilteringForDataGrid";
-import {useConfirm} from "material-ui-confirm";
 import {initUserLogGridColumns} from "Frontend/api/Models/DataGridModels/UserLogGridColumns";
 import {
     getURLParamValue, imageToByteArrayMap,
@@ -188,7 +187,6 @@ const initialPermissionsState: Permissions = {
 
 const AddOrEditUser = () => {
     // state variables
-    const confirm = useConfirm();
     const [setLoading] = useOutletContext<any>();
 
     // data variables
@@ -345,7 +343,7 @@ const AddOrEditUser = () => {
             pageSize: paginationRequestModel.pageSize,
             includeDeleted: paginationRequestModel.includeDeleted
         }).then((response: PaginationBaseResponseModel<any>) => {
-            initUserLogGridColumns(confirm).then((columns) => {
+            initUserLogGridColumns().then((columns) => {
                 setUserLogGridColumns(columns);
                 setGridState({
                     pageSize: paginationRequestModel.pageSize,
@@ -579,10 +577,11 @@ const AddOrEditUser = () => {
     };
 
 
-    const handleImageUpload = (event: any) => {
+    const handleImageUpload = () => {
         // open image
         document.getElementById("profilePicImageInput")?.click();
     };
+
     const fileUploadChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const fileInput = event.target;
         const ImageId = fileInput.id.replace("Input", "");
@@ -843,8 +842,7 @@ const AddOrEditUser = () => {
                             slots={{
                                 noRowsOverlay: CustomNoRowsOverlay,
                                 toolbar: GridToolbar,
-                                pagination: () => (
-                                    <CustomPaginationForGrid pageSize={gridState.pageSize} />
+                                pagination: () => (<CustomPaginationForGrid />
                                 ),
                             }}
                             initialState={{
@@ -886,7 +884,7 @@ const AddOrEditUser = () => {
                             )}
                             getRowClassName={React.useCallback(
                                 (params: GridRowClassNameParams) => {
-                                    return params.row.deleted ? "deleted" : params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd';;
+                                    return params.row.deleted ? "deleted" : params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd';
                                 },
                                 [gridState]
                             )}

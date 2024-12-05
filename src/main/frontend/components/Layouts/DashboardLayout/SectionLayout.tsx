@@ -1,6 +1,5 @@
-import {Box, Card, CardContent, CardHeader, CircularProgress, Divider, Grid} from '@mui/material';
+import {Card, CardContent, CardHeader, Divider, Grid} from '@mui/material';
 import React, {ReactNode} from 'react';
-import NotificationSnackbar from "Frontend/components/Snackbar/NotificationSnackbar";
 
 interface SectionLayoutProps {
     children: ReactNode;

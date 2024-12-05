@@ -3,7 +3,7 @@ import CustomNoRowsOverlay from "Frontend/components/Datagrid/CustomNoRowsOverla
 import {
     GridColDef,
     GridColumnVisibilityModel,
-    GridFilterModel, GridRowParams,
+    GridFilterModel,
     GridRowSelectionModel,
     GridToolbar
 } from "@mui/x-data-grid";
@@ -108,10 +108,7 @@ const UserGroupSelectionGrid = (props: UserGroupSelectionGridProps) => {
             slots={{
                 noRowsOverlay: CustomNoRowsOverlay,
                 toolbar: GridToolbar,
-                pagination: () =>
-                    <CustomPaginationForGrid
-                        pageSize={state.pageSize}
-                    />,
+                pagination: () => <CustomPaginationForGrid />
             }}
             initialState={{
                 pagination: { paginationModel: { pageSize: state.pageSize } },
@@ -147,7 +144,7 @@ const UserGroupSelectionGrid = (props: UserGroupSelectionGridProps) => {
             onRowSelectionModelChange={React.useCallback((newRowSelectionModel: GridRowSelectionModel) => {
                 props.setSelectedUserGroupIds(newRowSelectionModel);
             }, [state, props.selectedUserGroupIds])}
-            {...(props.isView ? { isRowSelectable: (params: GridRowParams) => false } : {})}
+            {...(props.isView ? { isRowSelectable: () => false } : {})}
             rowSelectionModel={props.selectedUserGroupIds}
             getRowClassName={React.useCallback((params: GridRowClassNameParams) => {
                 if (params.row.userGroup.deleted) {

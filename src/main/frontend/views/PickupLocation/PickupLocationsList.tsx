@@ -92,7 +92,7 @@ const PickupLocationsList = () => {
 
     React.useEffect(() => {
         // check user permissions to insert pickuplocation
-        userApi((loading: boolean) => {}).getLoggedInUserPermissions().then(function (permissions: Permissions) {
+        userApi(setLoading).getLoggedInUserPermissions().then(function (permissions: Permissions) {
             const permissionSplit = Object.values(permissions)
                 .flatMap(str => typeof str === 'string'? str.split(',') : []);
             if(permissionSplit.includes(permissionChecks.pickupLocationPermissions.insertPickupLocations)){
@@ -151,7 +151,7 @@ const PickupLocationsList = () => {
                     gridApi(setLoading).updateGridVisibilityPreference({
                         visibilityJsonBody: JSON.stringify(newModel),
                         gridId: GridId.PICKUP_LOCATION
-                    } as GridPreferenceRequestModel);
+                    } as GridPreferenceRequestModel).then();
                     setPickupLocationColumnVisibilityModel(newModel);
                 }, [pickupLocationColumnVisibilityModel])}
                 onDensityChange = {(newModel: string) => {
@@ -162,16 +162,13 @@ const PickupLocationsList = () => {
                     gridApi(setLoading).updateGridDensityVisibilityPreference({
                         density: newModel,
                         gridId: GridId.PICKUP_LOCATION
-                    } as GridPreferenceRequestModel);
+                    } as GridPreferenceRequestModel).then();
                 }}
                 density={userGridPreference.density as GridDensity}
                 slots={{
                     noRowsOverlay: CustomNoRowsOverlay,
                     toolbar: GridToolbar,
-                    pagination: () =>
-                        <CustomPaginationForGrid
-                            pageSize={state.pageSize}
-                        />,
+                    pagination: () => <CustomPaginationForGrid />
                 }}
                 initialState={{
                     pagination: { paginationModel: { pageSize: state.pageSize } },
@@ -198,7 +195,7 @@ const PickupLocationsList = () => {
                         gridApi(setLoading).updateRowsPerPagePreference({
                             rowsPerPage: newModel.pageSize,
                             gridId: GridId.PICKUP_LOCATION
-                        } as GridPreferenceRequestModel);
+                        } as GridPreferenceRequestModel).then();
                     }
                     setPickupLocationAndPagination({
                         includeDeleted: state.includeDeleted,

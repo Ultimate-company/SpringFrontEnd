@@ -3,20 +3,18 @@ import CustomNoRowsOverlay from "Frontend/components/Datagrid/CustomNoRowsOverla
 import {
     GridColDef,
     GridColumnVisibilityModel,
-    GridFilterModel, GridRowParams,
+    GridFilterModel,
     GridRowSelectionModel,
     GridToolbar
 } from "@mui/x-data-grid";
 import {CustomPaginationForGrid, PaginatedGridInterface} from "Frontend/components/Datagrid/CustomPaginationForGrid";
 import React from "react";
 import {filterChangeFunction} from "Frontend/components/Datagrid/CustomFilteringForDataGrid";
-import {leadApi, userApi} from "Frontend/api/ApiCalls";
+import {leadApi} from "Frontend/api/ApiCalls";
 import {PaginationBaseResponseModel} from "Frontend/api/Models/BaseModel";
 import {GridRowClassNameParams} from "@mui/x-data-grid/models/params";
 import {GridPaginationModel} from "@mui/x-data-grid/models/gridPaginationProps";
-import {User} from "Frontend/api/Models/CentralModels/User";
-import {initUserColumnsForSelection, initUserGridColumns} from "Frontend/api/Models/DataGridModels/UserGridColumns";
-import {initLeadGridColumns, initLeadGridColumnsForSelection} from "Frontend/api/Models/DataGridModels/LeadGridColumns";
+import {initLeadGridColumnsForSelection} from "Frontend/api/Models/DataGridModels/LeadGridColumns";
 import {LeadResponseModel} from "Frontend/api/Models/CarrierModels/Lead";
 
 interface GroupSelectionGridProps {
@@ -111,10 +109,7 @@ const LeadSelectionGrid = (props: GroupSelectionGridProps) => {
             slots={{
                 noRowsOverlay: CustomNoRowsOverlay,
                 toolbar: GridToolbar,
-                pagination: () =>
-                    <CustomPaginationForGrid
-                        pageSize={state.pageSize}
-                    />,
+                pagination: () => <CustomPaginationForGrid />
             }}
             initialState={{
                 pagination: { paginationModel: { pageSize: state.pageSize } },
@@ -150,7 +145,7 @@ const LeadSelectionGrid = (props: GroupSelectionGridProps) => {
             onRowSelectionModelChange={React.useCallback((newRowSelectionModel: GridRowSelectionModel) => {
                 props.setSelectedLeadIds(newRowSelectionModel);
             }, [state, props.selectedLeadIds])}
-            {...(props.isView ? { isRowSelectable: (params: GridRowParams) => false } : {})}
+            {...(props.isView ? { isRowSelectable: () => false } : {})}
             rowSelectionModel={props.selectedLeadIds}
             getRowClassName={React.useCallback((params: GridRowClassNameParams) => {
                 if (params.row.lead.deleted) {

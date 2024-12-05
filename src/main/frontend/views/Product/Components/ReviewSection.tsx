@@ -38,7 +38,7 @@ const ReviewSection: React.FC<ReviewSectionProps> = (props) => {
     const [replyToCommentId, setReplyToCommentId] = React.useState<number | null>(null);
     const [editValue, setEditValue] = React.useState<string>('');
     const [editRating, setEditRating] = React.useState<number>(0.0);
-    const rteRef = React.useRef<RichTextEditorRef>(null);
+    const rteRef = React.useRef<RichTextEditorRef>();
 
     // local helper function
     const getInitialsForAvatar = (name: string) => {

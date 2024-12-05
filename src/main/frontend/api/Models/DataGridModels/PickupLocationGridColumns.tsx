@@ -72,7 +72,7 @@ const pickupLocationGridColumns: GridColDef[] = [
         flex: 2,
         minWidth: 150,
         valueGetter: (value, row) => {
-            return `(${row.address.phoneOnAddress.substr(0, 3)}) - ${row.address.phoneOnAddress.substr(3, 3)} - ${row.address.phoneOnAddress.substr(6)}`;
+            return `(${row.address.phoneOnAddress.slice(0, 3)}) - ${row.address.phoneOnAddress.slice(3, 6)} - ${row.address.phoneOnAddress.slice(6)}`;
         }
     },
     {
@@ -116,7 +116,7 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
             confirmationButtonProps: { autoFocus: true }
         })
             .then(() => {
-                pickupLocationApi(setLoading).togglePickupLocation(params.row.pickupLocation.pickupLocationId).then((response: number) => {
+                pickupLocationApi(setLoading).togglePickupLocation(params.row.pickupLocation.pickupLocationId).then(() => {
                     window.location.reload();
                 });
             })
@@ -165,8 +165,4 @@ const actionColumns = async (confirm: (options?: ConfirmOptions | undefined) => 
 
 export const initPickupLocationGridColumns = async (confirm: (options?: ConfirmOptions | undefined) => Promise<void>, setLoading: (loading: boolean) => void) => {
     return await actionColumns(confirm, setLoading);
-}
-
-export const initPickupLocationWithoutActionGridColumns = async () => {
-    return [...pickupLocationGridColumns];
 }

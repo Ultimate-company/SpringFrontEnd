@@ -16,7 +16,7 @@ import MuiDrawer from '@mui/material/Drawer';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import PrimaryFont from "Frontend/components/Fonts/PrimaryFont";
 import BodyText from "Frontend/components/Fonts/BodyText";
-import {carrierUrls, userUrls} from "Frontend/api/Endpoints";
+import {userUrls} from "Frontend/api/Endpoints";
 
 interface DashboardSidebarProps {
     open: boolean;
@@ -191,11 +191,11 @@ const DashboardSidebar = (props: DashboardSidebarProps) => {
     };
 
     React.useEffect(() => {
-        userApi((loading: boolean) => {}).getLoggedInUser().then(function (user: User) {
+        userApi(() => {}).getLoggedInUser().then(function (user: User) {
             setUser(user);
         });
 
-        userApi((loading: boolean) => {}).getLoggedInUserPermissions().then(function (permissions: Permissions) {
+        userApi(() => {}).getLoggedInUserPermissions().then(function (permissions: Permissions) {
             for (const [key, value] of Object.entries(permissionMapping)) {
                 const keyExists = Object.values(permissions)
                     .flatMap(str => typeof str === 'string' ? str.split(',') : [])
