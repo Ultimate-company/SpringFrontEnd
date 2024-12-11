@@ -21,6 +21,7 @@ export interface MultipleAutoCompleteProps {
         value: string,
         reason: string
     ) => void;
+    mutlipleSelect: boolean
 }
 
 const MultipleAutoCompleteDropdown = (props: MultipleAutoCompleteProps) => {
@@ -32,7 +33,7 @@ const MultipleAutoCompleteDropdown = (props: MultipleAutoCompleteProps) => {
             variant="outlined"
         >
             <Autocomplete
-                multiple
+                {...(props.mutlipleSelect ? { multiple: true } : {})}
                 value={props.value || []}
                 onChange={(event, newValue, reason) => {
                     // Prevent duplicates

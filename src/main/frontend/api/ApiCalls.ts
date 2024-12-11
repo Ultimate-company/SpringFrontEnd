@@ -568,8 +568,17 @@ export const dataApi = (setLoading: (loading: boolean) => void) => {
         getSortOptions: async () => {
             return await wrappedApiFunctions<DataItem[]>(setLoading, dataUrls.getSortOptions, requestMethod.GET, null);
         },
+        getTimeZones: async () => {
+            return await wrappedApiFunctions<DataItem[]>(setLoading, dataUrls.getTimeZones, requestMethod.GET, null);
+        },
+        getPriorityStatuses: async () => {
+            return await wrappedApiFunctions<DataItem[]>(setLoading, dataUrls.getPriorityStatuses, requestMethod.GET, null);
+        },
         getPaymentOptions: async () => {
             return await wrappedApiFunctions<{ [key: string]: { label: string; value: string }[] }>(setLoading, dataUrls.getPaymentOptions, requestMethod.GET, null);
+        },
+        getSchedulerEventTypesOptions: async () => {
+            return await wrappedApiFunctions<{ [key: string]: { label: string; value: string }[] }>(setLoading, dataUrls.getSchedulerEventTypesOptions, requestMethod.GET, null);
         },
         getStateCityMappingOptions: async () => {
             return await wrappedApiFunctions<{ [key: string]: string[] }>(setLoading, dataUrls.getStateCityMappingOptions, requestMethod.GET, null);

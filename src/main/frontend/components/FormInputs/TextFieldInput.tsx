@@ -31,16 +31,14 @@ const TextFieldInput = (props: TextFieldInputProps) => {
                 variant="outlined"
                 name={props.name}
                 id={props.name}
-                {...(props.disabled && { disabled: true })}
-                {...(props.value && { value: props.value })}
-                {...(props.helperText && { label: props.helperText })}
-                {...(props.label && { label: props.label })}
-                {...(props.onChange && { onChange: props.onChange })}
-                {...(props.onKeyDown && { onKeyDown: props.onKeyDown })}
-                {...(props.placeholder && { placeholder: props.placeholder })}
-                {...(props.required && { required: true })}
-                {...(props.fullWidth && { fullWidth: true })}
-                {...(props.inputRef && { inputRef: props.inputRef })}
+                disabled={props.disabled ?? false}
+                value={props.value ?? "" }
+                helperText={props.helperText}
+                label={props.label}
+                placeholder={props.placeholder || ""}
+                required={props.required || false}
+                fullWidth={props.fullWidth || false}
+                inputRef={props.inputRef}
                 inputProps={{
                     maxLength: props.maxLength,
                     ...props.inputProps

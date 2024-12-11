@@ -385,3 +385,28 @@ export const chipStyles = (backgroundColor: string, color: string) => ({
     color,
     borderColor: backgroundColor,
 });
+
+export const formatOptionsForAutoComplete = (options: { [key: string]: { label: string; value: string; }[] }) => {
+    // Convert object to the desired format
+    const formattedOptions: { group?: string; items: { id: string; label: string }[] }[] = [];
+
+    for (const groupKey in options) {
+        if (options.hasOwnProperty(groupKey)) {
+            // Flatten the array to extract { id: string; label: string } format
+            const flattenedOptions: { id: string; label: string }[] = [];
+
+            const mapsArray = options[groupKey];
+            mapsArray.forEach(map => {
+                flattenedOptions.push({ id: groupKey + ":" + map.value, label: map.label });
+            });
+
+            // Add to formatted options
+            formattedOptions.push({
+                group: groupKey, // Optionally include the group name
+                items: flattenedOptions
+            });
+        }
+    }
+
+    return formattedOptions;
+};

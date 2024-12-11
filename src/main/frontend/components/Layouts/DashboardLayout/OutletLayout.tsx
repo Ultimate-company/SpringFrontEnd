@@ -23,6 +23,7 @@ const OutletLayout = (props: OutletLayoutProps) => {
             <Card style={{
                 padding: 24,
                 marginLeft:20,
+                marinTop:20,
                 marginRight:20}}>
                 <NotificationSnackbar/>
                 {props.children}
@@ -34,6 +35,7 @@ const OutletLayout = (props: OutletLayoutProps) => {
             <div style={{
                 padding: 24,
                 marginLeft:20,
+                marginTop:20,
                 marginRight:20}}>
                 <NotificationSnackbar/>
                 {props.children}

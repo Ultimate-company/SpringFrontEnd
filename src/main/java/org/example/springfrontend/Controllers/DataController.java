@@ -82,9 +82,47 @@ public class DataController extends BaseController {
         return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Success, null, dataModels));
     }
 
+    @GetMapping(ApiRoutes.DataSubRoute.GET_PRIORITY_STATUSES)
+    public ResponseEntity<JsonResponse<List<DataModel>>> getPriorityStatuses() {
+        List<DataModel> dataModels = new ArrayList<>();
+        for(String priorityStatus : HelperUtils.getPriorityStatus())
+        {
+            DataModel dataModel = new DataModel();
+            dataModel.setKey(priorityStatus);
+            dataModel.setValue(priorityStatus);
+            dataModel.setTitle(priorityStatus);
+
+            dataModels.add(dataModel);
+        }
+
+        return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Success, null, dataModels));
+    }
+
+
+    @GetMapping(ApiRoutes.DataSubRoute.GET_TIMEZONES)
+    public ResponseEntity<JsonResponse<List<DataModel>>> getTimeZones() {
+        List<DataModel> dataModels = new ArrayList<>();
+        for(Map.Entry<String, String> timeZone : HelperUtils.getTimeZones().entrySet())
+        {
+            DataModel dataModel = new DataModel();
+            dataModel.setKey(timeZone.getKey());
+            dataModel.setValue(timeZone.getValue());
+            dataModel.setTitle(timeZone.getValue());
+
+            dataModels.add(dataModel);
+        }
+
+        return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Success, null, dataModels));
+    }
+
     @GetMapping(ApiRoutes.DataSubRoute.GET_PAYMENT_OPTIONS)
     public ResponseEntity<JsonResponse<TreeMap<String, List<TreeMap<String, String>>>>> getPaymentOptions() {
         return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Success, null, HelperUtils.getPaymentOptions()));
+    }
+
+    @GetMapping(ApiRoutes.DataSubRoute.GET_SCHEDULER_EVENT_TYPES_OPTIONS)
+    public ResponseEntity<JsonResponse<TreeMap<String, List<TreeMap<String, String>>>>> getSchedulerEventTypesOptions() {
+        return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Success, null, HelperUtils.getSchedulerEventTypes()));
     }
 
     @GetMapping(ApiRoutes.DataSubRoute.GET_FILTER_OPTIONS)

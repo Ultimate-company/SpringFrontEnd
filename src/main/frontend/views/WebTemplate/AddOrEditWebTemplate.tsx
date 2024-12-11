@@ -4,7 +4,12 @@ import RenderInput, {InputType} from "Frontend/components/FormRenderer/RenderInp
 import React from "react";
 import {Grid} from "@mui/material";
 import {useOutletContext} from "react-router-dom";
-import {getURLParamValue, isEditMode, isViewMode} from "Frontend/components/commonHelperFunctions";
+import {
+    formatOptionsForAutoComplete,
+    getURLParamValue,
+    isEditMode,
+    isViewMode
+} from "Frontend/components/commonHelperFunctions";
 import {dataApi, webTemplateApi} from "Frontend/api/ApiCalls";
 import {DataItem} from "Frontend/api/Models/CentralModels/Data";
 import FontStyles from "Frontend/views/WebTemplate/Components/FontStyles";
@@ -58,31 +63,6 @@ const AddOrEditWebTemplate = () => {
     const isView = isViewMode("webTemplateId");
     const webUrl = "ultimatecompany.dev.com";
     let webTemplateId = (isEdit || isView) ? parseInt(getURLParamValue("webTemplateId") as string) : null;
-
-    const formatOptionsForAutoComplete = (options: { [key: string]: { label: string; value: string; }[] }) => {
-        // Convert object to the desired format
-        const formattedOptions: { group?: string; items: { id: string; label: string }[] }[] = [];
-
-        for (const groupKey in options) {
-            if (options.hasOwnProperty(groupKey)) {
-                // Flatten the array to extract { id: string; label: string } format
-                const flattenedOptions: { id: string; label: string }[] = [];
-
-                const mapsArray = options[groupKey];
-                mapsArray.forEach(map => {
-                    flattenedOptions.push({ id: groupKey + ":" + map.value, label: map.label });
-                });
-
-                // Add to formatted options
-                formattedOptions.push({
-                    group: groupKey, // Optionally include the group name
-                    items: flattenedOptions
-                });
-            }
-        }
-
-        return formattedOptions;
-    };
 
     const formatOptionsForStateCityMapping = (options: { [key: string]: string[] }) => {
         // Convert Map<string, string[]> to the desired format

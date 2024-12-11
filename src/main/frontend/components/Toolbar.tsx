@@ -486,7 +486,7 @@ const Toolbar = (props: ToolbarProps) => {
 
     return (
         <>
-            <Card style={{ margin: 20 }}>
+            <Card style={{ marginLeft: 20, marginRight: 20, marginTop:20 }}>
                 <CardContent>
                     <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
                         <div>

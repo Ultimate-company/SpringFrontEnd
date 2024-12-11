@@ -35,6 +35,7 @@ import SupportList from "Frontend/views/Support/SupportList";
 import AddOrEditSupport from "Frontend/views/Support/AddOrEditSupport";
 import WebTemplateList from "Frontend/views/WebTemplate/WebTemplateList";
 import AddOrEditWebTemplate from "Frontend/views/WebTemplate/AddOrEditWebTemplate";
+import SchedulerList from "Frontend/views/Scheduler/SchedulerList";
 
 export const routes = [
     {
@@ -108,7 +109,11 @@ export const routes = [
 
             // Web templates
             {path: getLastPartFromRoute(navigatingRoutes.dashboard.webTemplates), element: <WebTemplateList/>},
-            {path: getLastPartFromRoute(navigatingRoutes.dashboard.addWebTemplate), element: <AddOrEditWebTemplate/>}
+            {path: getLastPartFromRoute(navigatingRoutes.dashboard.addWebTemplate), element: <AddOrEditWebTemplate/>},
+
+            // scheduler
+            {path: getLastPartFromRoute(navigatingRoutes.dashboard.schedule), element: <SchedulerList/>},
+
         ]
     }
 ] as RouteObject[];
