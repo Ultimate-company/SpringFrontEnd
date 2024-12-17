@@ -1,85 +1,88 @@
-import { Autocomplete, Box, FormControl, TextField } from "@mui/material";
-import React from "react";
+import * as React from 'react';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
+import {DataItem} from "Frontend/api/Models/CentralModels/Data";
 
 export interface MultipleAutoCompleteProps {
     required: boolean;
-    fullWidth: boolean;
     label: string;
-    value?: { id: string; label: string; }[];
+    values: string[];
     onChange?: (
         event: React.SyntheticEvent<Element, Event>,
-        value: { id: string; label: string; }[],
+        value: string[],
         reason: string
     ) => void;
     disabled?: boolean;
-    options: {
-        group?: string;
-        items: { id: string; label: string; }[]
-    }[];
-    onInputChange?: (
-        event: React.SyntheticEvent<Element, Event>,
-        value: string,
-        reason: string
-    ) => void;
-    mutlipleSelect: boolean
+    options: DataItem[]
+    multipleSelect: boolean
 }
 
-const MultipleAutoCompleteDropdown = (props: MultipleAutoCompleteProps) => {
-    const groupedOptions = props.options.some(option => option.group !== undefined);
+export default function MultipleAutoCompleteDropdown(props: MultipleAutoCompleteProps) {
+    if(props.options && props.options.length > 0) {
+        if(props.multipleSelect) {
+            let selectedItems: DataItem[] = [];
+            if(props.values && props.values.length > 0) {
+                let selectedIndexes = props.options
+                    .map((option, index) => props.values.includes(option.group ?? "" + ":" + option.key) ? index : -1)
+                    .filter(index => index !== -1); // Filter out the -1 values
+                selectedItems = selectedIndexes.map(idx => props.options[idx]);
+            }
+            return (
+                <Autocomplete
+                    multiple
+                    options={props.options}
+                    value={selectedItems}
+                    groupBy={(option) => option.group ?? ""}
+                    getOptionLabel={(option) => option.value}
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            inputProps={{
+                                ...params.inputProps,
+                                autoComplete: "new-password", // disable autocomplete and autofill
+                            }}
+                            margin="dense"
+                            label={props.label || ""}
+                            required={props.required || false}
+                            InputLabelProps={{ shrink: true }}
+                        />
+                    )}
+                />
+            );
+        }
+        else {
+            let selectedIndex = -1;
+            if(props.values !== undefined
+                && props.values !== null
+                && props.values.length > 0) {
+                selectedIndex = props.options.findIndex(item => `${item.group}:${item.key}` === props.values[0]);
+            }
 
-    return (
-        <FormControl
-            fullWidth
-            variant="outlined"
-        >
-            <Autocomplete
-                {...(props.mutlipleSelect ? { multiple: true } : {})}
-                value={props.value || []}
-                onChange={(event, newValue, reason) => {
-                    // Prevent duplicates
-                    const uniqueValue = newValue.filter((option, index, self) =>
-                        index === self.findIndex((t) => t.id === option.id)
-                    );
+            return (
+                <Autocomplete
+                    options={props.options}
+                    value={selectedIndex != -1 ? props.options[selectedIndex] : undefined}
+                    groupBy={(option) => option.group ?? ""}
+                    getOptionLabel={(option) => option.value}
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            inputProps={{
+                                ...params.inputProps,
+                                autoComplete: "new-password", // disable autocomplete and autofill
+                            }}
+                            margin="dense"
+                            label={props.label || ""}
+                            required={props.required || false}
+                            InputLabelProps={{ shrink: true }}
+                        />
+                    )}
+                />
+            );
+        }
 
-                    if (props.onChange) {
-                        props.onChange(event, uniqueValue, reason);
-                    }
-                }}
-                onInputChange={(event, value, reason) => {
-                    if (props.onInputChange) {
-                        props.onInputChange(event, value, reason);
-                    }
-                }}
-                options={props.options.flatMap(group => group.items)}
-                groupBy={groupedOptions ? (option) => props.options.find(group => group.items.includes(option))?.group || "" : undefined}
-                getOptionLabel={(option) => option.label ?? ""}
-                renderInput={(params) => (
-                    <TextField
-                        {...params}
-                        inputProps={{
-                            ...params.inputProps,
-                            autoComplete: "new-password", // disable autocomplete and autofill
-                        }}
-                        margin="dense"
-                        label={props.label || ""}
-                        required={props.required || false}
-                        InputLabelProps={{ shrink: true }}
-                    />
-                )}
-                renderOption={(optionProps, option) => (
-                    <Box
-                        component="li"
-                        sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-                        {...optionProps}
-                    >
-                        {option.label}
-                    </Box>
-                )}
-                isOptionEqualToValue={(option, value) => option.id === value.id} // Ensure highlighting
-                disableCloseOnSelect
-            />
-        </FormControl>
-    )
+    }
+    else{
+        return <></>;
+    }
 }
-
-export default MultipleAutoCompleteDropdown;

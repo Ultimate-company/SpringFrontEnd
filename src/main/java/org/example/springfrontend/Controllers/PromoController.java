@@ -53,7 +53,7 @@ public class PromoController extends BaseController {
         return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Success, null, getPromosInBatchesResponse.getItem()));
     }
 
-    @PostMapping(ApiRoutes.PromosSubRoute.TOGGLE_PROMO)
+    @DeleteMapping(ApiRoutes.PromosSubRoute.TOGGLE_PROMO)
     public ResponseEntity<JsonResponse<Boolean>> togglePromo(@RequestParam long promoId) {
         Response<Boolean> togglePromoResponse = apiTranslator().getPromoSubTranslator().togglePromo(promoId);
         if (!togglePromoResponse.isSuccess()) {

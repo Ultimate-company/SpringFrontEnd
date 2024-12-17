@@ -1,7 +1,7 @@
 import Axios from "axios";
 
 const carrierBaseUrl = '/Carrier';
-const eventBaseUrl = '/Events';
+const eventBaseUrl = '/Event';
 const userGroupBaseUrl = '/UserGroup';
 const leadBaseUrl = '/Lead';
 const loginBaseUrl = '/Login';
@@ -44,6 +44,11 @@ const carrierEndpoints = {
 };
 
 const eventEndpoints = {
+    getAllEventsForUserIdBasedOnMonth: 'getAllEventsForUserIdBasedOnMonth',
+    createEvent: 'createEvent',
+    updateEvent: 'updateEvent',
+    toggleEvent: 'toggleEvent',
+    getEventDetailsById: 'getEventDetailsById'
 };
 
 const packageEndpoints = {

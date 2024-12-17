@@ -1,6 +1,7 @@
 package org.example.springfrontend.Controllers;
 
 import elemental.json.Json;
+import org.apache.commons.lang3.tuple.Pair;
 import org.example.ApiRoutes;
 import org.example.CommonHelpers.HelperUtils;
 import org.example.CommonHelpers.JsonResponse;
@@ -121,8 +122,19 @@ public class DataController extends BaseController {
     }
 
     @GetMapping(ApiRoutes.DataSubRoute.GET_SCHEDULER_EVENT_TYPES_OPTIONS)
-    public ResponseEntity<JsonResponse<TreeMap<String, List<TreeMap<String, String>>>>> getSchedulerEventTypesOptions() {
-        return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Success, null, HelperUtils.getSchedulerEventTypes()));
+    public ResponseEntity<JsonResponse<List<DataModel>>> getSchedulerEventTypesOptions() {
+        List<DataModel> dataModels = new ArrayList<>();
+        for(Map.Entry<String, List<Pair<String, String>>> keyIterator : HelperUtils.getSchedulerEventTypes().entrySet()){
+            for(Pair<String, String> valueIterator : keyIterator.getValue()) {
+                DataModel dataModel = new DataModel();
+                dataModel.setGroup(keyIterator.getKey());
+                dataModel.setKey(valueIterator.getKey());
+                dataModel.setValue(valueIterator.getValue());
+                dataModels.add(dataModel);
+            }
+        }
+
+        return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Success, null, dataModels));
     }
 
     @GetMapping(ApiRoutes.DataSubRoute.GET_FILTER_OPTIONS)

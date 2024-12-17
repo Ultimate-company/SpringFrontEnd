@@ -282,6 +282,7 @@ const RenderInput = (inputProp: InputProps) => {
             }
             return (
                 <RichTextAreaInput
+                    value={inputProp.value}
                     rteRef = {inputProp.rteRef}
                     label={inputProp.label}
                     onCreated={inputProp.onCreated}
@@ -350,13 +351,12 @@ const RenderInput = (inputProp: InputProps) => {
                 return(
                     <MultipleAutoCompleteDropdown
                         required={inputProp.required ?? true}
-                        fullWidth={inputProp.required ?? true}
                         label={inputProp.label}
-                        value={inputProp.value}
                         onChange={inputProp.handleChange}
-                        onInputChange={inputProp.onInputChange}
+                        disabled={inputProp.disabled ?? false}
+                        values={inputProp.value}
                         options={inputProp.autoCompleteOptions}
-                        mutlipleSelect={inputProp.multipleSelect ?? true}
+                        multipleSelect={inputProp.multipleSelect ?? true}
                     />
                 );
             }

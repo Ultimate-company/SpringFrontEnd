@@ -1,7 +1,7 @@
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker} from '@mui/x-date-pickers/DateTimePicker';
+import dayjs from "dayjs";
 
 interface DateTimeInputProps {
     fullWidth: boolean; // Whether the input should take up the full width
@@ -14,19 +14,20 @@ interface DateTimeInputProps {
 }
 
 const DateTimeInput = (props: DateTimeInputProps) => {
+    const parsedValue = props.value ? dayjs(props.value) : dayjs();
+
     return (
-        <>
+        <div>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={['DateTimePicker']}>
-                    <DateTimePicker
-                        value={props.value}
-                        label={props.label ?? ''}
-                        disabled={props.disabled ?? false}
-                        onChange={props.onChange}
-                    />
-                </DemoContainer>
+                <DateTimePicker
+                    value={parsedValue}
+                    label={props.label ?? ''}
+                    disabled={props.disabled ?? false}
+                    onChange={props.onChange}
+                    slotProps={{ textField: { fullWidth: true } }}
+                />
             </LocalizationProvider>
-        </>
+        </div>
     );
 };
 
