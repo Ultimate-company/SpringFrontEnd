@@ -410,3 +410,36 @@ export const formatOptionsForAutoComplete = (options: { [key: string]: { label: 
 
     return formattedOptions;
 };
+
+export function lightenHexColor(hex: string, percent: number) {
+    // Ensure percent is within the range 0-100
+    percent = Math.min(100, Math.max(0, percent));
+
+    // Remove the hash at the start if it's there
+    hex = hex.replace(/^#/, '');
+
+    // Expand shorthand hex (e.g., #03a -> #0033aa)
+    if (hex.length === 3) {
+        hex = hex.split('').map(char => char + char).join('');
+    }
+
+    // Parse r, g, b values
+    let r = parseInt(hex.substring(0, 2), 16);
+    let g = parseInt(hex.substring(2, 4), 16);
+    let b = parseInt(hex.substring(4, 6), 16);
+
+    // Function to lighten a single color component
+    const lightenComponent = (color: number) => Math.min(255, Math.round(color + (255 - color) * (percent / 100)));
+
+    // Lighten each color component
+    r = lightenComponent(r);
+    g = lightenComponent(g);
+    b = lightenComponent(b);
+
+    // Convert back to hex and ensure two digits
+    let rHex = r.toString(16).padStart(2, '0');
+    let gHex = g.toString(16).padStart(2, '0');
+    let bHex = b.toString(16).padStart(2, '0');
+
+    return `#${rHex}${gHex}${bHex}`;
+}

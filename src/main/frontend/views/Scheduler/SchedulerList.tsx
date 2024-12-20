@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, DialogActions, Grid, Dialog, DialogContent} from "@mui/material";
+import {Button, DialogActions, Grid, Dialog, DialogContent, IconButton, Divider} from "@mui/material";
 import { Scheduler } from "@aldabil/react-scheduler";
 import type {
     ProcessedEvent,
@@ -10,7 +10,7 @@ import SectionLayout from "Frontend/components/Layouts/DashboardLayout/SectionLa
 import RenderInput, {InputType} from "Frontend/components/FormRenderer/RenderInput";
 import {dataApi, eventApi, userApi} from "Frontend/api/ApiCalls";
 import {useOutletContext} from "react-router-dom";
-import {formatOptionsForAutoComplete} from "Frontend/components/commonHelperFunctions";
+import {formatDate, lightenHexColor} from "Frontend/components/commonHelperFunctions";
 import {GridRowSelectionModel} from "@mui/x-data-grid";
 import {DataItem} from "Frontend/api/Models/CentralModels/Data";
 import UserSelectionGrid from "Frontend/components/DataGridsForSelection/UserSelectionGrid";
@@ -20,15 +20,18 @@ import {
 import {EventRequestModel, Event, EventResponseModel} from "Frontend/api/Models/CarrierModels/Event";
 import {User} from "Frontend/api/Models/CentralModels/User";
 import ReactHtmlParser from "react-html-parser";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faCheckCircle, faCancel} from '@fortawesome/free-solid-svg-icons'
+import {MessageItem} from "Frontend/views/Message/Components/MessageList";
 
 interface CustomEditorProps {
     scheduler: SchedulerHelpers;
-    isView: boolean;
     setLoading: (loading: boolean) => void;
 }
 
 const CustomEditor = (props: CustomEditorProps) => {
     const event = props.scheduler.edited;
+    const isView = event?.isView ?? false;
 
     // data state variables
     const [schedulerEventTypesOptions, setSchedulerEventTypesOptions] = React.useState<DataItem[]>([]);
@@ -42,8 +45,8 @@ const CustomEditor = (props: CustomEditorProps) => {
     const [eventType, setEventType] = React.useState<string>(event?.eventType);
 
     // event date and time and location
-    const [startDateTime, setStartDateTime] = React.useState<Date>(event?.start as Date ?? new Date());
-    const [endDateTime, setEndDateTime] = React.useState<Date>(event?.end as Date ?? new Date());
+    const [startDateTime, setStartDateTime] = React.useState<string>(event?.startDateTime ?? formatDate(new Date().toString(), "mm dd yy, HH:mm"));
+    const [endDateTime, setEndDateTime] = React.useState<string>(event?.endDateTime ?? formatDate(new Date().toString(), "mm dd yy, HH:mm"));
     const [timeZone, setTimeZone] = React.useState<string>(event?.timeZone as string ?? "");
     const [location, setLocation] = React.useState<string>(event?.subtitle as string ?? "");
 
@@ -59,16 +62,15 @@ const CustomEditor = (props: CustomEditorProps) => {
     // textarea states
     const rteRef = React.useRef<RichTextEditorRef>();
 
-
     const handleSubmit = () => {
         props.scheduler.loading(true);
 
         let data: EventRequestModel = {
             event: {
-                eventId: event?.eventId as number ?? undefined,
+                eventId: event?.event_id as number ?? undefined,
                 eventName: eventName,
                 descriptionHtml: rteRef.current?.editor?.getHTML() ?? "",
-                eventType: eventType[0] || "",
+                eventType: eventType,
                 priorityStatus: priorityStatus,
 
                 startDateTime: startDateTime,
@@ -84,12 +86,26 @@ const CustomEditor = (props: CustomEditorProps) => {
             attendees: selectedUserIds.map(userId => parseInt(userId.toString())),
         }
 
-        console.log("submit: ",data);
-        // eventApi(props.setLoading).createEvent(data)
-        //     .then((_: number) => {
-        //         props.scheduler.close();
-        //         props.scheduler.loading(false);
-        //     });
+        if(data.event.eventId) {
+            eventApi(props.setLoading).updateEvent(data)
+                .then((_: boolean) => {
+                    props.scheduler.close();
+                    props.scheduler.loading(false);
+                })
+                .catch((_) => {
+                    props.scheduler.loading(false);
+                });
+        }
+        else {
+            eventApi(props.setLoading).createEvent(data)
+                .then((_: number) => {
+                    props.scheduler.close();
+                    props.scheduler.loading(false);
+                })
+                .catch((_) => {
+                    props.scheduler.loading(false);
+                });
+        }
     };
 
     React.useEffect(() => {
@@ -137,13 +153,13 @@ const CustomEditor = (props: CustomEditorProps) => {
                             label="Event Name"
                             value={eventName}
                             handleChange={React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => setEventName(event.target.value), [eventName])}
-                            isView={props.isView}
+                            isView={isView}
                         />
                     </Grid>
                     <Grid item md={6} xs={12}>
                         <RenderInput
                             inputType={InputType.MultipleAutoCompleteDropdown}
-                            isView={props.isView}
+                            isView={isView}
                             required={true}
                             fullWidth={true}
                             label="Event Type"
@@ -158,7 +174,7 @@ const CustomEditor = (props: CustomEditorProps) => {
                             inputType={InputType.RichTextArea}
                             rteRef={rteRef}
                             label="Event Description"
-                            isView={props.isView}
+                            isView={isView}
                             value={descriptionHtml}
                         />
                     </Grid>
@@ -173,8 +189,8 @@ const CustomEditor = (props: CustomEditorProps) => {
                             inputType={InputType.DateTime}
                             label="Start Date & Time"
                             value={startDateTime}
-                            handleChange={React.useCallback((value: any, _: any) => setStartDateTime(value), [startDateTime])}
-                            isView={props.isView}
+                            handleChange={React.useCallback((value: any, _: any) => setStartDateTime(formatDate(value.format(), "mm dd yy, HH:mm")), [startDateTime])}
+                            isView={isView}
                         />
                     </Grid>
                     <Grid item md={6} xs={12}>
@@ -182,8 +198,8 @@ const CustomEditor = (props: CustomEditorProps) => {
                             inputType={InputType.DateTime}
                             label="End Date & Time"
                             value={endDateTime}
-                            handleChange={React.useCallback((value: any, _: any) => setEndDateTime(value), [endDateTime])}
-                            isView={props.isView}
+                            handleChange={React.useCallback((value: any, _: any) => setEndDateTime(formatDate(value.format(), "mm dd yy, HH:mm")), [endDateTime])}
+                            isView={isView}
                         />
                     </Grid>
                     <Grid item md={8} xs={12}>
@@ -192,7 +208,7 @@ const CustomEditor = (props: CustomEditorProps) => {
                             label="Location"
                             value={location}
                             handleChange={React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => setLocation(event.target.value), [location])}
-                            isView={props.isView}
+                            isView={isView}
                         />
                     </Grid>
                     <Grid item md={4} xs={12}>
@@ -202,7 +218,7 @@ const CustomEditor = (props: CustomEditorProps) => {
                             value={timeZone}
                             handleChange={React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => setTimeZone(event.target.value), [timeZone, timeZones])}
                             data={timeZones}
-                            isView={props.isView}
+                            isView={isView}
                             required={false}
                         />
                     </Grid>
@@ -219,7 +235,7 @@ const CustomEditor = (props: CustomEditorProps) => {
                             value={priorityStatus}
                             handleChange={React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => setPriorityStatus(event.target.value), [priorityStatus, priorityStatuses])}
                             data={priorityStatuses}
-                            isView={props.isView}
+                            isView={isView}
                             required={false}
                         />
                     </Grid>
@@ -235,7 +251,7 @@ const CustomEditor = (props: CustomEditorProps) => {
                                 setColor(value.id as string);
                                 setColorLabel(value.label as string);
                             }, [color, colorLabel, colors])}
-                            isView={props.isView}
+                            isView={isView}
                             autoCompleteOptions={colors.map(item => ({
                                 id: item.key,
                                 label: item.value
@@ -255,30 +271,103 @@ const CustomEditor = (props: CustomEditorProps) => {
                             value={notes}
                             required={false}
                             handleChange={React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => setNotes(event.target.value), [notes])}
-                            isView={props.isView}
+                            isView={isView}
                         />
                     </Grid>
                 </SectionLayout> <br/>
+
 
                 <SectionLayout
                     sectionTitle="Attendees"
                     sectionSubTitle="Select users who will be a part of this event, this event will automatically get added to their calendar as well."
                 >
-                    <Grid item md={12} xs={12}>
-                        <UserSelectionGrid
-                            isView={props.isView}
-                            setLoading={props.setLoading}
-                            selectedUserIds={selectedUserIds}
-                            setSelectedUserIds={React.useCallback((selectedUserIds: GridRowSelectionModel) => setSelectedUserIds(selectedUserIds), [selectedUserIds])}
-                            singleSelection={false}
-                        />
-                    </Grid>
+                    {
+                        !isView ?
+                            <Grid item md={12} xs={12}>
+                                <UserSelectionGrid
+                                    isView={isView}
+                                    setLoading={props.setLoading}
+                                    selectedUserIds={selectedUserIds}
+                                    setSelectedUserIds={React.useCallback((selectedUserIds: GridRowSelectionModel) => setSelectedUserIds(selectedUserIds), [selectedUserIds])}
+                                    singleSelection={false}
+                                />
+                            </Grid> :
+                            <></>
+                    }
+                    <>
+                        <Grid item md={4} xs={12}>
+                            <h3>Attending</h3>
+                            <div style={{height: '300px', overflowY: 'auto', border: '1px solid #ccc'}}>
+                                {
+                                    event?.acceptedUsers.map((user: User, index: number) => (
+                                        <React.Fragment key={index}>
+                                            <MessageItem
+                                                userId={user.userId as number}
+                                                firstName={user.firstName}
+                                                lastName={user.lastName}
+                                                title={`<span style="color: green;">Declined</span>`}
+                                                from={user.firstName + " " + user.lastName}
+                                                messageHtml={""}
+                                                read={false}
+                                                updated={false}
+                                            />
+                                            <Divider/>
+                                        </React.Fragment>
+                                    ))
+                                }
+                            </div>
+                        </Grid>
+                        <Grid item md={4} xs={12}>
+                            <h3>Not Attending</h3>
+                            <div style={{height: '300px', overflowY: 'auto', border: '1px solid #ccc'}}>
+                                {
+                                    event?.declinedUsers.map((user: User, index: number) => (
+                                        <React.Fragment key={index}>
+                                            <MessageItem
+                                                userId={user.userId as number}
+                                                firstName={user.firstName}
+                                                lastName={user.lastName}
+                                                title={`<span style="color: red;">Declined</span>`}
+                                                from={user.firstName + " " + user.lastName}
+                                                messageHtml={""}
+                                                read={false}
+                                                updated={false}
+                                            />
+                                            <Divider/>
+                                        </React.Fragment>
+                                    ))
+                                }
+                            </div>
+                        </Grid>
+                        <Grid item md={4} xs={12}>
+                            <h3>Unknown Status</h3>
+                            <div style={{height: '300px', overflowY: 'auto',  border: '1px solid #ccc'}}>
+                                {
+                                    event?.unknownUsers.map((user: User, index: number) => (
+                                        <React.Fragment key={index}>
+                                            <MessageItem
+                                                userId={user.userId as number}
+                                                firstName={user.firstName}
+                                                lastName={user.lastName}
+                                                title={"Unknown"}
+                                                from={user.firstName + " " + user.lastName}
+                                                messageHtml={""}
+                                                read={false}
+                                                updated={false}
+                                            />
+                                            <Divider/>
+                                        </React.Fragment>
+                                    ))
+                                }
+                            </div>
+                        </Grid>
+                    </>
                 </SectionLayout><br/>
             </DialogContent>
 
             <DialogActions>
                 <Button onClick={props.scheduler.close}>Cancel</Button>
-                <Button onClick={handleSubmit}>Confirm</Button>
+                {!isView ? <Button onClick={handleSubmit}>Confirm</Button> : <></>}
             </DialogActions>
         </Dialog>
     );
@@ -286,7 +375,7 @@ const CustomEditor = (props: CustomEditorProps) => {
 
 const SchedulerList = () => {
     const [setLoading] = useOutletContext<any>();
-    const [selectedMonth, setSelectMonth] = React.useState<number>(new Date().getMonth() + 1);
+    const [selectedMonth] = React.useState<number>(new Date().getMonth() + 1);
     const [schedulerEvents, setSchedulerEvents] = React.useState<ProcessedEvent[]>([]);
 
     React.useEffect(() => {
@@ -298,20 +387,31 @@ const SchedulerList = () => {
                         response.forEach(eventResponseModel => {
                             localSchedulerEvents.push({
                                 event_id: eventResponseModel.event.eventId as number,
-                                title: eventResponseModel.event.eventName,
+                                title: eventResponseModel.event.eventName + (eventResponseModel.event.deleted ? " (Cancelled)" : ""),
+                                eventName: eventResponseModel.event.eventName,
                                 subtitle: eventResponseModel.event.location,
-                                start: new Date(eventResponseModel.event.startDateTime.toString()),
-                                end: new Date(eventResponseModel.event.endDateTime.toString()),
-                                color: eventResponseModel.event.color,
+                                start: eventResponseModel.event.startDateTime ? new Date(eventResponseModel.event.startDateTime) : new Date(),
+                                end: eventResponseModel.event.endDateTime ? new Date(eventResponseModel.event.endDateTime) : new Date(),
+                                startDateTime: eventResponseModel.event.startDateTime,
+                                endDateTime: eventResponseModel.event.endDateTime,
+                                color: eventResponseModel.event.deleted ? lightenHexColor(eventResponseModel.event.color ?? "#FFF", 50) : eventResponseModel.event.color,
                                 colorLabel: eventResponseModel.event.colorLabel,
-                                editable: response2.userId == eventResponseModel.event.createdByUserId,
-                                deletable: response2.userId == eventResponseModel.event.createdByUserId,
+                                editable: true,
+                                isView: eventResponseModel.event.deleted
+                                    ? true
+                                    : response2.userId !== eventResponseModel.event.createdByUserId,
+                                deletable: !eventResponseModel.event.deleted && response2.userId === eventResponseModel.event.createdByUserId,
+                                deleted: eventResponseModel.event.deleted,
+                                draggable: false,
                                 descriptionHtml: eventResponseModel.event.descriptionHtml,
                                 attendees: eventResponseModel.attendees,
                                 priorityStatus: eventResponseModel.event.priorityStatus,
                                 notes: eventResponseModel.event.notes,
                                 timeZone: eventResponseModel.event.timeZone,
-                                eventType: eventResponseModel.event.eventType
+                                eventType: eventResponseModel.event.eventType,
+                                acceptedUsers: eventResponseModel.acceptedUsers,
+                                declinedUsers: eventResponseModel.declinedUsers,
+                                unknownUsers: eventResponseModel.unknownUsers
                             } as ProcessedEvent)
                         });
                         setSchedulerEvents(localSchedulerEvents);
@@ -319,23 +419,171 @@ const SchedulerList = () => {
             });
     }, []);
 
+    const handleRsvpClick = (eventId: number, rsvp:boolean) => {
+        let data: EventRequestModel = {
+            event: {
+                eventId: eventId,
+            } as Event,
+            rsvp: rsvp
+        }
+
+        eventApi(setLoading).updateEvent(data).then((_: boolean) => {})
+    }
+
     return(
         <OutletLayout card={true}>
             <Scheduler
                 agenda={false}
                 events={schedulerEvents}
+                month = {{
+                    weekDays: [0, 1, 2, 3, 4, 5, 6],
+                    weekStartOn: 0,
+                    startHour: 0,
+                    endHour: 24
+                }}
+                week = {{
+                    weekDays: [0, 1, 2, 3, 4, 5, 6],
+                    weekStartOn: 0,
+                    startHour: 0,
+                    endHour: 24,
+                    step: 30
+                }}
+                day = {{
+                    startHour: 0,
+                    endHour: 24,
+                    step: 30
+                }}
                 customEditor={(scheduler) =>
                     <CustomEditor
                         scheduler={scheduler}
-                        isView={false}
                         setLoading={setLoading}
                     />
                 }
+                onDelete = {(eventId: number): Promise<void> => {
+                    return new Promise((resolve, reject) => {
+                        eventApi(setLoading).toggleEvent(eventId)
+                            .then(() => {
+                                window.location.reload();
+                                resolve(); // Resolve the promise after the event is toggled
+                            })
+                            .catch(reject); // If event toggle fails, reject the promise
+                    });
+                }}
                 viewerExtraComponent={(fields, event) => {
                     return (
                         <div>
-                            <p>Priority: {ReactHtmlParser(event.priorityStatus)}</p>
-                            <p>Description: {ReactHtmlParser(event.descriptionHtml)}</p>
+                            {
+                                 event.isView && !event.deleted ?
+                                    <>
+                                        <h5 style={{textAlign: "center", marginBottom: "10px"}}>RSVP</h5>
+                                        <div style={{
+                                            display: "flex",
+                                            justifyContent: "space-evenly",
+                                            width: "100%",
+                                            marginBottom: "10px"
+                                        }}>
+                                            <div
+                                                style={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    border: "1px solid black",
+                                                    padding: "5px 10px",
+                                                    width: "48%",
+                                                    cursor: "pointer"
+                                                }}
+                                                onClick={() => handleRsvpClick(event.event_id, true)}
+                                            >
+                                                <IconButton>
+                                                    <FontAwesomeIcon icon={faCheckCircle} size="sm" color="green"/>
+                                                </IconButton>
+                                                <span style={{marginLeft: "8px"}}>Yes</span>
+                                            </div>
+                                            <div
+                                                style={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    border: "1px solid black",
+                                                    padding: "5px 10px",
+                                                    width: "48%",
+                                                    cursor: "pointer"
+                                                }}
+                                                onClick={() => handleRsvpClick(event.event_id, false)}
+                                            >
+                                                <IconButton onClick={() => {
+                                                }}>
+                                                    <FontAwesomeIcon icon={faCancel} size="sm" color="red"/>
+                                                </IconButton>
+                                                <span style={{marginLeft: "8px"}}>No</span>
+                                            </div>
+                                        </div>
+                                    </> :
+                                    <></>
+                            }
+                            <div>
+                                {ReactHtmlParser(event.descriptionHtml)}
+                            </div>
+                        </div>
+                    );
+                }}
+                viewerTitleComponent={(event) => {
+                    return (
+                        <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+                            <h3
+                                style={{
+                                    margin: 0,
+                                    textDecoration: event.deleted ? 'line-through' : 'none'
+                                }}
+                            >
+                                {event.eventName}
+                            </h3>
+                            <p style={{
+                                margin: 0,
+                                fontWeight: "bold"
+                            }}>{event.deleted ? "(Cancelled)" : ""} Priority: {event.priorityStatus}</p>
+                        </div>
+                    );
+                }}
+                viewerSubtitleComponent={(event) => {
+                    return (
+                        <div>
+                            <p style={{fontStyle: 'italic', color: 'gray'}}>
+                                <b>Location:</b> {event.subtitle}
+                            </p>
+                        </div>
+                    );
+                }}
+                eventRenderer={({event, ...props}) => {
+                    return (
+                        <div
+                            style={{
+                                height: "100%",
+                                background: event.color,
+                                color: "white",
+                                overflowY: "auto",
+                            }}
+                            {...props}
+                        >
+                            <h4
+                                style={{
+                                    margin: 0,
+                                    textDecoration: event.deleted ? 'line-through' : 'none',
+                                    fontSize: "1rem"  // Larger font for h4
+                                }}
+                            >
+                                {event.eventName} {event.deleted ? "(Cancelled)" : ""}
+                            </h4>
+                            <br/>
+                            <p style={{margin: 0, fontSize: "0.9rem"}}>
+                                <b>Priority:</b> {event.priorityStatus}
+                            </p><br/>
+                            <p style={{margin: 0, fontSize: "0.9rem"}}>
+                                <b>Start Date & Time:</b> {formatDate(event.start.toString(), "mm dd yy, HH:mm")}
+                            </p><br/>
+                            <p style={{margin: 0, fontSize: "0.9rem"}}>
+                                <b>End Date & Time:</b> {formatDate(event.end.toString(), "mm dd yy, HH:mm")}
+                            </p>
                         </div>
                     );
                 }}

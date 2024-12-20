@@ -31,11 +31,11 @@ interface MessageItemProps {
     from: string;
     messageHtml: string;
     read: boolean;
-    messageId: number;
+    messageId?: number;
     updated: boolean;
 }
 
-const MessageItem = (props: MessageItemProps) => {
+export const MessageItem = (props: MessageItemProps) => {
     const theme = useTheme(); // Access the current theme
     const [avatarSrc, setAvatarSrc] = React.useState<string | null>(`${userUrls.getProfileImage}?userId=${props.userId}`);
 
@@ -54,7 +54,9 @@ const MessageItem = (props: MessageItemProps) => {
                 backgroundColor: theme.palette.mode === 'dark' ? '#303030' : '#ffffff'
             }}
             onClick={() => {
-                window.location.href = navigatingRoutes.dashboard.viewMessage + "?messageId=" + props.messageId + "&isView";
+                if (props.messageId) {
+                    window.location.href = `${navigatingRoutes.dashboard.viewMessage}?messageId=${props.messageId}&isView`;
+                }
             }}
         >
             <ListItemAvatar>
@@ -81,7 +83,7 @@ const MessageItem = (props: MessageItemProps) => {
                 }
                 secondary={
                     <React.Fragment>
-                        <b>{props.title}</b>
+                        <b>{ReactHtmlParser(props.title)}</b>
                         {
                             props.messageHtml && props.messageHtml.length > 25 ?
                                 <>{ReactHtmlParser(props.messageHtml.substring(0, 25))} ...</> :

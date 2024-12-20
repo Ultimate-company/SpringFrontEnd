@@ -18,6 +18,25 @@ export interface MultipleAutoCompleteProps {
 }
 
 export default function MultipleAutoCompleteDropdown(props: MultipleAutoCompleteProps) {
+    function handleChange(
+        event: React.SyntheticEvent<Element, Event>,
+        value: DataItem | DataItem[] | null, // Allow both single and multiple selection
+        reason: string
+    ) {
+        // If multiple selection, convert to string[]
+        if (Array.isArray(value)) {
+            const selectedValues = value.map((item) => `${item.group}:${item.key}`);
+            if (props.onChange) {
+                props.onChange(event, selectedValues, reason);
+            }
+        } else if (value) { // If single selection, convert to string[]
+            const selectedValue = `${value.group}:${value.key}`;
+            if (props.onChange) {
+                props.onChange(event, [selectedValue], reason);
+            }
+        }
+    }
+
     if(props.options && props.options.length > 0) {
         if(props.multipleSelect) {
             let selectedItems: DataItem[] = [];
@@ -32,6 +51,7 @@ export default function MultipleAutoCompleteDropdown(props: MultipleAutoComplete
                     multiple
                     options={props.options}
                     value={selectedItems}
+                    onChange={handleChange}
                     groupBy={(option) => option.group ?? ""}
                     getOptionLabel={(option) => option.value}
                     renderInput={(params) => (
@@ -61,6 +81,7 @@ export default function MultipleAutoCompleteDropdown(props: MultipleAutoComplete
             return (
                 <Autocomplete
                     options={props.options}
+                    onChange={handleChange}
                     value={selectedIndex != -1 ? props.options[selectedIndex] : undefined}
                     groupBy={(option) => option.group ?? ""}
                     getOptionLabel={(option) => option.value}

@@ -78,7 +78,6 @@ export type UserResponseModel = {
     address: Address;
     permissions: Permissions;
     groupIds: number[];
-    profilePictureBase64?: string;
 }
 
 export type UserRequestModel = {

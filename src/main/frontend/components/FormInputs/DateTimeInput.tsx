@@ -14,7 +14,11 @@ interface DateTimeInputProps {
 }
 
 const DateTimeInput = (props: DateTimeInputProps) => {
-    const parsedValue = props.value ? dayjs(props.value) : dayjs();
+    const removeOrdinalSuffix = (dateString: string) => {
+        return dateString.replace(/(\d+)(st|nd|rd|th)/, '$1');
+    };
+
+    const parsedValue = props.value ? dayjs(removeOrdinalSuffix(props.value as string)) : dayjs();
 
     return (
         <div>

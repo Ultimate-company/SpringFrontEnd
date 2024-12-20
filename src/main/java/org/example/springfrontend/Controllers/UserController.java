@@ -23,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -93,32 +94,32 @@ public class UserController extends BaseController {
     @GetMapping(ApiRoutes.UsersSubRoute.GET_USER_BY_ID)
     public ResponseEntity<JsonResponse<UserResponseModel>> getUserById(@RequestParam long userId) throws IOException {
         // fetch user details
-        Response<UserResponseModel> getUserByIdResponse = apiTranslator().getUserSubTranslator().getUserById(userId);
-        if (!getUserByIdResponse.isSuccess()) {
-            return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Error, getUserByIdResponse.getMessage(), null));
+        Response<List<UserResponseModel>> getUsersByIdsResponse = apiTranslator().getUserSubTranslator().getUsersByIds(Collections.singletonList(userId));
+        if (!getUsersByIdsResponse.isSuccess()) {
+            return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Error, getUsersByIdsResponse.getMessage(), null));
         }
 
         // fetch user address
-        Response<Address> getAddressByIdResponse = apiTranslator().getAddressSubTranslator().getAddressByUserId(getUserByIdResponse.getItem().getUser().getUserId());
+        Response<Address> getAddressByIdResponse = apiTranslator().getAddressSubTranslator().getAddressByUserId(getUsersByIdsResponse.getItem().getFirst().getUser().getUserId());
         if (getAddressByIdResponse.isSuccess() && getAddressByIdResponse.getItem() != null) {
-            getUserByIdResponse.getItem().setAddress(getAddressByIdResponse.getItem());
+            getUsersByIdsResponse.getItem().getFirst().setAddress(getAddressByIdResponse.getItem());
         }
 
         // fetch user permissions
-        Response<Permissions> getPermissionByIdResponse = apiTranslator().getUserSubTranslator().getUserPermissionsById(getUserByIdResponse.getItem().getUser().getUserId());
+        Response<Permissions> getPermissionByIdResponse = apiTranslator().getUserSubTranslator().getUserPermissionsById(getUsersByIdsResponse.getItem().getFirst().getUser().getUserId());
         if (!getPermissionByIdResponse.isSuccess()) {
             return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Error, getPermissionByIdResponse.getMessage(), null));
         }
-        getUserByIdResponse.getItem().setPermissions(getPermissionByIdResponse.getItem());
+        getUsersByIdsResponse.getItem().getFirst().setPermissions(getPermissionByIdResponse.getItem());
 
         // fetch user group ids the user is a part of
         Response<List<Long>> getUserGroupIdsByUserIdResponse = apiTranslator().getUserGroupSubTranslator().getUserGroupIdsByUserId(userId);
         if (!getUserGroupIdsByUserIdResponse.isSuccess()) {
             return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Error, getUserGroupIdsByUserIdResponse.getMessage(), null));
         }
-        getUserByIdResponse.getItem().setGroupIds(getUserGroupIdsByUserIdResponse.getItem());
+        getUsersByIdsResponse.getItem().getFirst().setGroupIds(getUserGroupIdsByUserIdResponse.getItem());
 
-        return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Success, null, getUserByIdResponse.getItem()));
+        return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Success, null, getUsersByIdsResponse.getItem().getFirst()));
     }
 
     @PutMapping(ApiRoutes.UsersSubRoute.CREATE_USER)
@@ -144,7 +145,7 @@ public class UserController extends BaseController {
     @GetMapping(ApiRoutes.UsersSubRoute.GET_PROFILE_IMAGE)
     public ResponseEntity<byte[]> getUserProfileImage(@RequestParam long userId) {
         try {
-            Response<UserResponseModel> getUserDetailsResponse = apiTranslator().getUserSubTranslator().getUserById(userId);
+            Response<List<UserResponseModel>> getUserDetailsResponse = apiTranslator().getUserSubTranslator().getUsersByIds(Collections.singletonList(userId));
             if (!getUserDetailsResponse.isSuccess()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
@@ -158,7 +159,7 @@ public class UserController extends BaseController {
                     + "/"
                     + getCurrentCarrier().getDatabaseName()
                     + "/UserProfiles"
-                    + "/" + getUserDetailsResponse.getItem().getUser().getUserId() + "-" + getUserDetailsResponse.getItem().getUser().getLastName() + ".png";
+                    + "/" + getUserDetailsResponse.getItem().getFirst().getUser().getUserId() + "-" + getUserDetailsResponse.getItem().getFirst().getUser().getLastName() + ".png";
 
             FirebaseHelper firebaseHelper = new FirebaseHelper(getCarrierResponse.getItem().getGoogleCred());
             byte[] imageBytes = firebaseHelper.downloadFileAsBytesFromFirebase(filePath);

@@ -117,6 +117,7 @@
     "react-json-view": "^1.21.3",
     "react-number-format": "^5.3.4",
     "react-router-dom": "6.26.2",
+    "tinycolor2": "^1.6.0",
     "turndown": "^7.2.0"
   },
   "devDependencies": {
@@ -221,7 +222,7 @@
       "workbox-core": "7.1.0",
       "workbox-precaching": "7.1.0"
     },
-    "hash": "dca3dc5d9bb00df9c9855c9e5ebb0e953d821ce7f60e1d8cbf03f8788df94079"
+    "hash": "bf4b390143d3ff5eb6f8727ee679244c1d6dd3eb83074d5da7dd538dcf4ae0d4"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
@@ -338,6 +339,7 @@
     "@react-input/mask": "$@react-input/mask",
     "@aldabil/react-scheduler": "$@aldabil/react-scheduler",
     "@mui/x-date-pickers": "$@mui/x-date-pickers",
-    "dayjs": "$dayjs"
+    "dayjs": "$dayjs",
+    "tinycolor2": "$tinycolor2"
   }
 }
