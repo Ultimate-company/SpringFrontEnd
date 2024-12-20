@@ -18,22 +18,24 @@ const DashboardLayout = () => {
     }, []);
 
     return (
-        <Box sx={{ display: 'flex' }}>
-            <CssBaseline />
-            <DashboardNavbar open={open} handleDrawer={handleDrawer} />
+        <Box sx={{display: 'flex'}}>
+            <CssBaseline/>
+            <DashboardNavbar open={open} handleDrawer={handleDrawer}/>
             <DashboardSidebar
                 open={open} handleDrawer={handleDrawer}
             />
             <div style={{
-                paddingTop:64,
+                paddingTop: 64,
                 width: open ? `calc(100% - ${240}px)` : '100%',
                 minHeight: '100vh',
                 maxHeight: '100%',
-                backgroundColor:"#dfdfdf"}}
-                 className="DashboardLayoutWrapper">
-                <div className="DashboardLayoutContainer">
+                backgroundColor: "#dfdfdf",
+                display: 'flex',
+                flexDirection: 'column',
+            }}>
+                <div className="DashboardLayoutContainer" style={{flex: 1}}>
                     <div className="DashboardLayoutContent">
-                        {loading &&
+                        {loading && (
                             <Box
                                 sx={{
                                     position: 'fixed',
@@ -43,19 +45,18 @@ const DashboardLayout = () => {
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                                    zIndex: 100
+                                    zIndex: 100,
                                 }}
                             >
-                                <CircularProgress
-                                    size={100}
-                                />
+                                <CircularProgress size={100}/>
                             </Box>
-                        }
+                        )}
                         <Outlet context={[setLoading]}/>
                     </div>
                 </div>
+                <br/><br/>
+                <DashboardFooter/>
             </div>
-            {/*<DashboardFooter/>*/}
         </Box>
     );
 };
