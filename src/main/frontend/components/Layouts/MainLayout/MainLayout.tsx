@@ -3,6 +3,7 @@ import { styled } from '@mui/system';
 import MainNavbar from './MainNavbar';
 import {GoogleOAuthProvider} from "@react-oauth/google";
 import {Box} from "@mui/material";
+import DashboardFooter from "Frontend/components/Layouts/DashboardLayout/DashboardFooter";
 
 const MainLayoutRoot = styled('div')({
     backgroundColor: "#ffff",
@@ -34,8 +35,8 @@ const MainLayoutContent = styled('div')({
 const MainLayout = () => (
     <GoogleOAuthProvider clientId="445377684807-a6modmc2pkgull0vltlvk3fqcehnp6n5.apps.googleusercontent.com">
         <MainLayoutRoot>
-            <MainNavbar />
-            <MainLayoutWrapper style={{marginTop:30, marginBottom:30}}>
+            <MainNavbar/>
+            <MainLayoutWrapper style={{marginTop: 30, marginBottom: 30}}>
                 <MainLayoutContainer>
                     <MainLayoutContent>
                         <Box
@@ -45,12 +46,14 @@ const MainLayout = () => (
                                 justifyContent: "center",
                             }}
                         >
-                            <Outlet />
+                            <Outlet/>
                         </Box>
                     </MainLayoutContent>
                 </MainLayoutContainer>
             </MainLayoutWrapper>
         </MainLayoutRoot>
+        <br/><br/>
+        <DashboardFooter/>
     </GoogleOAuthProvider>
 );
 
