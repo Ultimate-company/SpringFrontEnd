@@ -12,20 +12,21 @@ import {purchaseOrderUrls} from "Frontend/api/Endpoints";
 
 const purchaseOrderGridColumns: GridColDef[] = [
     {
-        field: "id",
-        headerName: "ID",
-        filterable: false,
-        valueGetter: (value, row) => {
-            return row.purchaseOrder.purchaseOrderId;
-        }
-    },
-    {
         field: "deleted",
         headerName: "IsDeleted",
         hideable: false,
         filterable: false,
         valueGetter: (value, row) => {
             return row.purchaseOrder.deleted;
+        }
+    },
+    {
+        field: "purchaseOrderId",
+        headerName: "Purchase Order Id",
+        flex: 1,
+        minWidth: 150,
+        valueGetter: (value, row) => {
+            return row.purchaseOrder.purchaseOrderId;
         }
     },
     {

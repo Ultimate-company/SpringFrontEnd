@@ -9,21 +9,21 @@ import RenderLongCellItem from "Frontend/components/Datagrid/RenderLongCellItem"
 
 const userGroupGridColumns: GridColDef[] = [
     {
-        field: "id",
-        headerName: "ID",
-        hideable: false,
-        filterable: false,
-        valueGetter: (value, row) => {
-            return row.userGroup.userGroupId;
-        }
-    },
-    {
         field: "deleted",
         headerName: "IsDeleted",
         hideable: false,
         filterable: false,
         valueGetter: (value, row) => {
             return row.userGroup.deleted;
+        }
+    },
+    {
+        field: "userGroupId",
+        headerName: "User Group Id",
+        flex: 1,
+        minWidth: 150,
+        valueGetter: (value, row) => {
+            return row.userGroup.userGroupId;
         }
     },
     {

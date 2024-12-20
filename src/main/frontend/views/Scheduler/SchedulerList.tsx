@@ -492,7 +492,7 @@ const SchedulerList = () => {
                                                     width: "48%",
                                                     cursor: "pointer"
                                                 }}
-                                                onClick={() => handleRsvpClick(event.event_id, true)}
+                                                onClick={() => handleRsvpClick(event.event_id as number, true)}
                                             >
                                                 <IconButton>
                                                     <FontAwesomeIcon icon={faCheckCircle} size="sm" color="green"/>
@@ -509,7 +509,7 @@ const SchedulerList = () => {
                                                     width: "48%",
                                                     cursor: "pointer"
                                                 }}
-                                                onClick={() => handleRsvpClick(event.event_id, false)}
+                                                onClick={() => handleRsvpClick(event.event_id as number, false)}
                                             >
                                                 <IconButton onClick={() => {
                                                 }}>

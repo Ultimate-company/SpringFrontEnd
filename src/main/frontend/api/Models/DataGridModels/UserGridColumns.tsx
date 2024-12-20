@@ -14,19 +14,19 @@ import RenderLongCellItem from "Frontend/components/Datagrid/RenderLongCellItem"
 
 const userGridColumns: GridColDef[] = [
     {
-        field: "id",
-        headerName: "ID",
-        hideable: false,
-        filterable: false,
-        valueGetter: (value, row) => {
-            return row.userId;
-        }
-    },
-    {
         field: "deleted",
         headerName: "IsDeleted",
         hideable: false,
         filterable: false
+    },
+    {
+        field: "userId",
+        headerName: "User Id",
+        flex: 1,
+        minWidth: 100,
+        valueGetter: (value, row) => {
+            return row.userId;
+        }
     },
     {
         filterable: false,

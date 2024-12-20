@@ -9,10 +9,13 @@ import {navigatingRoutes} from "Frontend/navigation";
 
 export const webTemplateGridColumns: GridColDef[] = [
     {
-        field: "id",
-        headerName: "ID",
-        hideable: false,
-        filterable: false,
+        field: "webTemplateId",
+        headerName: "Web Template Id",
+        flex: 1,
+        minWidth: 150,
+        valueGetter: (value, row) => {
+            return row.webTemplate.webTemplateId;
+        }
     },
     {
         field: "webTemplateUrl",

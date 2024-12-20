@@ -9,21 +9,21 @@ import RenderLongCellItem from "Frontend/components/Datagrid/RenderLongCellItem"
 
 const promoGridColumns: GridColDef[] = [
     {
-        field: "id",
-        headerName: "ID",
-        hideable: false,
-        filterable: false,
-        valueGetter: (value, row) => {
-            return row.promoId;
-        },
-    },
-    {
         field: "deleted",
         headerName: "IsDeleted",
         hideable: false,
         filterable: false,
         valueGetter: (value, row) => {
             return row.lead.deleted;
+        },
+    },
+    {
+        field: "promoId",
+        headerName: "Promo Id",
+        flex: 1,
+        minWidth: 100,
+        valueGetter: (value, row) => {
+            return row.promoId;
         },
     },
     {

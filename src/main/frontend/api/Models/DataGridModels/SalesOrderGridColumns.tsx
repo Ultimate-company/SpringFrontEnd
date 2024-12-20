@@ -12,20 +12,21 @@ import {chipStyles} from "Frontend/components/commonHelperFunctions";
 
 const salesOrderGridColumns: GridColDef[] = [
     {
-        field: "id",
-        headerName: "ID",
-        filterable: false,
-        valueGetter: (value, row) => {
-            return row.salesOrder.salesOrderId;
-        }
-    },
-    {
         field: "deleted",
         headerName: "IsDeleted",
         hideable: false,
         filterable: false,
         valueGetter: (value, row) => {
             return row.salesOrder.deleted;
+        }
+    },
+    {
+        field: "salesOrderId",
+        headerName: "Sales Order Id",
+        flex: 1,
+        minWidth: 150,
+        valueGetter: (value, row) => {
+            return row.salesOrder.salesOrderId;
         }
     },
     {

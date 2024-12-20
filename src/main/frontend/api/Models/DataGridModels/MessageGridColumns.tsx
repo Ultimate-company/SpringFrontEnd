@@ -11,21 +11,21 @@ import {isDateGreaterThanOrEqualToToday} from "Frontend/components/commonHelperF
 
 export const messagesGridColumns: GridColDef[] = [
     {
-        field: "id",
-        headerName: "ID",
-        hideable: false,
-        filterable: false,
-        valueGetter: (value, row) => {
-            return row.message.messageId;
-        }
-    },
-    {
         field: "deleted",
         headerName: "IsDeleted",
         hideable: false,
         filterable: false,
         valueGetter: (value, row) => {
             return row.message.deleted;
+        }
+    },
+    {
+        field: "messageId",
+        headerName: "Message Id",
+        flex: 1,
+        minWidth: 100,
+        valueGetter: (value, row) => {
+            return row.message.messageId;
         }
     },
     {

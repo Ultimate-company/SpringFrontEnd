@@ -17,17 +17,9 @@ import RenderLongCellItem from "Frontend/components/Datagrid/RenderLongCellItem"
 import {SalesOrdersProductQuantityMap} from "Frontend/api/Models/CarrierModels/SalesOrder";
 import StyledTooltip from "Frontend/components/OtherComponents/StyledTooltip";
 import {productUrls} from "Frontend/api/Endpoints";
+import {format} from "date-fns";
 
 const productGridColumns : GridColDef[] = [
-    {
-        field: "id",
-        headerName: "ID",
-        hideable: false,
-        filterable: false,
-        valueGetter: (_, row) => {
-            return row.product.productId;
-        }
-    },
     {
         field: "deleted",
         headerName: "IsDeleted",
@@ -35,6 +27,15 @@ const productGridColumns : GridColDef[] = [
         filterable: false,
         valueGetter: (_, row) => {
             return row.product.deleted;
+        }
+    },
+    {
+        field: "productId",
+        headerName: "Product Id",
+        flex: 1,
+        minWidth: 100,
+        valueGetter: (_, row) => {
+            return row.product.productId;
         }
     },
     {
@@ -136,6 +137,20 @@ const productGridColumns : GridColDef[] = [
         valueGetter: (_, row) => {
             return row.product.availableStock;
         }
+    },
+    {
+        field: "itemAvailableFrom",
+        headerName: "Item Available From",
+        flex: 2,
+        minWidth: 250,
+        filterable: false,
+        valueGetter: (value, row) => {
+            return `${format(new Date(row.product.itemAvailableFrom), 'do MMM yyyy')}`;
+        },
+        renderCell: (params: GridRenderCellParams) => <RenderLongCellItem
+            columnWidth={params.colDef.computedWidth}
+            value={params.value}
+        />
     }
 ];
 
