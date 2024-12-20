@@ -50,6 +50,10 @@ public class Endpoints {
         public static final String PURCHASE_ORDER_INDEX = "/dashboard/purchaseOrders";
     }
 
+    public static class Event {
+        public static final String EVENT_INDEX = "/dashboard/schedule";
+    }
+
     public static class SalesOrder {
         public static final String SALES_ORDER_INDEX = "/dashboard/salesOrders";
     }

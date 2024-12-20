@@ -170,6 +170,11 @@ const UsersList = () => {
                     toolbar: GridToolbar,
                     pagination: () => <CustomPaginationForGrid />
                 }}
+                slotProps={{
+                    toolbar: {
+                        printOptions: { disableToolbarButton: true },
+                    }
+                }}
                 initialState={{
                     pagination: { paginationModel: { pageSize: state.pageSize } },
                 }}

@@ -10,6 +10,7 @@ export interface RichTextAreaInputProps {
     rteRef: any;
     onCreated?: any;
     name: string;
+    value?: string;
 }
 
 const RichTextAreaInput = (props: RichTextAreaInputProps) => {
@@ -19,6 +20,7 @@ const RichTextAreaInput = (props: RichTextAreaInputProps) => {
     return (
         <div id={props.name}>
             <RichTextEditor
+                {...(props.value && props.value.length > 0 ? {content: props.value } : {})}
                 onCreate = {props.onCreated}
                 ref={props.rteRef}
                 extensions={extensions}

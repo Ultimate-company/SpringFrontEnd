@@ -14,7 +14,7 @@ import {
     dataUrls,
     userLogUrls,
     packageUrls,
-    supportUrls, webTemplateUrls, gridUrls, bulkUrls
+    supportUrls, webTemplateUrls, gridUrls, bulkUrls, eventUrls
 } from "./Endpoints";
 import Axios from "axios";
 import {LoginRequestModel} from "./Models/CentralModels/Login";
@@ -64,6 +64,7 @@ import {
     GridPreferenceRequestModel,
     UserGridPreference
 } from "Frontend/api/Models/CarrierModels/UserGridPreference";
+import {EventRequestModel, EventResponseModel} from "Frontend/api/Models/CarrierModels/Event";
 
 const standardJsonHeader = {
     headers: {
@@ -310,7 +311,7 @@ export const promoApi = (setLoading: (loading: boolean) => void) => {
             return await wrappedApiFunctions<boolean>(setLoading, promoUrls.setIncludeDeleted, requestMethod.POST, null);
         },
         togglePromo: async (promoId: number) => {
-            return await wrappedApiFunctions<number>(setLoading, promoUrls.togglePromo + `?promoId=${promoId}`, requestMethod.POST, null);
+            return await wrappedApiFunctions<number>(setLoading, promoUrls.togglePromo + `?promoId=${promoId}`, requestMethod.DELETE, null);
         },
         createPromo: async (promo: Promo) => {
             return await wrappedApiFunctions<number>(setLoading, promoUrls.createPromo, requestMethod.PUT, promo);
@@ -568,8 +569,17 @@ export const dataApi = (setLoading: (loading: boolean) => void) => {
         getSortOptions: async () => {
             return await wrappedApiFunctions<DataItem[]>(setLoading, dataUrls.getSortOptions, requestMethod.GET, null);
         },
+        getTimeZones: async () => {
+            return await wrappedApiFunctions<DataItem[]>(setLoading, dataUrls.getTimeZones, requestMethod.GET, null);
+        },
+        getPriorityStatuses: async () => {
+            return await wrappedApiFunctions<DataItem[]>(setLoading, dataUrls.getPriorityStatuses, requestMethod.GET, null);
+        },
         getPaymentOptions: async () => {
             return await wrappedApiFunctions<{ [key: string]: { label: string; value: string }[] }>(setLoading, dataUrls.getPaymentOptions, requestMethod.GET, null);
+        },
+        getSchedulerEventTypesOptions: async () => {
+            return await wrappedApiFunctions<DataItem[]>(setLoading, dataUrls.getSchedulerEventTypesOptions, requestMethod.GET, null);
         },
         getStateCityMappingOptions: async () => {
             return await wrappedApiFunctions<{ [key: string]: string[] }>(setLoading, dataUrls.getStateCityMappingOptions, requestMethod.GET, null);
@@ -675,6 +685,25 @@ export const bulkApi = (setLoading: (loading: boolean) => void) => {
     }
 };
 
+export const eventApi = (setLoading: (loading: boolean) => void) => {
+    return {
+        getAllEventsForUserIdBasedOnMonth: async (month: number) => {
+            return await wrappedApiFunctions<EventResponseModel[]>(setLoading, eventUrls.getAllEventsForUserIdBasedOnMonth+ `?month=${month}`, requestMethod.GET, null);
+        },
+        createEvent: async (eventRequestModel: EventRequestModel) => {
+            return await wrappedApiFunctions<number>(setLoading, eventUrls.createEvent, requestMethod.PUT, eventRequestModel);
+        },
+        updateEvent: async (eventRequestModel: EventRequestModel) => {
+            return await wrappedApiFunctions<boolean>(setLoading, eventUrls.updateEvent, requestMethod.POST, eventRequestModel);
+        },
+        toggleEvent: async (eventId: number) => {
+            return await wrappedApiFunctions<boolean>(setLoading, eventUrls.toggleEvent + `?eventId=${eventId}`, requestMethod.DELETE, null);
+        },
+        getEventDetailsById: async (eventId: number) => {
+            return await wrappedApiFunctions<EventResponseModel>(setLoading, eventUrls.getEventDetailsById+ `?eventId=${eventId}`, requestMethod.GET, null);
+        },
+    }
+};
 
 function handleResponse<T>(response: any): Promise<T> {
     if (response.responseType == "Success") {

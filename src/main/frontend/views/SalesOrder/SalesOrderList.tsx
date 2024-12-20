@@ -87,6 +87,11 @@ function CustomTabPanel(props: TabPanelProps) {
                             toolbar: GridToolbar,
                             pagination: () => <CustomPaginationForGrid />
                         }}
+                        slotProps={{
+                            toolbar: {
+                                printOptions: { disableToolbarButton: true },
+                            }
+                        }}
                         initialState={{
                             pagination: { paginationModel: { pageSize: props.state.pageSize } },
                         }}

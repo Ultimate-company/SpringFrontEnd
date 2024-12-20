@@ -9,21 +9,21 @@ import RenderLongCellItem from "Frontend/components/Datagrid/RenderLongCellItem"
 
 const pickupLocationGridColumns: GridColDef[] = [
     {
-        field: "id",
-        headerName: "ID",
-        hideable: false,
-        filterable: false,
-        valueGetter: (value, row) => {
-            return row.pickupLocation.pickupLocationId;
-        }
-    },
-    {
         field: "deleted",
         headerName: "IsDeleted",
         hideable: false,
         filterable: false,
         valueGetter: (value, row) => {
             return row.pickupLocation.deleted;
+        }
+    },
+    {
+        field: "pickupLocationId",
+        headerName: "Pickup Location Id",
+        flex: 1,
+        minWidth: 150,
+        valueGetter: (value, row) => {
+            return row.pickupLocation.pickupLocationId;
         }
     },
     {

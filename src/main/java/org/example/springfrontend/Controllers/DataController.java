@@ -1,6 +1,7 @@
 package org.example.springfrontend.Controllers;
 
 import elemental.json.Json;
+import org.apache.commons.lang3.tuple.Pair;
 import org.example.ApiRoutes;
 import org.example.CommonHelpers.HelperUtils;
 import org.example.CommonHelpers.JsonResponse;
@@ -82,9 +83,58 @@ public class DataController extends BaseController {
         return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Success, null, dataModels));
     }
 
+    @GetMapping(ApiRoutes.DataSubRoute.GET_PRIORITY_STATUSES)
+    public ResponseEntity<JsonResponse<List<DataModel>>> getPriorityStatuses() {
+        List<DataModel> dataModels = new ArrayList<>();
+        for(String priorityStatus : HelperUtils.getPriorityStatus())
+        {
+            DataModel dataModel = new DataModel();
+            dataModel.setKey(priorityStatus);
+            dataModel.setValue(priorityStatus);
+            dataModel.setTitle(priorityStatus);
+
+            dataModels.add(dataModel);
+        }
+
+        return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Success, null, dataModels));
+    }
+
+
+    @GetMapping(ApiRoutes.DataSubRoute.GET_TIMEZONES)
+    public ResponseEntity<JsonResponse<List<DataModel>>> getTimeZones() {
+        List<DataModel> dataModels = new ArrayList<>();
+        for(Map.Entry<String, String> timeZone : HelperUtils.getTimeZones().entrySet())
+        {
+            DataModel dataModel = new DataModel();
+            dataModel.setKey(timeZone.getKey());
+            dataModel.setValue(timeZone.getValue());
+            dataModel.setTitle(timeZone.getValue());
+
+            dataModels.add(dataModel);
+        }
+
+        return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Success, null, dataModels));
+    }
+
     @GetMapping(ApiRoutes.DataSubRoute.GET_PAYMENT_OPTIONS)
     public ResponseEntity<JsonResponse<TreeMap<String, List<TreeMap<String, String>>>>> getPaymentOptions() {
         return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Success, null, HelperUtils.getPaymentOptions()));
+    }
+
+    @GetMapping(ApiRoutes.DataSubRoute.GET_SCHEDULER_EVENT_TYPES_OPTIONS)
+    public ResponseEntity<JsonResponse<List<DataModel>>> getSchedulerEventTypesOptions() {
+        List<DataModel> dataModels = new ArrayList<>();
+        for(Map.Entry<String, List<Pair<String, String>>> keyIterator : HelperUtils.getSchedulerEventTypes().entrySet()){
+            for(Pair<String, String> valueIterator : keyIterator.getValue()) {
+                DataModel dataModel = new DataModel();
+                dataModel.setGroup(keyIterator.getKey());
+                dataModel.setKey(valueIterator.getKey());
+                dataModel.setValue(valueIterator.getValue());
+                dataModels.add(dataModel);
+            }
+        }
+
+        return ResponseEntity.ok(new JsonResponse<>(JsonResponse.JsonType.Success, null, dataModels));
     }
 
     @GetMapping(ApiRoutes.DataSubRoute.GET_FILTER_OPTIONS)

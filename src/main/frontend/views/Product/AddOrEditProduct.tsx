@@ -135,7 +135,6 @@ const AddEditProduct = () => {
 
     // handle back click on product category list
     const goBackInCategories = () => {
-        console.log(categoryStack);
         if (categoryStack.length > 0) {
             categoryStack.pop();
             setCategoryStack(categoryStack);

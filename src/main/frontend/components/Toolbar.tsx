@@ -43,6 +43,7 @@ interface ImportDialogProps {
     setFormData: (formData: FormData) => void;
     fileUploadChange: React.ChangeEventHandler<HTMLInputElement>;
     uploadFile: () => void;
+    fileName: string;
     gridColumnVisibilityModel: GridColumnVisibilityModel;
 
     // data grid cols
@@ -206,6 +207,11 @@ const DataGridSection = ({
                     toolbar: CustomToolbar,
                     pagination: () =>  <CustomPaginationForGrid />
                 }}
+                slotProps={{
+                    toolbar: {
+                        printOptions: { disableToolbarButton: true },
+                    }
+                }}
                 initialState={{ pagination: { paginationModel: { pageSize: 100 } } }}
                 pageSizeOptions={[10, 25, 100]}
                 getRowClassName={React.useCallback((params: GridRowClassNameParams) => {
@@ -220,6 +226,7 @@ const ImportDialogContent = (
     {
         page,
         fileUploadChange,
+        fileName,
         gridColumnVisibilityModel,
 
         // grid columns
@@ -296,7 +303,11 @@ const ImportDialogContent = (
 
                 <a href={bulkUrls.generateBulkImportExcel + "?bulkAddType=" + page}>Import Template for {page}</a><br />
                 <input accept=".xlsx, .xls" type="file" onChange={fileUploadChange} />
-
+                {fileName && (
+                    <div>
+                        <strong>Selected file: </strong>{fileName}
+                    </div>
+                )}
             </Box>
         </DialogContent>
     );
@@ -346,6 +357,8 @@ const Toolbar = (props: ToolbarProps) => {
     const [filterData, setFilterData] = React.useState<DataItem[]>([]);
     const [sortData, setSortData] = React.useState<DataItem[]>([]);
 
+    const [fileName, setFileName] = React.useState<string>("");
+
     // column visibility model
     const [gridColumnVisibilityModel] =
         React.useState<GridColumnVisibilityModel>({
@@ -370,6 +383,7 @@ const Toolbar = (props: ToolbarProps) => {
             let formData = new FormData();
             formData.append('file', file);
             setFormData(formData);
+            setFileName(file.name); // Set the file name when a file is selected
         }
     };
 
@@ -486,7 +500,7 @@ const Toolbar = (props: ToolbarProps) => {
 
     return (
         <>
-            <Card style={{ margin: 20 }}>
+            <Card style={{ marginLeft: 20, marginRight: 20, marginTop:20 }}>
                 <CardContent>
                     <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
                         <div>
@@ -508,6 +522,7 @@ const Toolbar = (props: ToolbarProps) => {
                 setFormData={setFormData}
                 gridColumnVisibilityModel={gridColumnVisibilityModel}
                 uploadFile={uploadFile}
+                fileName={fileName}
                 fileUploadChange={fileUploadChange}
 
                 // data grid columns

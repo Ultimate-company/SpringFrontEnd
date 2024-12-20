@@ -266,7 +266,7 @@ const AddOrEditUser = () => {
             },
             permissions: serializedPermissions,
             userGroupIds: selectedUserGroupIds.map(userGroupId => parseInt(userGroupId.toString())),
-            profilePictureBase64: imageBase64
+            // profilePictureBase64: imageBase64 TODO address this in edit user
         };
         if(isEdit) {
             userApi(setLoading).updateUser(requestData).then(() => {});
@@ -327,7 +327,7 @@ const AddOrEditUser = () => {
             setStates(states);
 
             // set profile picture
-            setImageBase64(userResponseModel.profilePictureBase64 ?? "");
+            // setImageBase64(userResponseModel.profilePictureBase64 ?? ""); // TODO address this when doing edit user
         });
     }
 
@@ -844,6 +844,11 @@ const AddOrEditUser = () => {
                                 toolbar: GridToolbar,
                                 pagination: () => (<CustomPaginationForGrid />
                                 ),
+                            }}
+                            slotProps={{
+                                toolbar: {
+                                    printOptions: { disableToolbarButton: true },
+                                }
                             }}
                             initialState={{
                                 pagination: { paginationModel: { pageSize: gridState.pageSize } },

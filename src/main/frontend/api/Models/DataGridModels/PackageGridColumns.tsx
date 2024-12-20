@@ -8,21 +8,21 @@ import {ConfirmOptions} from "material-ui-confirm";
 
 const packageGridColumns: GridColDef[] = [
     {
-        field: "id",
-        headerName: "ID",
-        hideable: false,
-        filterable: false,
-        valueGetter: (value, row) => {
-            return row.packageId;
-        }
-    },
-    {
         field: "deleted",
         headerName: "IsDeleted",
         hideable: false,
         filterable: false,
         valueGetter: (value, row) => {
             return row.deleted;
+        }
+    },
+    {
+        field: "packageId",
+        headerName: "Package Id",
+        flex: 1,
+        minWidth: 100,
+        valueGetter: (value, row) => {
+            return row.packageId;
         }
     },
     {

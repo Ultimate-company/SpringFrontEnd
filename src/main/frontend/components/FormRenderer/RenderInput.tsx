@@ -16,6 +16,7 @@ import AutoCompleteDropdown from "Frontend/components/FormInputs/AutoCompleteDro
 import RatingInput from "Frontend/components/FormInputs/RatingInput";
 import MultipleAutoCompleteDropdown from "Frontend/components/FormInputs/MultipleAutoCompleteDropdown";
 import ColorPickerInput from "Frontend/components/FormInputs/ColorPickerInput";
+import DateTimeInput from "Frontend/components/FormInputs/DateTimeInput";
 
 export enum InputType {
     TextField,
@@ -33,6 +34,7 @@ export enum InputType {
     MultipleAutoCompleteDropdown,
     ColorPicker,
     Rating,
+    DateTime
 }
 
 export interface InputProps {
@@ -58,6 +60,7 @@ export interface InputProps {
     onCreated?: any;
     thousandSeparator?: boolean;
     displayColorPalet?: boolean;
+    multipleSelect?: boolean;
 }
 
 const RenderInput = (inputProp: InputProps) => {
@@ -156,7 +159,7 @@ const RenderInput = (inputProp: InputProps) => {
                 return (
                     <RenderView
                         label={inputProp.label}
-                        value={inputProp.data?.find(data => data.value === inputProp.value?.toString())?.key}
+                        value={(inputProp.data as DataItem[])?.find(data => data.value === inputProp.value?.toString())?.key}
                         required={inputProp.required ?? true}
                     />
                 )
@@ -279,6 +282,7 @@ const RenderInput = (inputProp: InputProps) => {
             }
             return (
                 <RichTextAreaInput
+                    value={inputProp.value}
                     rteRef = {inputProp.rteRef}
                     label={inputProp.label}
                     onCreated={inputProp.onCreated}
@@ -347,12 +351,12 @@ const RenderInput = (inputProp: InputProps) => {
                 return(
                     <MultipleAutoCompleteDropdown
                         required={inputProp.required ?? true}
-                        fullWidth={inputProp.required ?? true}
                         label={inputProp.label}
-                        value={inputProp.value}
                         onChange={inputProp.handleChange}
-                        onInputChange={inputProp.onInputChange}
+                        disabled={inputProp.disabled ?? false}
+                        values={inputProp.value}
                         options={inputProp.autoCompleteOptions}
+                        multipleSelect={inputProp.multipleSelect ?? true}
                     />
                 );
             }
@@ -372,6 +376,29 @@ const RenderInput = (inputProp: InputProps) => {
                         value={inputProp.value}
                         handleChange={inputProp.handleChange}
                         required={inputProp.required ?? true}
+                        label={inputProp.label}
+                    />
+                );
+            }
+        case InputType.DateTime:
+            if(inputProp.isView) {
+                return (
+                    <RenderView
+                        label={inputProp.label}
+                        value={inputProp.value}
+                        required={inputProp.required ?? true}
+                    />
+                );
+            }
+            else {
+                return(
+                    <DateTimeInput
+                        fullWidth={inputProp.fullWidth ?? true}
+                        name={inputProp.name as string}
+                        required={inputProp.required ?? true}
+                        value={inputProp.value}
+                        onChange={inputProp.handleChange}
+                        disabled={inputProp.disabled ?? false}
                         label={inputProp.label}
                     />
                 );

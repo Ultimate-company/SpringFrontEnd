@@ -44,10 +44,25 @@ const RenderView = (props: RenderViewProps) => {
                             );
                         }
                     case 'object':
-                        return (
-                            <BodyText
-                                text={`<b>${props.label}${props.required ? ':<span style="color: red">*</span>' : ':'} </b>${format(props.value, 'do MMM yyyy')}`}/>
-                        );
+                        if (Array.isArray(props.value)) {
+                            return (
+                                <BodyText
+                                    text={
+                                        `<b>${props.label}${props.required ? ':<span style="color: red">*</span>' : ':'} </b>`
+                                        + `<div style="max-height: 200px; overflow-y: auto;">`
+                                        + '<ul style="padding-left: 20px;">'
+                                        + props.value.map(item => `<li>${item}</li>`).join('')
+                                        + '</ul></div>'
+                                    }
+                                />
+                            );
+                        } else {
+                            return (
+                                <BodyText
+                                    text={`<b>${props.label}${props.required ? ':<span style="color: red">*</span>' : ':'} </b>${format(props.value, 'do MMM yyyy')}`}
+                                />
+                            );
+                        }
                     default:
                         return (
                             <BodyText text={`<b>${props.label}${props.required ? ':<span style="color: red">*</span>' : ':'} </b>`} />

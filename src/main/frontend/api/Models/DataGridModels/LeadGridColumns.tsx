@@ -9,15 +9,6 @@ import RenderLongCellItem from "Frontend/components/Datagrid/RenderLongCellItem"
 
 const leadGridColumns: GridColDef[] = [
     {
-        field: "id",
-        headerName: "ID",
-        hideable: false,
-        filterable: false,
-        valueGetter: (value, row) => {
-            return row.lead.leadId;
-        },
-    },
-    {
         field: "deleted",
         headerName: "IsDeleted",
         hideable: false,
@@ -25,6 +16,15 @@ const leadGridColumns: GridColDef[] = [
         valueGetter: (value, row) => {
             return row.lead.deleted;
         }
+    },
+    {
+        field: "leadId",
+        headerName: "Lead Id",
+        flex: 1,
+        minWidth: 100,
+        valueGetter: (value, row) => {
+            return row.lead.leadId;
+        },
     },
     {
         field: "leadStatus",

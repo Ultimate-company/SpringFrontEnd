@@ -12,7 +12,6 @@ const TextAreaInput = (props: TextFieldInputProps) => {
                 variant="outlined"
                 multiline
                 rows={6}
-                maxRows={500}
                 name={props.name}
                 id={props.name}
                 disabled={props.disabled || false}
