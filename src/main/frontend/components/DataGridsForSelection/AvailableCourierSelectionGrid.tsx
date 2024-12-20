@@ -87,6 +87,11 @@ const AvailableCourierSelectionGrid = (props: AvailableCourierSelectionGridProps
             disableMultipleRowSelection={true}
             disableRowSelectionOnClick={true}
             pageSizeOptions={[10, 25, 100]}
+            slotProps={{
+                toolbar: {
+                    printOptions: { disableToolbarButton: true },
+                }
+            }}
             initialState={{
                 pagination: { paginationModel: { pageSize: 10 } },
             }}

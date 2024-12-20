@@ -845,6 +845,11 @@ const AddOrEditUser = () => {
                                 pagination: () => (<CustomPaginationForGrid />
                                 ),
                             }}
+                            slotProps={{
+                                toolbar: {
+                                    printOptions: { disableToolbarButton: true },
+                                }
+                            }}
                             initialState={{
                                 pagination: { paginationModel: { pageSize: gridState.pageSize } },
                             }}

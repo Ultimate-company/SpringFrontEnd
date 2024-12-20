@@ -207,6 +207,11 @@ const DataGridSection = ({
                     toolbar: CustomToolbar,
                     pagination: () =>  <CustomPaginationForGrid />
                 }}
+                slotProps={{
+                    toolbar: {
+                        printOptions: { disableToolbarButton: true },
+                    }
+                }}
                 initialState={{ pagination: { paginationModel: { pageSize: 100 } } }}
                 pageSizeOptions={[10, 25, 100]}
                 getRowClassName={React.useCallback((params: GridRowClassNameParams) => {

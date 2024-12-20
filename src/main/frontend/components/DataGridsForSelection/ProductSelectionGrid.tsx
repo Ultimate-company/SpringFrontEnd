@@ -162,6 +162,11 @@ const ProductSelectionGrid = (props: ProductSelectionGridProps) => {
                     toolbar: GridToolbar,
                     pagination: () => <CustomPaginationForGrid />
                 }}
+                slotProps={{
+                    toolbar: {
+                        printOptions: { disableToolbarButton: true },
+                    }
+                }}
                 initialState={{
                     pagination: { paginationModel: { pageSize: state.pageSize } },
                 }}
@@ -214,6 +219,11 @@ const ProductSelectionGrid = (props: ProductSelectionGridProps) => {
                 noRowsOverlay: CustomNoRowsOverlay,
                 toolbar: GridToolbar,
                 pagination: () => <CustomPaginationForGrid />
+            }}
+            slotProps={{
+                toolbar: {
+                    printOptions: { disableToolbarButton: true },
+                }
             }}
             initialState={{
                 pagination: { paginationModel: { pageSize: state.pageSize } },
