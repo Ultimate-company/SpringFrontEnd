@@ -1,0 +1,6 @@
+docker build --no-cache -t spring-frontend .
+docker stop uc-dev-frontend
+docker rm uc-dev-frontend
+docker run -d --name uc-dev-frontend -p 5566:5566 spring-frontend
+ngrok config add-authtoken 2nbJH8piA3qoO3XTKLwh6Vg5puu_iq8FhgL69D95JbNhdnu6
+ngrok http --url=poetic-pheasant-legal.ngrok-free.app 5566
